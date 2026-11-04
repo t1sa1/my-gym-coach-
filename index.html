@@ -34,6 +34,7 @@
     <button class="tab" data-tab="progress">Прогресс</button>
     <button class="tab" data-tab="plan">Программа</button>
     <button class="tab" data-tab="profile">Профиль</button>
+    <button class="tab" data-tab="ai">AI-тренер</button>
   </nav>
 
   <section id="view-train" class="view active">
@@ -73,6 +74,13 @@
     <div id="fullPlan"></div>
   </section>
 
+  <section id="view-ai" class="view">
+    <div class="eyebrow">ПЕРСОНАЛЬНЫЙ ПОМОЩНИК</div><h2>AI-тренер</h2>
+    <div class="panel"><p class="muted">Тренер анализирует твой профиль и последние записи из дневника. Не отправляй сюда пароли, API-ключи или другие секреты.</p><div id="aiStatus" class="tag">Подключение настроено</div></div>
+    <div id="aiChat" class="ai-chat" aria-live="polite"><div class="ai-message assistant">Привет! Я твой AI-тренер. Могу разобрать прогресс, предложить рабочие веса и помочь скорректировать тренировку. С чего начнём?</div></div>
+    <div class="panel ai-compose"><label class="wide-label" for="aiQuestion">Твой вопрос</label><textarea id="aiQuestion" rows="3" placeholder="Например: проанализируй мой прогресс в жиме лёжа и подскажи следующий вес"></textarea><button class="primary full" id="aiSend">Отправить тренеру</button></div>
+  </section>
+
   <section id="view-profile" class="view">
     <div class="eyebrow">ПЕРСОНАЛЬНЫЕ ДАННЫЕ</div><h2>Профиль</h2>
     <div class="panel">
@@ -90,7 +98,7 @@
       <h3>Данные и резервная копия</h3><p class="muted">Результаты пока хранятся на этом устройстве в браузере. Регулярно экспортируй резервную копию.</p>
       <div class="button-row"><button class="secondary" id="exportData">Экспорт данных</button><label class="secondary import-label">Импорт данных<input id="importData" type="file" accept="application/json" hidden></label></div>
     </div>
-    <div class="panel"><h3>AI-тренер</h3><p class="muted">В этой первой версии рекомендации рассчитываются локально по истории подходов. Для автоматического AI-анализа с синхронизацией между устройствами нужно подключить защищённый сервер и API. Не вставляй секретный API-ключ в приложение на iPhone.</p><span class="tag">AI API: пока не подключён</span></div>
+    <div class="panel"><h3>AI-тренер</h3><p class="muted">В этой первой версии рекомендации рассчитываются локально по истории подходов. Для автоматического AI-анализа с синхронизацией между устройствами нужно подключить защищённый сервер и API. Не вставляй секретный API-ключ в приложение на iPhone.</p><span class="tag">AI API: подключается</span></div>
   </section>
 </main>
 <footer>MY GYM COACH · Версия 1.0 · Данные хранятся локально</footer>
