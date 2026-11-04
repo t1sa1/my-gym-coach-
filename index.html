@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#182b25">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Gym Coach">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+  <title>MY GYM COACH</title>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="mark">✦</span><div><b>MY GYM COACH</b><small>ТВОЙ ПЕРСОНАЛЬНЫЙ ТРЕНЕР</small></div></div>
+  <div class="top-pill">● Локальный режим</div>
+</header>
+<main>
+  <section class="hero">
+    <div class="eyebrow">ТРЕНИРОВОЧНЫЙ ДНЕВНИК</div>
+    <h1>Становись<br><em>сильнее.</em></h1>
+    <p>Записывай каждый подход. Отслеживай прогресс. Получай рекомендации.</p>
+    <div class="hero-stats">
+      <div><strong id="statSessions">0</strong><span>Тренировок</span></div>
+      <div><strong id="statSets">0</strong><span>Подходов</span></div>
+      <div><strong id="statVolume">0</strong><span>Объём, кг</span></div>
+    </div>
+  </section>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="train">Тренировка</button>
+    <button class="tab" data-tab="progress">Прогресс</button>
+    <button class="tab" data-tab="plan">Программа</button>
+    <button class="tab" data-tab="profile">Профиль</button>
+  </nav>
+
+  <section id="view-train" class="view active">
+    <div class="section-head"><div><div class="eyebrow">ТВОЙ ЦИКЛ</div><h2>Следующая тренировка</h2></div><span class="tag" id="dayTag">ДЕНЬ 1</span></div>
+    <div class="day-select" id="daySelect"></div>
+    <div class="panel coach-panel">
+      <div class="coach-icon">✧</div><div><b>Совет тренера</b><p id="coachAdvice">Записывай результаты — после нескольких тренировок приложение сможет сравнивать твои рабочие веса.</p></div>
+    </div>
+    <div class="section-head compact"><h3>Упражнения</h3><span class="muted" id="exerciseCount"></span></div>
+    <div id="exerciseList" class="exercise-list"></div>
+    <div class="panel log-panel">
+      <div class="eyebrow">ДОБАВИТЬ РЕЗУЛЬТАТ</div>
+      <h3 id="selectedExercise">Жим штанги лёжа</h3>
+      <div class="field-row">
+        <label>Вес, кг<input id="weight" type="number" min="0" step="0.5" inputmode="decimal" placeholder="Напр. 40"></label>
+        <label>Повторения<input id="reps" type="number" min="1" step="1" inputmode="numeric" placeholder="Напр. 10"></label>
+      </div>
+      <label class="wide-label">Заметка (необязательно)<input id="notes" type="text" placeholder="Например: осталось 2 повтора в запасе"></label>
+      <button class="primary full" id="addSet">＋ Записать подход</button>
+      <div id="currentSets" class="current-sets"></div>
+      <button class="secondary full" id="finishExercise">Отметить упражнение выполненным</button>
+      <button class="finish full" id="finishWorkout">Завершить тренировку</button>
+    </div>
+  </section>
+
+  <section id="view-progress" class="view">
+    <div class="eyebrow">АНАЛИТИКА</div><h2>Твой прогресс</h2>
+    <div class="panel"><h3>Динамика рабочих весов</h3><p class="muted">Выбери упражнение, чтобы увидеть историю лучших подходов.</p>
+      <select id="progressExercise"></select><div id="progressChart" class="chart-empty">Добавь результаты тренировок, чтобы увидеть график.</div>
+    </div>
+    <div class="section-head compact"><h3>Последние записи</h3></div><div id="historyList"></div>
+  </section>
+
+  <section id="view-plan" class="view">
+    <div class="eyebrow">ПРОГРАММА</div><h2>Upper / Lower</h2>
+    <p class="muted">Цикл через день: 3 тренировки верха и 2 тренировки низа за 8 дней.</p>
+    <div id="fullPlan"></div>
+  </section>
+
+  <section id="view-profile" class="view">
+    <div class="eyebrow">ПЕРСОНАЛЬНЫЕ ДАННЫЕ</div><h2>Профиль</h2>
+    <div class="panel">
+      <div class="field-row">
+        <label>Вес тела, кг<input id="bodyWeight" type="number" step="0.1" value="90"></label>
+        <label>Рост, см<input id="height" type="number" value="186"></label>
+      </div>
+      <div class="field-row">
+        <label>Возраст<input id="age" type="number" value="20"></label>
+        <label>Цель<select id="goal"><option>Гипертрофия</option><option>Сила и масса</option><option>Рекомпозиция</option></select></label>
+      </div>
+      <button class="primary full" id="saveProfile">Сохранить профиль</button>
+    </div>
+    <div class="panel">
+      <h3>Данные и резервная копия</h3><p class="muted">Результаты пока хранятся на этом устройстве в браузере. Регулярно экспортируй резервную копию.</p>
+      <div class="button-row"><button class="secondary" id="exportData">Экспорт данных</button><label class="secondary import-label">Импорт данных<input id="importData" type="file" accept="application/json" hidden></label></div>
+    </div>
+    <div class="panel"><h3>AI-тренер</h3><p class="muted">В этой первой версии рекомендации рассчитываются локально по истории подходов. Для автоматического AI-анализа с синхронизацией между устройствами нужно подключить защищённый сервер и API. Не вставляй секретный API-ключ в приложение на iPhone.</p><span class="tag">AI API: пока не подключён</span></div>
+  </section>
+</main>
+<footer>MY GYM COACH · Версия 1.0 · Данные хранятся локально</footer>
+<script src="app.js"></script>
+</body></html>
