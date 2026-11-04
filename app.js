@@ -24,3 +24,69 @@ $("importData").onchange=async e=>{try{let obj=JSON.parse(await e.target.files[0
 $("bodyWeight").value=state.profile.bodyWeight;$("height").value=state.profile.height;$("age").value=state.profile.age;$("goal").value=state.profile.goal;
 renderWorkout();renderStats();renderPlan();renderProgress();
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+
+// --- MY GYM COACH AI connection ---
+const AI_API_URL = "https://quiet-truth-eee4.tisaii.workers.dev/coach";
+if (!Array.isArray(state.aiHistory)) state.aiHistory = [];
+function renderAIHistory(){
+  const chat = $("aiChat");
+  chat.innerHTML = "";
+  const greeting = document.createElement("div");
+  greeting.className = "ai-message assistant";
+  greeting.textContent = "Привет! Я твой AI-тренер. Могу разобрать прогресс, предложить рабочие веса и помочь скорректировать тренировку. С чего начнём?";
+  chat.appendChild(greeting);
+  state.aiHistory.slice(-12).forEach(item => {
+    const bubble = document.createElement("div");
+    bubble.className = "ai-message " + (item.role === "user" ? "user" : "assistant");
+    bubble.textContent = item.content;
+    chat.appendChild(bubble);
+  });
+  chat.scrollTop = chat.scrollHeight;
+}
+async function sendAIQuestion(){
+  const input = $("aiQuestion");
+  const button = $("aiSend");
+  const question = input.value.trim();
+  if (!question) { input.focus(); return; }
+  const history = state.aiHistory.slice(-6);
+  state.aiHistory.push({role:"user",content:question});
+  input.value = "";
+  renderAIHistory();
+  button.disabled = true;
+  button.textContent = "Тренер думает…";
+  $("aiStatus").textContent = "Связь с AI активна";
+  try {
+    const response = await fetch(AI_API_URL, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        question,
+        profile:state.profile,
+        logs:state.logs.slice(-40),
+        history
+      })
+    });
+    const data = await response.json();
+    if (!response.ok || !data.answer) throw new Error(data.error || "Не удалось получить ответ от тренера.");
+    state.aiHistory.push({role:"assistant",content:data.answer});
+    state.aiHistory = state.aiHistory.slice(-30);
+    save();
+    renderAIHistory();
+    $("aiStatus").textContent = "AI-тренер подключён";
+  } catch (error) {
+    state.aiHistory.push({role:"assistant",content:"Не удалось получить ответ: " + error.message + " Проверь подключение и попробуй ещё раз."});
+    renderAIHistory();
+    $("aiStatus").textContent = "Ошибка соединения";
+  } finally {
+    button.disabled = false;
+    button.textContent = "Отправить тренеру";
+  }
+}
+$("aiSend").addEventListener("click", sendAIQuestion);
+$("aiQuestion").addEventListener("keydown", event => {
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    sendAIQuestion();
+  }
+});
+renderAIHistory();
