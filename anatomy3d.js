@@ -10,10 +10,10 @@ if(host){
  scene.add(new THREE.HemisphereLight(0xdce7ff,0x271b20,2.1));
  const key=new THREE.DirectionalLight(0xffe1d7,3.3);key.position.set(-4,7,6);scene.add(key);
  const rim=new THREE.DirectionalLight(0x789cff,2.2);rim.position.set(4,4,-5);scene.add(rim);
- const fill=new THREE.PointLight(0xff5b54,35,10);fill.position.set(0,2.4,4);scene.add(fill);
+ const fill=new THREE.PointLight(0xffffff,18,10);fill.position.set(0,2.4,4);scene.add(fill);
  const floor=new THREE.Mesh(new THREE.CircleGeometry(2.4,64),new THREE.MeshBasicMaterial({color:0x20232c,transparent:true,opacity:.55}));floor.rotation.x=-Math.PI/2;floor.position.y=-.04;scene.add(floor);
  const body=new THREE.Group();body.scale.set(.88,1,.92);scene.add(body);
- const materials={base:new THREE.MeshStandardMaterial({color:0x9a5149,roughness:.58,metalness:.02}),muscle:new THREE.MeshStandardMaterial({color:0xb45d52,roughness:.48}),deep:new THREE.MeshStandardMaterial({color:0x713b3b,roughness:.6}),tendon:new THREE.MeshStandardMaterial({color:0xd0b4a0,roughness:.72}),bone:new THREE.MeshStandardMaterial({color:0xc8b6a6,roughness:.8}),hot:new THREE.MeshStandardMaterial({color:0xff263f,emissive:0x8e071c,emissiveIntensity:.65,roughness:.38})};
+ const materials={base:new THREE.MeshStandardMaterial({color:0x858b94,roughness:.62,metalness:.02}),muscle:new THREE.MeshStandardMaterial({color:0xaeb4bd,roughness:.52}),deep:new THREE.MeshStandardMaterial({color:0x737b86,roughness:.62}),tendon:new THREE.MeshStandardMaterial({color:0xc4c9d0,roughness:.72}),bone:new THREE.MeshStandardMaterial({color:0xb8bec7,roughness:.8}),hot:new THREE.MeshStandardMaterial({color:0xff263f,emissive:0x8e071c,emissiveIntensity:.65,roughness:.38})};
  const parts={};
  function ell(group,name,pos,scale,mat="muscle",rot=[0,0,0]){const mesh=new THREE.Mesh(new THREE.SphereGeometry(1,24,18),materials[mat]);mesh.position.set(...pos);const factor=name?0.88:1;mesh.scale.set(scale[0]*factor,scale[1]*factor,scale[2]*factor);mesh.rotation.set(...rot);mesh.userData.muscle=name;body.add(mesh);if(name)(parts[name]??=[]).push(mesh);return mesh;}
  function limb(name,a,b,r1,r2,mat="muscle"){const mid=new THREE.Vector3(...a).add(new THREE.Vector3(...b)).multiplyScalar(.5);const d=new THREE.Vector3(...b).sub(new THREE.Vector3(...a));const m=ell(null,name,mid.toArray(),[r1,d.length()*.62,r2],mat);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());return m;}
