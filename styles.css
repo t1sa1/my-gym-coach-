@@ -82,3 +82,16 @@ body.minimal-icons .nav-icon svg{stroke-width:1.2}body.detailed-icons .nav-icon 
 .setting-toggle input{width:22px;height:22px;accent-color:var(--red)}
 .rest-timer{text-align:center;font-size:32px;font-weight:900;color:var(--red2);min-height:38px;font-variant-numeric:tabular-nums}
 .settings-note{font-size:10px;line-height:1.6}
+
+body.theme-light{--line:#d9dce3;color:#17191f;background:#f1f2f5}
+body.theme-light .top{background:#ffffffed;border-color:#d9dce3;color:#17191f}
+body.theme-light .tabs{background:#ffffffed;border-color:#d9dce3;box-shadow:0 8px 28px #18203322}
+body.theme-light .tab{color:#626875}body.theme-light .tab.active{color:#fff}
+body.theme-light .panel,body.theme-light .exercise,body.theme-light .plan-day,body.theme-light .history-item,body.theme-light .body-map-card,body.theme-light .exercise-detail{background:#fff;border-color:#d9dce3;box-shadow:0 5px 18px #1820330d}
+body.theme-light .muted,body.theme-light .panel p{color:#656b78}
+body.theme-light input,body.theme-light select,body.theme-light textarea{background:#f5f6f8;color:#17191f;border-color:#d9dce3}
+body.theme-light .hero{background:linear-gradient(110deg,#fff 0%,#f8e9ec 55%,#f3dce1 100%);border-color:#e7c5cc;color:#17191f}
+body.theme-light .hero p{color:#555b66}body.theme-light .hero-stats span{color:#656b78}
+body.theme-light .quick-stat b,body.theme-light .nutrition-mini b{color:#17191f}
+body.theme-light .food-item{border-color:#e0e2e8}
+body.theme-light .settings-panel input[type=color]{background:#fff}
