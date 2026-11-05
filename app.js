@@ -79,8 +79,10 @@ function equipmentArt(type){
 function exercisePhoto(name){
  const n=String(name||"").toLowerCase();
  const items=[
-  {re:/жим штанги лёжа|жим в тренажёре на грудь/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Bench_press_Machine.jpg",credit:"Aliva Sahoo · CC BY-SA 4.0",page:"https://commons.wikimedia.org/wiki/File:Bench_press_Machine.jpg",label:"Тренажёр для жима"},
-  {re:/жим ногами/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Gym_Leg_Press_Machine.jpg",credit:"Aliva Sahoo · CC BY-SA 4.0",page:"https://commons.wikimedia.org/wiki/File:Gym_Leg_Press_Machine.jpg",label:"Тренажёр для жима ногами"}
+  {re:/жим в тренажёре на грудь/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Bench_press_Machine.jpg",credit:"Aliva Sahoo · CC BY-SA 4.0",page:"https://commons.wikimedia.org/wiki/File:Bench_press_Machine.jpg",label:"Тренажёр для жима"},
+  {re:/жим ногами/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Gym_Leg_Press_Machine.jpg",credit:"Aliva Sahoo · CC BY-SA 4.0",page:"https://commons.wikimedia.org/wiki/File:Gym_Leg_Press_Machine.jpg",label:"Тренажёр для жима ногами"},
+  {re:/гантел|молотковые|сгибание рук на скамье скотта/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Dumbells_and_free_weights_in_a_gym.jpg",credit:"KeepActive Australia · CC BY-SA 4.0",page:"https://commons.wikimedia.org/wiki/File:Dumbells_and_free_weights_in_a_gym.jpg",label:"Гантели и свободные веса"},
+  {re:/кроссовер|верхний блок|горизонтальная тяга|разгибание рук на блоке|тяга с упором грудью/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Functional_Trainer_Exercise_Machine_at_Gym.jpg",credit:"KeepActive Australia · CC BY-SA 4.0",page:"https://commons.wikimedia.org/wiki/File:Functional_Trainer_Exercise_Machine_at_Gym.jpg",label:"Блочный тренажёр / кроссовер"}
  ];
  return items.find(x=>x.re.test(n))||null;
 }
