@@ -138,3 +138,10 @@ body.theme-light .settings-panel input[type=color]{background:#fff}
 .premium-anatomy .detail{fill:none;stroke:#e9edf2;stroke-opacity:.36;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
 .anatomy3d-stage{height:500px}
 @media(max-width:370px){.anatomy3d-stage{height:430px}}
+
+
+/* Real-time Three.js anatomical model */
+.anatomy3d-stage{position:relative;min-height:480px;height:clamp(440px,62vh,620px);touch-action:none;overflow:hidden}
+.anatomy3d-stage canvas{display:block;width:100%;height:100%;outline:none;touch-action:none}
+.anatomy3d-error{display:grid;place-items:center;min-height:240px;padding:24px;text-align:center;color:#b7bac4;font-size:13px;line-height:1.6}
+.anatomy3d-hint{font-size:10px;letter-spacing:.2px}
