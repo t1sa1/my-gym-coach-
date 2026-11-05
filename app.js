@@ -8,6 +8,7 @@ const plans=[
 const $=id=>document.getElementById(id);
 let state=JSON.parse(localStorage.getItem("mgc-data")||'{"logs":[],"profile":{"bodyWeight":90,"height":186,"age":20,"goal":"Гипертрофия","experience":"Начинающий","frequency":"3","priority":"Верх тела"},"cycle":0}');
 state.profile={bodyWeight:90,height:186,age:20,sex:"male",goal:"Набор массы",activity:"1.55",experience:"Начинающий",frequency:"3",priority:"Верх тела",...state.profile};
+if(["Гипертрофия","Сила и масса"].includes(state.profile.goal))state.profile.goal="Набор массы";if(!["Набор массы","Поддержание веса","Снижение жира","Рекомпозиция"].includes(state.profile.goal))state.profile.goal="Набор массы";if(!["male","female"].includes(state.profile.sex))state.profile.sex="male";if(!state.profile.activity)state.profile.activity="1.375";
 if(!Array.isArray(state.foodLog))state.foodLog=[];
 let current=0,selected=0,completed=new Set(),activeWorkout=[];
 function save(){localStorage.setItem("mgc-data",JSON.stringify(state));renderStats()}
