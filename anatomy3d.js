@@ -1,12 +1,22 @@
 (()=> {
 const host=document.getElementById("anatomy3d");if(!host)return;
-let THREE=null,scene,camera,renderer,bodyGroup,activeView="front",lastTotals={},drag=null,pinch=0,zoom=1,ready=false;
+let THREE=null,scene,camera,renderer,bodyGroup,activeView="front",lastTotals={},drag=null,zoom=1,ready=false;const pointers=new Map();
 const hint=()=>document.querySelector(".anatomy3d-hint");
 const material=(color,roughness=.48,metalness=.32)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
 const baseMat=()=>material("#9da5b0",.52,.38),muscleMat=()=>material("#c0c6ce",.4,.42);
 const hotMat=()=>material("#ed263f",.34,.35,{});
 function ellipsoid(parent,name,pos,scale,mat,muscle=null){
- const mesh=new THREE.Mesh(new THREE.SphereGeometry(1,32,24),mat);
+ const geometry=new THREE.SphereGeometry(1,48,32);
+ if(muscle){
+  const p=geometry.attributes.position;
+  for(let i=0;i<p.count;i++){
+   const y=p.getY(i), taper=.34+.66*Math.pow(Math.max(0,1-y*y),.42);
+   p.setX(i,p.getX(i)*taper);
+   p.setZ(i,p.getZ(i)*taper);
+  }
+  geometry.computeVertexNormals();
+ }
+ const mesh=new THREE.Mesh(geometry,mat);
  mesh.name=name;mesh.position.set(...pos);mesh.scale.set(...scale);mesh.castShadow=true;mesh.receiveShadow=true;
  if(muscle)mesh.userData.muscle=muscle;
  parent.add(mesh);return mesh;
@@ -38,18 +48,18 @@ function buildBody(){
  }
  // Front anatomy
  paired(bodyGroup,"Плечи",1.93,.27,.24,.31,.25,.76);
- paired(bodyGroup,"Грудные мышцы",1.48,.34,.38,.3,.16,.39);
+ paired(bodyGroup,"Грудь",1.48,.34,.38,.3,.16,.39);
  paired(bodyGroup,"Бицепс",.91,.2,.17,.39,.17,.91);
  paired(bodyGroup,"Предплечья",.24,.16,.13,.39,.13,1.08);
- paired(bodyGroup,"Косые мышцы живота",.57,.3,.16,.49,.1,.43);
+ paired(bodyGroup,"Пресс",.57,.3,.16,.49,.1,.43);
  
  for(let row=0;row<3;row++)for(const s of [-1,1])
   ellipsoid(bodyGroup,"Пресс",[s*.115,.98-row*.34,.365],[.105,.145,.075],muscleMat(),"Пресс");
  paired(bodyGroup,"Квадрицепс",-1.22,.2,.205,.61,.18,.43);
  paired(bodyGroup,"Икры",-2.55,.13,.16,.43,.15,.43);
  // Back anatomy, positioned behind the torso.
- paired(bodyGroup,"Трапеции",1.82,-.28,.33,.55,.13,.0);
- paired(bodyGroup,"Широчайшие мышцы",.93,-.31,.39,.72,.13,.39);
+ paired(bodyGroup,"Спина",1.82,-.28,.33,.55,.13,.0);
+ paired(bodyGroup,"Спина",.93,-.31,.39,.72,.13,.39);
  paired(bodyGroup,"Трицепс",.94,-.2,.17,.4,.16,.91);
  paired(bodyGroup,"Предплечья",.23,-.15,.13,.39,.13,1.08);
  paired(bodyGroup,"Ягодицы",-0.48,-.31,.29,.36,.16,.32);
@@ -89,9 +99,12 @@ async function init(){
  }catch(err){host.innerHTML='<div class="anatomy3d-error">Не удалось загрузить 3D-движок. Проверь подключение к интернету и обнови страницу.</div>';console.error("3D anatomy init failed",err);}
 }
 function update(totals={}){lastTotals=totals||{};applyLoad();}
-function pointerDown(e){host.setPointerCapture?.(e.pointerId);if(!drag)drag={x:e.clientX,y:e.clientY};}
-function pointerMove(e){if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;drag={x:e.clientX,y:e.clientY};if(bodyGroup){bodyGroup.rotation.y+=dx*.009;bodyGroup.rotation.x=Math.max(-.45,Math.min(.45,bodyGroup.rotation.x+dy*.006));}}
-function pointerUp(){drag=null;}
+function pointerDown(e){host.setPointerCapture?.(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===1)drag={x:e.clientX,y:e.clientY};else if(pointers.size===2){const p=[...pointers.values()];pinchDistance=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);drag=null;}}
+let pinchDistance=0;
+function pointerMove(e){if(!pointers.has(e.pointerId))return;const prev=pointers.get(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(pointers.size>=2){const p=[...pointers.values()],d=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);if(pinchDistance&&camera){zoom=Math.max(.72,Math.min(1.65,zoom+(d-pinchDistance)*.004));camera.position.z=12.2/zoom;}pinchDistance=d;return;}
+ if(!drag)return;const dx=e.clientX-prev.x,dy=e.clientY-prev.y;drag={x:e.clientX,y:e.clientY};if(bodyGroup){bodyGroup.rotation.y+=dx*.009;bodyGroup.rotation.x=Math.max(-.45,Math.min(.45,bodyGroup.rotation.x+dy*.006));}}
+function pointerUp(e){if(e?.pointerId!==undefined)pointers.delete(e.pointerId);drag=pointers.size===1?[...pointers.values()][0]:null;if(pointers.size<2)pinchDistance=0;}
 host.addEventListener("pointerdown",pointerDown);host.addEventListener("pointermove",pointerMove);host.addEventListener("pointerup",pointerUp);host.addEventListener("pointercancel",pointerUp);
 host.addEventListener("wheel",e=>{e.preventDefault();zoom=Math.max(.78,Math.min(1.4,zoom-e.deltaY*.001));camera?.position.set(0,0,12.2/zoom);},{passive:false});
 host.addEventListener("click",e=>{if(!ready)return;const rect=renderer.domElement.getBoundingClientRect(),mouse=new THREE.Vector2((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1),ray=new THREE.Raycaster();ray.setFromCamera(mouse,camera);const hits=ray.intersectObjects(bodyGroup.children,true);if(hits.length){const muscle=hits.find(h=>h.object.userData.muscle)?.object.userData.muscle;if(muscle&&hint())hint().textContent=muscle+" · нагрузка за 7 дней: "+Number(lastTotals[muscle]||0).toFixed(1);}});
