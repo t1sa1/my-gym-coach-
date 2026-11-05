@@ -1,4 +1,4 @@
-const CACHE="mgc-v14";
+const CACHE="mgc-v15";
 const ASSETS=["./","./index.html","./styles.css","./app.js","./manifest.webmanifest"];
 self.addEventListener("install",event=>{
   self.skipWaiting();
