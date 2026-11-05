@@ -13,7 +13,7 @@ if(host){
  const fill=new THREE.PointLight(0xffffff,18,10);fill.position.set(0,2.4,4);scene.add(fill);
  const floor=new THREE.Mesh(new THREE.CircleGeometry(2.4,64),new THREE.MeshBasicMaterial({color:0x20232c,transparent:true,opacity:.55}));floor.rotation.x=-Math.PI/2;floor.position.y=-.04;scene.add(floor);
  const body=new THREE.Group();body.scale.set(.88,1,.92);scene.add(body);
- const materials={base:new THREE.MeshStandardMaterial({color:0x858b94,roughness:.62,metalness:.02}),muscle:new THREE.MeshStandardMaterial({color:0xaeb4bd,roughness:.52}),deep:new THREE.MeshStandardMaterial({color:0x737b86,roughness:.62}),tendon:new THREE.MeshStandardMaterial({color:0xc4c9d0,roughness:.72}),bone:new THREE.MeshStandardMaterial({color:0xb8bec7,roughness:.8}),hot:new THREE.MeshStandardMaterial({color:0xff263f,emissive:0x8e071c,emissiveIntensity:.65,roughness:.38})};
+ const materials={base:new THREE.MeshStandardMaterial({color:0x9da3ac,roughness:.62,metalness:.02}),muscle:new THREE.MeshStandardMaterial({color:0x9da3ac,roughness:.56}),deep:new THREE.MeshStandardMaterial({color:0x9da3ac,roughness:.62}),tendon:new THREE.MeshStandardMaterial({color:0x9da3ac,roughness:.72}),bone:new THREE.MeshStandardMaterial({color:0x9da3ac,roughness:.8}),hot:new THREE.MeshStandardMaterial({color:0xff263f,emissive:0x8e071c,emissiveIntensity:.65,roughness:.38})};
  const parts={};
  function ell(group,name,pos,scale,mat="muscle",rot=[0,0,0]){const mesh=new THREE.Mesh(new THREE.SphereGeometry(1,24,18),materials[mat]);mesh.position.set(...pos);const factor=name?0.88:1;mesh.scale.set(scale[0]*factor,scale[1]*factor,scale[2]*factor);mesh.rotation.set(...rot);mesh.userData.muscle=name;body.add(mesh);if(name)(parts[name]??=[]).push(mesh);return mesh;}
  function limb(name,a,b,r1,r2,mat="muscle"){const mid=new THREE.Vector3(...a).add(new THREE.Vector3(...b)).multiplyScalar(.5);const d=new THREE.Vector3(...b).sub(new THREE.Vector3(...a));const m=ell(null,name,mid.toArray(),[r1,d.length()*.62,r2],mat);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());return m;}
@@ -59,7 +59,7 @@ if(host){
  const shadow=new THREE.Mesh(new THREE.CircleGeometry(1.25,48),new THREE.MeshBasicMaterial({color:0x050609,transparent:true,opacity:.55}));shadow.rotation.x=-Math.PI/2;shadow.position.y=-.035;shadow.scale.set(1.15,1.8,1);scene.add(shadow);
  const defaults={};for(const [name,list] of Object.entries(parts))list.forEach(m=>defaults[name]=materials.muscle);
  let current={};
- function update(totals={}){current=totals;for(const [name,list] of Object.entries(parts)){const on=(totals[name]||0)>0;list.forEach(m=>{m.material=on?materials.hot:(name==="Спина"?materials.deep:materials.muscle);});}}
+ function update(totals={}){current=totals;for(const [name,list] of Object.entries(parts)){const on=(totals[name]||0)>0;list.forEach(m=>{m.material=on?materials.hot:materials.muscle;});}}
  function view(which){if(which==="front"){camera.position.set(0,1.75,8.8);controls.target.set(0,1.65,0);}else if(which==="back"){camera.position.set(0,1.75,-8.8);controls.target.set(0,1.65,0);}else{camera.position.set(8.8,1.7,0);controls.target.set(0,1.65,0);}controls.update();document.querySelectorAll("[data-anatomy-view]").forEach(b=>b.classList.toggle("active",b.dataset.anatomyView===which));}
  document.querySelectorAll("[data-anatomy-view]").forEach(b=>b.addEventListener("click",()=>view(b.dataset.anatomyView)));
  const names=["Грудь","Спина","Плечи","Бицепс","Трицепс","Пресс","Квадрицепс","Бицепс бедра","Ягодицы","Икры"];
