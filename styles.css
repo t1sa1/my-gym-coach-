@@ -24,3 +24,18 @@ main{max-width:820px;margin:auto;padding:14px 14px 30px}.view{display:none;anima
 
 /* Sculpted 3D anatomy map */
 .anatomical-figure{filter:drop-shadow(0 10px 18px #000b);overflow:visible}.anatomical-figure .muscle-volume{filter:drop-shadow(0 1.8px 1.5px #08090db0);transition:fill .25s ease,fill-opacity .25s ease}.body-map-card{background:radial-gradient(ellipse at 50% 36%,#282a31 0%,#17181e 58%,#111217 100%);overflow:hidden}.body-map-card .body-figure{max-width:175px}.mini-map-figures .body-figure{filter:drop-shadow(0 5px 9px #000a)}
+
+/* Interactive anatomical 3D viewer */
+.anatomy3d-shell{margin-top:12px;border:1px solid #343640;border-radius:17px;overflow:hidden;background:radial-gradient(ellipse at 50% 38%,#292b33 0%,#15161c 64%,#0d0e12 100%)}
+.anatomy3d-toolbar{display:flex;gap:6px;padding:9px;background:#101116;position:relative;z-index:2}
+.anatomy-view{flex:1;border:1px solid #353741;border-radius:10px;padding:10px 4px;background:#202128;color:#bfc0c9;font-size:10px;font-weight:800}
+.anatomy-view.active{background:linear-gradient(135deg,#ff4058,#b91431);border-color:#ff6174;color:white;box-shadow:0 3px 14px #e9233d44}
+.anatomy3d-stage{height:430px;position:relative;touch-action:none}
+.anatomy3d-stage canvas{display:block;width:100%;height:100%;outline:none}
+.anatomy3d-loading{position:absolute;inset:0;display:grid;place-items:center;color:#bbb;font-size:12px}
+.anatomy3d-hint{text-align:center;padding:0 10px 12px;color:#898c97;font-size:9px}
+.anatomy3d-legend{display:flex;flex-wrap:wrap;gap:6px;padding:0 10px 12px}
+.anatomy3d-legend span{font-size:9px;color:#ddd;background:#282a31;border:1px solid #3b3d47;border-radius:20px;padding:5px 8px}
+.anatomy3d-legend span i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#f12a43;margin-right:5px}
+.anatomy3d-stats{margin-top:10px}
+@media(max-width:370px){.anatomy3d-stage{height:365px}}
