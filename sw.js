@@ -1,5 +1,5 @@
-const CACHE="mgc-v15";
-const ASSETS=["./","./index.html","./styles.css","./app.js","./manifest.webmanifest"];
+const CACHE="mgc-v16";
+const ASSETS=["./","./index.html","./styles.css","./app.js","./anatomy3d.js","./manifest.webmanifest"];
 self.addEventListener("install",event=>{
   self.skipWaiting();
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));
