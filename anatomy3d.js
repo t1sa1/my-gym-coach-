@@ -1,6 +1,6 @@
 (()=> {
 const host=document.getElementById("anatomy3d");if(!host)return;
-const NS="http://www.w3.org/2000/svg";let activeView="front",lastTotals={},scale=1,startX=0,startY=0;
+const NS="http://www.w3.org/2000/svg";let activeView="front",lastTotals={},scale=1,startX=0,startY=0,pointers=new Map(),lastPinch=0,suppressSwipe=false;
 const base='<defs><linearGradient id="body" x1="0" y1="0" x2="1" y2=".15"><stop stop-color="#535a65"/><stop offset=".22" stop-color="#c6cbd2"/><stop offset=".48" stop-color="#737b86"/><stop offset=".72" stop-color="#dce0e5"/><stop offset="1" stop-color="#555d68"/></linearGradient><linearGradient id="muscle" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e2e6eb"/><stop offset=".22" stop-color="#aeb5bf"/><stop offset=".52" stop-color="#68717d"/><stop offset=".78" stop-color="#cbd0d7"/><stop offset="1" stop-color="#515a66"/></linearGradient><linearGradient id="hot" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff9aa5"/><stop offset=".24" stop-color="#ff4058"/><stop offset=".62" stop-color="#bb102c"/><stop offset="1" stop-color="#ff6478"/></linearGradient><linearGradient id="dark" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#252a32"/><stop offset="1" stop-color="#7b8490"/></linearGradient><filter id="shadow" x="-30%" y="-20%" width="160%" height="150%"><feGaussianBlur stdDeviation="7"/></filter></defs>';
 const path=(d,m,cls="")=>'<path '+(m?'data-muscle="'+m+'"':'class="'+cls+'"')+' d="'+d+'" />';
 const detail=d=>path(d,null,"detail");
@@ -41,8 +41,10 @@ function render(){
 function update(totals={}){lastTotals=totals||{};render();}
 function view(which){if(which!=="front"&&which!=="back")return;activeView=which;render();document.querySelectorAll("[data-anatomy-view]").forEach(b=>b.classList.toggle("active",b.dataset.anatomyView===which));}
 document.querySelectorAll("[data-anatomy-view]").forEach(b=>b.addEventListener("click",()=>view(b.dataset.anatomyView)));
-host.addEventListener("pointerdown",e=>{startX=e.clientX;startY=e.clientY;});
-host.addEventListener("pointerup",e=>{const dx=e.clientX-startX,dy=e.clientY-startY;if(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy))view(activeView==="front"?"back":"front");});
+host.addEventListener("pointerdown",e=>{host.setPointerCapture?.(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===1){startX=e.clientX;startY=e.clientY;}if(pointers.size===2){const p=[...pointers.values()];lastPinch=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);suppressSwipe=true;}});
+host.addEventListener("pointermove",e=>{if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===2){const p=[...pointers.values()],d=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);if(lastPinch>0){scale=Math.max(.78,Math.min(1.4,scale*d/lastPinch));const g=host.querySelector("#anatomyScale");if(g)g.setAttribute("transform","translate(240 460) scale("+scale+") translate(-240 -460)");}lastPinch=d;}});
+function releasePointer(e){pointers.delete(e.pointerId);if(pointers.size<2)lastPinch=0;if(pointers.size===0){const dx=e.clientX-startX,dy=e.clientY-startY;if(!suppressSwipe&&Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy))view(activeView==="front"?"back":"front");suppressSwipe=false;}}
+host.addEventListener("pointerup",releasePointer);host.addEventListener("pointercancel",releasePointer);
 host.addEventListener("wheel",e=>{if(!e.ctrlKey)return;e.preventDefault();scale=Math.max(.85,Math.min(1.3,scale+(e.deltaY<0?.05:-.05)));const g=host.querySelector("#anatomyScale");if(g)g.setAttribute("transform","translate(240 460) scale("+scale+") translate(-240 -460)");},{passive:false});
 render();window.MGC3D={update,view};
 })();
