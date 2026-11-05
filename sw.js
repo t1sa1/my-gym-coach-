@@ -1,4 +1,4 @@
-const CACHE="mgc-v23";
+const CACHE="mgc-v24";
 const ASSETS=["./","./index.html","./styles.css","./app.js","./anatomy3d.js","./manifest.webmanifest"];
 self.addEventListener("install",event=>{
   self.skipWaiting();
