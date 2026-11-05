@@ -155,38 +155,40 @@ function muscleRow(m,v){
  const pct=Math.min(100,v/Math.max(4,max*4)*100);
  return `<div class="muscle-row"><span class="muscle-dot" style="background:${MUSCLE_COLORS[m]}"></span><span class="muscle-name">${m}</span><span class="muscle-track"><i style="width:${pct}%;background:${MUSCLE_COLORS[m]}"></i></span><b>${Number(v.toFixed(1))}</b></div>`;
 }
+let muscleSvgId=0;
 function muscleFigure(side,totals){
- const front=side==="front",peak=Math.max(1,...Object.values(totals));
- const fill=m=>totals[m]>0?MUSCLE_COLORS[m]:"#aeb8c4";
- const alpha=m=>totals[m]>0?Math.min(.76+.24*totals[m]/peak,.98):.24;
- const part=(m,d)=>'<path class="anatomy-muscle" d="'+d+'" fill="'+fill(m)+'" fill-opacity="'+alpha(m)+'" stroke="#f1f3f6" stroke-opacity=".48" stroke-width="1.15" stroke-linejoin="round"/>';
- const line=d=>'<path d="'+d+'" fill="none" stroke="#f1f3f6" stroke-opacity=".34" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"/>';
- const silhouette='<path d="M139 66Q119 64 108 78L83 88Q58 91 47 116L24 193Q20 211 31 221Q42 230 51 211L73 151 77 221Q76 244 84 267L91 303 84 351 88 420 81 507Q79 526 94 531L119 531 143 431 150 352 157 431 181 531 206 531Q221 526 219 507L212 420 216 351 209 303 216 267Q224 244 223 221L227 151 249 211Q258 230 269 221Q280 211 276 193L253 116Q242 91 217 88L192 78Q181 64 161 66Z" fill="url(#skin)" stroke="#dce1e8" stroke-opacity=".88" stroke-width="2"/>';
- const head='<path d="M130 24Q130 5 150 5Q170 5 170 24L167 53Q163 69 150 72Q137 69 133 53Z" fill="url(#skin)" stroke="#e3e7ec" stroke-opacity=".78" stroke-width="1.7"/><path d="M138 35Q150 40 162 35M142 52Q150 56 158 52M139 62L139 84Q150 94 161 84L161 62" fill="none" stroke="#eef1f5" stroke-opacity=".34" stroke-width="1.1"/>';
- let m="";
+ const front=side==="front",id="anatomy"+(++muscleSvgId),peak=Math.max(1,...Object.values(totals));
+ const active=m=>totals[m]>0;
+ const fill=m=>active(m)?MUSCLE_COLORS[m]:"#9da8b5";
+ const opacity=m=>active(m)?Math.min(.82+.18*totals[m]/peak,.98):.34;
+ const part=(m,d)=>'<path class="muscle-volume" d="'+d+'" fill="url(#'+id+'-'+(active(m)?"hot":"cool")+')" fill-opacity="'+opacity(m)+'" stroke="#f5f7fb" stroke-opacity=".56" stroke-width="1.15" stroke-linejoin="round"/>';
+ const detail=d=>'<path d="'+d+'" fill="none" stroke="#f5f7fb" stroke-opacity=".42" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>';
+ const anatomy='<path d="M139 66Q119 64 108 78L83 88Q58 91 47 116L24 193Q20 211 31 221Q42 230 51 211L73 151 77 221Q76 244 84 267L91 303 84 351 88 420 81 507Q79 526 94 531L119 531 143 431 150 352 157 431 181 531 206 531Q221 526 219 507L212 420 216 351 209 303 216 267Q224 244 223 221L227 151 249 211Q258 230 269 221Q280 211 276 193L253 116Q242 91 217 88L192 78Q181 64 161 66Z" fill="url(#'+id+'-skin)" stroke="#e6eaf0" stroke-opacity=".8" stroke-width="1.8"/>';
+ const head='<path d="M130 24Q130 5 150 5Q170 5 170 24L167 53Q163 69 150 72Q137 69 133 53Z" fill="url(#'+id+'-skin)" stroke="#e6eaf0" stroke-opacity=".8" stroke-width="1.6"/><path d="M139 37Q150 41 161 37M143 53Q150 57 157 53M139 63L139 84Q150 94 161 84L161 63" fill="none" stroke="#fff" stroke-opacity=".24" stroke-width="1"/>';
+ let muscles="";
  if(front){
-  m+=part("Плечи","M129 91Q107 79 88 94Q69 109 77 137Q84 159 108 151L137 125Z M171 91Q193 79 212 94Q231 109 223 137Q216 159 192 151L163 125Z");
-  m+=part("Грудь","M137 126Q150 115 164 126L165 177Q145 187 119 177Q94 167 99 145Q107 128 137 126Z M163 126Q150 115 136 126L135 177Q155 187 181 177Q206 167 201 145Q193 128 163 126Z");
-  m+=part("Бицепс","M77 151Q91 143 104 160L94 218Q82 232 67 211L62 181Z M223 151Q209 143 196 160L206 218Q218 232 233 211L238 181Z");
-  m+=part("Трицепс","M62 159Q75 147 86 160L77 218Q66 231 54 215L50 188Z M238 159Q225 147 214 160L223 218Q234 231 246 215L250 188Z");
-  m+=part("Пресс","M139 184Q150 179 161 184L161 211Q150 217 139 211Z M139 216Q150 212 161 216L161 243Q150 249 139 243Z M139 248Q150 244 161 248L161 275Q150 281 139 275Z M139 280Q150 276 161 280L161 306Q150 311 139 306Z");
-  m+=part("Пресс","M119 185Q130 181 137 188L133 270Q126 278 115 266L108 218Z M181 185Q170 181 163 188L167 270Q174 278 185 266L192 218Z");
-  m+=part("Квадрицепс","M99 307Q119 294 145 309L139 375 128 440Q113 451 99 426L89 359Z M201 307Q181 294 155 309L161 375 172 440Q187 451 201 426L211 359Z M91 318Q82 331 88 382L101 433 112 442 116 371 110 322Z M209 318Q218 331 212 382L199 433 188 442 184 371 190 322Z");
-  m+=part("Икры","M111 443Q126 436 143 450L136 505 122 539 105 520Z M189 443Q174 436 157 450L164 505 178 539 195 520Z");
-  m+=line("M88 111Q105 118 119 147M212 111Q195 118 181 147M104 151Q116 163 128 174M196 151Q184 163 172 174M150 186V300M121 195Q128 225 126 258M179 195Q172 225 174 258M104 327Q116 358 113 405M196 327Q184 358 187 405M121 456Q131 480 122 513M179 456Q169 480 178 513");
+  muscles+=part("Плечи","M129 91Q107 79 88 94Q69 109 77 137Q84 159 108 151Q126 143 137 125Z M171 91Q193 79 212 94Q231 109 223 137Q216 159 192 151Q174 143 163 125Z");
+  muscles+=part("Грудь","M137 126Q119 119 103 132Q91 145 101 163Q113 180 145 181L149 137Z M163 126Q181 119 197 132Q209 145 199 163Q187 180 155 181L151 137Z");
+  muscles+=part("Бицепс","M77 151Q91 143 104 160L94 218Q82 232 67 211L62 181Z M223 151Q209 143 196 160L206 218Q218 232 233 211L238 181Z");
+  muscles+=part("Трицепс","M62 159Q75 147 86 160L77 218Q66 231 54 215L50 188Z M238 159Q225 147 214 160L223 218Q234 231 246 215L250 188Z");
+  muscles+=part("Пресс","M139 184Q150 179 161 184L161 211Q150 217 139 211Z M139 216Q150 212 161 216L161 243Q150 249 139 243Z M139 248Q150 244 161 248L161 275Q150 281 139 275Z M139 280Q150 276 161 280L161 306Q150 311 139 306Z");
+  muscles+=part("Пресс","M119 185Q130 181 137 188L133 270Q126 278 115 266L108 218Z M181 185Q170 181 163 188L167 270Q174 278 185 266L192 218Z");
+  muscles+=part("Квадрицепс","M99 307Q119 294 145 309L139 375 128 440Q113 451 99 426L89 359Z M201 307Q181 294 155 309L161 375 172 440Q187 451 201 426L211 359Z M91 318Q82 331 88 382L101 433 112 442 116 371 110 322Z M209 318Q218 331 212 382L199 433 188 442 184 371 190 322Z");
+  muscles+=part("Икры","M111 443Q126 436 143 450L136 505 122 539 105 520Z M189 443Q174 436 157 450L164 505 178 539 195 520Z");
+  muscles+=detail("M88 111Q105 118 119 147M212 111Q195 118 181 147M104 151Q116 163 128 174M196 151Q184 163 172 174M150 186V300M121 195Q128 225 126 258M179 195Q172 225 174 258M104 327Q116 358 113 405M196 327Q184 358 187 405M121 456Q131 480 122 513M179 456Q169 480 178 513");
  }else{
-  m+=part("Плечи","M129 91Q107 79 88 94Q69 109 77 137Q84 159 108 151L137 125Z M171 91Q193 79 212 94Q231 109 223 137Q216 159 192 151L163 125Z");
-  m+=part("Спина","M137 118Q150 109 163 118L177 172 163 215 150 231 137 215 123 172Z");
-  m+=part("Спина","M121 166Q137 157 146 183L141 292Q120 283 100 252L91 207Z M179 166Q163 157 154 183L159 292Q180 283 200 252L209 207Z");
-  m+=part("Трицепс","M77 151Q91 143 104 160L94 218Q82 232 67 211L62 181Z M223 151Q209 143 196 160L206 218Q218 232 233 211L238 181Z");
-  m+=part("Бицепс","M54 220Q68 211 81 226L72 269Q59 279 47 260Q44 239 54 220Z M246 220Q232 211 219 226L228 269Q241 279 253 260Q256 239 246 220Z");
-  m+=part("Ягодицы","M111 287Q132 273 148 292L148 344Q132 369 105 345Q96 316 111 287Z M189 287Q168 273 152 292L152 344Q168 369 195 345Q204 316 189 287Z");
-  m+=part("Бицепс бедра","M105 354Q126 343 145 358L139 430 126 476 104 447 96 394Z M195 354Q174 343 155 358L161 430 174 476 196 447 204 394Z");
-  m+=part("Икры","M111 478Q126 468 143 485L136 522 122 548 105 533Z M189 478Q174 468 157 485L164 522 178 548 195 533Z");
-  m+=line("M150 98V285M91 111Q108 130 119 164M209 111Q192 130 181 164M108 186Q122 213 122 252M192 186Q178 213 178 252M112 300Q130 315 140 338M188 300Q170 315 160 338M115 370Q127 397 122 438M185 370Q173 397 178 438M121 490Q131 510 121 535M179 490Q169 510 179 535");
+  muscles+=part("Плечи","M129 91Q107 79 88 94Q69 109 77 137Q84 159 108 151L137 125Z M171 91Q193 79 212 94Q231 109 223 137Q216 159 192 151L163 125Z");
+  muscles+=part("Спина","M137 118Q150 109 163 118L177 172 163 215 150 231 137 215 123 172Z");
+  muscles+=part("Спина","M121 166Q137 157 146 183L141 292Q120 283 100 252L91 207Z M179 166Q163 157 154 183L159 292Q180 283 200 252L209 207Z");
+  muscles+=part("Трицепс","M77 151Q91 143 104 160L94 218Q82 232 67 211L62 181Z M223 151Q209 143 196 160L206 218Q218 232 233 211L238 181Z");
+  muscles+=part("Бицепс","M54 220Q68 211 81 226L72 269Q59 279 47 260Q44 239 54 220Z M246 220Q232 211 219 226L228 269Q241 279 253 260Q256 239 246 220Z");
+  muscles+=part("Ягодицы","M111 287Q132 273 148 292L148 344Q132 369 105 345Q96 316 111 287Z M189 287Q168 273 152 292L152 344Q168 369 195 345Q204 316 189 287Z");
+  muscles+=part("Бицепс бедра","M105 354Q126 343 145 358L139 430 126 476 104 447 96 394Z M195 354Q174 343 155 358L161 430 174 476 196 447 204 394Z");
+  muscles+=part("Икры","M111 478Q126 468 143 485L136 522 122 548 105 533Z M189 478Q174 468 157 485L164 522 178 548 195 533Z");
+  muscles+=detail("M150 98V285M91 111Q108 130 119 164M209 111Q192 130 181 164M108 186Q122 213 122 252M192 186Q178 213 178 252M112 300Q130 315 140 338M188 300Q170 315 160 338M115 370Q127 397 122 438M185 370Q173 397 178 438M121 490Q131 510 121 535M179 490Q169 510 179 535");
  }
- const joints='<path d="M73 221Q62 233 64 247M227 221Q238 233 236 247M90 350Q101 357 111 351M210 350Q199 357 189 351M83 505Q98 514 112 506M217 505Q202 514 188 506" fill="none" stroke="#eef1f5" stroke-opacity=".28" stroke-width="1.2"/>';
- return '<svg class="body-figure anatomical-figure" viewBox="0 0 300 570" role="img" aria-label="'+(front?"Анатомическая карта мышц спереди":"Анатомическая карта мышц сзади")+'" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="skin" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e2e5e9" stop-opacity=".72"/><stop offset=".48" stop-color="#8d969f" stop-opacity=".52"/><stop offset="1" stop-color="#d7dce2" stop-opacity=".66"/></linearGradient></defs>'+silhouette+head+m+joints+'</svg>';
+ const overlays='<path d="M150 75V535M84 101Q105 91 127 105M216 101Q195 91 173 105M97 145Q116 133 136 143M203 145Q184 133 164 143M116 188Q128 180 139 187M184 188Q172 180 161 187" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="2" stroke-linecap="round"/><path d="M73 221Q62 233 64 247M227 221Q238 233 236 247M90 350Q101 357 111 351M210 350Q199 357 189 351M83 505Q98 514 112 506M217 505Q202 514 188 506" fill="none" stroke="#f8fafc" stroke-opacity=".34" stroke-width="1.2"/>';
+ return '<svg class="body-figure anatomical-figure" viewBox="0 0 300 570" role="img" aria-label="'+(front?"Объёмная анатомическая карта мышц спереди":"Объёмная анатомическая карта мышц сзади")+'" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="'+id+'-skin" x1="0" y1="0" x2="1" y2=".8"><stop offset="0" stop-color="#f0c9b9"/><stop offset=".22" stop-color="#b9857e"/><stop offset=".48" stop-color="#e5b6a7"/><stop offset=".72" stop-color="#80535a"/><stop offset="1" stop-color="#d7a69a"/></linearGradient><linearGradient id="'+id+'-hot" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8b98"/><stop offset=".28" stop-color="#f02c48"/><stop offset=".62" stop-color="#a90d2b"/><stop offset="1" stop-color="#ff5269"/></linearGradient><linearGradient id="'+id+'-cool" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e0e6ec"/><stop offset=".42" stop-color="#84909d"/><stop offset="1" stop-color="#4b5664"/></linearGradient><radialGradient id="'+id+'-shade"><stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient><filter id="'+id+'-shadow" x="-30%" y="-20%" width="160%" height="150%"><feGaussianBlur stdDeviation="5"/></filter></defs><ellipse cx="150" cy="550" rx="92" ry="10" fill="#000" opacity=".45" filter="url(#'+id+'-shadow)"/>'+anatomy+head+muscles+overlays+'</svg>';
 }
 function renderProgress(){renderStats();renderMuscleMap();let names=[...new Set(state.logs.map(x=>x.exercise))];$("progressExercise").innerHTML=names.map(n=>`<option>${n}</option>`).join("");$("progressExercise").onchange=drawChart;drawChart();$("historyList").innerHTML=state.logs.slice().reverse().slice(0,30).map(x=>`<div class="history-item"><b>${x.exercise}</b><p>${new Date(x.date).toLocaleString("ru-RU")} · ${x.day}</p><strong>${x.weight} кг × ${x.reps}</strong></div>`).join("")||'<p class="muted">Пока нет сохранённых тренировок.</p>'}
 function drawChart(){let name=$("progressExercise").value;let arr=state.logs.filter(x=>x.exercise===name);if(!arr.length){$("progressChart").className="chart-empty";$("progressChart").textContent="Добавь результаты тренировок, чтобы увидеть график.";return}let best=arr.map(x=>+x.weight);let max=Math.max(...best,1),min=Math.min(...best);let w=320,h=150,pad=25;let pts=best.map((v,i)=>`${pad+i*(w-2*pad)/Math.max(best.length-1,1)},${h-pad-(v/max)*(h-2*pad)}`).join(" ");$("progressChart").className="";$("progressChart").innerHTML=`<svg class="chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="График веса"><polyline points="${pts}" fill="none" stroke="#1c8b56" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>${best.map((v,i)=>`<circle cx="${pad+i*(w-2*pad)/Math.max(best.length-1,1)}" cy="${h-pad-(v/max)*(h-2*pad)}" r="4" fill="#1c8b56"/>`).join("")}</svg><div class="muted">Последний вес: ${best[best.length-1]} кг · Лучший: ${max} кг · Записей: ${best.length}</div>`}
