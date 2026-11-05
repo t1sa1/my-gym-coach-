@@ -75,7 +75,7 @@ function equipmentArt(type){
 function exercisePhoto(name){
  const n=name.toLowerCase();
  const items=[
-  {re:/жим штанги лёжа/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Bench_Press.jpg",credit:"Aditya Oberai · CC BY-SA 4.0",page:"https://commons.wikimedia.org/wiki/File:Bench_Press.jpg"},
+  {re:/жим штанги лёжа/i,url:"https://upload.wikimedia.org/wikipedia/commons/e/e8/184kg_bench.jpg",credit:"John049 · CC BY-SA 4.0",page:"https://commons.wikimedia.org/wiki/File:184kg_bench.jpg"},
   {re:/жим гантелей под наклоном|жим гантелей на наклонной/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Inclined_bench_press.jpg",credit:"SAgbley · CC BY 4.0",page:"https://commons.wikimedia.org/wiki/File:Inclined_bench_press.jpg"},
   {re:/тяга верхнего блока|подтягивания|горизонтальная тяга|тяга с упором грудью/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Back_Pull_down.jpg",credit:"Aliva Sahoo · CC BY 4.0",page:"https://commons.wikimedia.org/wiki/File:Back_Pull_down.jpg"},
   {re:/жим ногами/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Young_man_using_a_leg_press_machine_at_the_gym.jpg",credit:"Nenad Stojkovic · CC BY 2.0",page:"https://commons.wikimedia.org/wiki/File:Young_man_using_a_leg_press_machine_at_the_gym.jpg"},
@@ -84,7 +84,7 @@ function exercisePhoto(name){
   {re:/разгибание рук/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Role_doing_cable_tricep_extension_exercise.jpg",credit:"PTPioneer · CC BY 4.0",page:"https://commons.wikimedia.org/wiki/File:Role_doing_cable_tricep_extension_exercise.jpg"},
   {re:/приседания|гакк-приседания|болгарские выпады|румынская тяга|ягодичный мост|сгибание ног|разгибание ног|подъёмы на носки|икры/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Woman_doing_squat_workout_in_gym_with_barbell,_back_view.jpg",credit:"Nenad Stojkovic · CC BY 2.0",page:"https://commons.wikimedia.org/wiki/File:Woman_doing_squat_workout_in_gym_with_barbell,_back_view.jpg"}
  ];
- return items.find(x=>x.re.test(n))||{url:"https://commons.wikimedia.org/wiki/Special:FilePath/Bench_Press.jpg",credit:"Aditya Oberai · CC BY-SA 4.0",page:"https://commons.wikimedia.org/wiki/File:Bench_Press.jpg"};
+ return items.find(x=>x.re.test(n))||{url:"https://upload.wikimedia.org/wikipedia/commons/e/e8/184kg_bench.jpg",credit:"John049 · CC BY-SA 4.0",page:"https://commons.wikimedia.org/wiki/File:184kg_bench.jpg"};
 }
 function exerciseMuscleMini(name){
  const selected=musclesForExercise(name);
