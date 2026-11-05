@@ -71,9 +71,29 @@ function equipmentArt(type){
  const art=arts[type]||arts.machine;
  return '<svg viewBox="0 0 200 110" aria-hidden="true">'+common+art+'</svg>';
 }
+
+function exercisePhoto(name){
+ const n=name.toLowerCase();
+ const items=[
+  {re:/жим штанги лёжа/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Bench_Press.jpg",credit:"Aditya Oberai · CC BY-SA 4.0",page:"https://commons.wikimedia.org/wiki/File:Bench_Press.jpg"},
+  {re:/жим гантелей под наклоном|жим гантелей на наклонной/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Inclined_bench_press.jpg",credit:"SAgbley · CC BY 4.0",page:"https://commons.wikimedia.org/wiki/File:Inclined_bench_press.jpg"},
+  {re:/тяга верхнего блока|подтягивания/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Back_Pull_down.jpg",credit:"Aliva Sahoo · CC BY 4.0",page:"https://commons.wikimedia.org/wiki/File:Back_Pull_down.jpg"},
+  {re:/приседания|гакк-приседания/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Woman_doing_squat_workout_in_gym_with_barbell,_back_view.jpg",credit:"Nenad Stojkovic · CC BY 2.0",page:"https://commons.wikimedia.org/wiki/File:Woman_doing_squat_workout_in_gym_with_barbell,_back_view.jpg"}
+ ];
+ return items.find(x=>x.re.test(n))||null;
+}
+function exerciseMuscleMini(name){
+ const selected=musclesForExercise(name);
+ const totals=Object.fromEntries(Object.keys(MUSCLE_MAP).map(k=>[k,0]));
+ selected.forEach((m,i)=>totals[m]=i===0?2:1);
+ return '<div class="mini-muscle-map"><div class="mini-map-head"><b>Мышцы в этом упражнении</b><small>Красный — основная нагрузка · приглушённый — дополнительно</small></div><div class="mini-map-figures">'+muscleFigure("front",totals)+muscleFigure("back",totals)+'</div><div class="mini-map-legend">'+selected.map((m,i)=>'<span><i style="background:'+MUSCLE_COLORS[m]+'"></i>'+m+(i===0?' · основная':' · дополнительная')+'</span>').join('')+'</div></div>';
+}
+
 function renderExerciseDetail(name){
  const g=exerciseGuide(name), steps=g.steps.map((x,i)=>'<li><span>'+(i+1)+'</span><p>'+x+'</p></li>').join('');
- $('exerciseDetail').innerHTML='<div class="detail-visual"><div><span class="eyebrow">ТЕХНИКА И ОБОРУДОВАНИЕ</span><b>'+g.equipment+'</b></div>'+equipmentArt(g.e)+'</div><div class="detail-muscles"><div><small>ОСНОВНАЯ НАГРУЗКА</small><b>'+g.primary+'</b></div><div><small>ДОПОЛНИТЕЛЬНО</small><b>'+g.secondary+'</b></div></div><div class="detail-steps"><h3>Как выполнять</h3><ol>'+steps+'</ol></div><div class="detail-tip"><span>✦</span><p>'+g.tip+'</p></div>';
+ const photo=exercisePhoto(name);
+ const photoBlock=photo?'<figure class="exercise-photo"><img src="'+photo.url+'" alt="Пример выполнения упражнения '+name+'" loading="lazy" onerror="this.parentElement.classList.add(\'photo-failed\')"><figcaption>Фото-пример · <a href="'+photo.page+'" target="_blank" rel="noopener">источник и лицензия</a></figcaption></figure>':'<div class="photo-placeholder"><span>Фото-пример</span><small>Для этого упражнения пока нет проверенного фото в открытой библиотеке</small></div>';
+ $('exerciseDetail').innerHTML=photoBlock+'<div class="detail-visual"><div><span class="eyebrow">ОБОРУДОВАНИЕ</span><b>'+g.equipment+'</b></div>'+equipmentArt(g.e)+'</div>'+exerciseMuscleMini(name)+'<div class="detail-muscles"><div><small>ОСНОВНАЯ НАГРУЗКА</small><b>'+g.primary+'</b></div><div><small>ДОПОЛНИТЕЛЬНО</small><b>'+g.secondary+'</b></div></div><div class="detail-steps"><h3>Как выполнять</h3><ol>'+steps+'</ol></div><div class="detail-tip"><span>✦</span><p>'+g.tip+'</p></div>';
 }
 
 function renderWorkout(){renderDays();let p=currentPlan();$("dayTag").textContent=`ДЕНЬ ${p.id}`;$("coachAdvice").textContent=recommendation(p.ex[selected][0]);$("exerciseCount").textContent=`${p.ex.length} упражнений`;$("exerciseList").innerHTML=p.ex.map((e,i)=>`<div class="exercise ${i===selected?"selected":""}" data-i="${i}"><span class="num">${i+1}</span><div><b>${e[0]}</b><small>${e[1]} подхода · ${e[2]} повторений</small></div><span class="check">${completed.has(i)?"✓":""}</span></div>`).join("");document.querySelectorAll(".exercise").forEach(el=>el.onclick=()=>{selected=+el.dataset.i;renderWorkout()});renderExerciseDetail(p.ex[selected][0]);$("selectedExercise").textContent=p.ex[selected][0];$("currentSets").innerHTML=activeWorkout.filter(x=>x.exercise===p.ex[selected][0]).map((x,i)=>`<div class="set-row"><span>Подход ${i+1}</span><b>${x.weight} кг × ${x.reps}</b></div>`).join("");$("addSet").onclick=()=>{let w=+$("weight").value,r=+$("reps").value;if(!Number.isFinite(w)||w<0||!Number.isInteger(r)||r<1){alert("Введи корректный вес и количество повторений.");return}activeWorkout.push({exercise:p.ex[selected][0],weight:w,reps:r,notes:$("notes").value});$("weight").value="";$("reps").value="";$("notes").value="";renderWorkout()};$("finishExercise").onclick=()=>{completed.add(selected);renderWorkout()};$("finishWorkout").onclick=()=>{if(!activeWorkout.length){alert("Сначала запиши хотя бы один подход.");return}let now=new Date().toISOString();state.logs.push(...activeWorkout.map(x=>({...x,day:p.name,date:now,cycle:state.cycle})));state.cycle++;save();activeWorkout=[];completed.clear();alert("Тренировка сохранена! Отличная работа.");renderWorkout();renderProgress()}}
@@ -94,7 +114,21 @@ const MUSCLE_MAP = {
 const MUSCLE_COLORS = {"Грудь":"#f04452","Спина":"#f28b35","Плечи":"#f3c94b","Бицепс":"#38a5e9","Трицепс":"#8b6be8","Квадрицепс":"#35b96b","Бицепс бедра":"#28a6a0","Ягодицы":"#e879b7","Икры":"#8b9ba9","Пресс":"#a7c84b"};
 function musclesForExercise(name){
  const n=name.toLowerCase();
- return Object.entries(MUSCLE_MAP).filter(([group,keys])=>keys.some(k=>n.includes(k))).map(([group])=>group);
+ const rules=[
+  [/жим штанги лёжа|жим гантелей под наклоном|жим гантелей на наклонной|жим в тренажёре на грудь|сведение рук в кроссовере/,"Грудь",["Трицепс","Плечи"]],
+  [/тяга верхнего блока|подтягивания|горизонтальная тяга|тяга с упором грудью/,"Спина",["Бицепс","Плечи"]],
+  [/жим гантелей сидя/,"Плечи",["Трицепс","Грудь"]],
+  [/подъём гантелей в стороны|обратная бабочка/,"Плечи",["Спина"]],
+  [/сгибание рук|молотковые|скамье скотта/,"Бицепс",["Предплечья"]],
+  [/разгибание рук/,"Трицепс",["Плечи"]],
+  [/приседания|гакк-приседания|жим ногами|болгарские выпады|разгибание ног/,"Квадрицепс",["Ягодицы","Бицепс бедра"]],
+  [/румынская тяга|сгибание ног/,"Бицепс бедра",["Ягодицы","Спина"]],
+  [/ягодичный мост/,"Ягодицы",["Бицепс бедра"]],
+  [/подъёмы на носки|икры сидя/,"Икры",["Бицепс бедра"]],
+  [/пресс/,"Пресс",["Ягодицы"]]
+ ];
+ const found=rules.find(([re])=>re.test(n));
+ return found?[found[1],...found[2]]:[];
 }
 function renderMuscleMap(){
  const totals=Object.fromEntries(Object.keys(MUSCLE_MAP).map(k=>[k,0]));
@@ -110,7 +144,7 @@ function renderMuscleMap(){
  $("muscleBackLegend").innerHTML=backGroups.filter((m,i,a)=>a.indexOf(m)===i).map(m=>muscleRow(m,totals[m])).join("");
  $("muscleFront").innerHTML=muscleFigure("front",totals);
  $("muscleBack").innerHTML=muscleFigure("back",totals);
- $("musclePeriod").textContent="Последние 7 дней · рабочие подходы";
+ $("musclePeriod").textContent="Последние 7 дней · оценка нагрузки по записанным подходам";
 }
 function muscleRow(m,v){
  const max=Math.max(1,...Object.values(MUSCLE_MAP).map(()=>0),...state.logs.filter(x=>new Date(x.date).getTime()>=Date.now()-7*86400000).flatMap(x=>musclesForExercise(x.exercise).map(()=>1)));
@@ -120,9 +154,9 @@ function muscleRow(m,v){
 function muscleFigure(side,totals){
  const front=side==="front";
  const fill=m=>totals[m]>0?MUSCLE_COLORS[m]:"#87928d";
- const op=m=>totals[m]>0?".96":".25";
- const muscle=(m,d)=>`<path d="${d}" fill="${fill(m)}" opacity="${op(m)}" stroke="#26332e" stroke-width="1.1" stroke-linejoin="round"/>`;
- const base=`<g fill="#59645f" stroke="#aeb8b2" stroke-width="1.5" stroke-linejoin="round">
+ const op=m=>totals[m]>0?".88":".16";
+ const muscle=(m,d)=>`<path d="${d}" fill="${fill(m)}" opacity="${op(m)}" stroke="#f2f2f2" stroke-opacity=".42" stroke-width="1.15" stroke-linejoin="round"/>`;
+ const base=`<g fill="#9ba5a0" fill-opacity=".20" stroke="#d4d9d6" stroke-opacity=".75" stroke-width="1.35" stroke-linejoin="round">
  <path d="M91 51 Q110 42 129 51 L145 74 140 151 Q137 176 132 193 L128 235 92 235 88 193 Q83 176 80 151 L75 74Z"/>
  <path d="M80 62 Q65 59 57 78 L37 144 Q33 157 41 161 Q49 164 55 150 L84 98Z"/>
  <path d="M140 62 Q155 59 163 78 L183 144 Q187 157 179 161 Q171 164 165 150 L136 98Z"/>
