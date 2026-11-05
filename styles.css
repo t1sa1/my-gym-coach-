@@ -95,3 +95,14 @@ body.theme-light .hero p{color:#555b66}body.theme-light .hero-stats span{color:#
 body.theme-light .quick-stat b,body.theme-light .nutrition-mini b{color:#17191f}
 body.theme-light .food-item{border-color:#e0e2e8}
 body.theme-light .settings-panel input[type=color]{background:#fff}
+
+/* Equipment-first exercise cards */
+.exercise-thumb.exercise-icon{background:linear-gradient(145deg,#1b1c22,#101115);border:1px solid #3a3035;color:#f1f2f5;padding:7px}
+.exercise-thumb.exercise-icon svg{width:100%;height:100%;max-width:70px;max-height:48px;filter:drop-shadow(0 3px 5px #0008)}
+.exercise-thumb.exercise-icon svg path,.exercise-thumb.exercise-icon svg rect,.exercise-thumb.exercise-icon svg circle{vector-effect:non-scaling-stroke}
+.exercise-photo.equipment-photo{padding:8px;background:linear-gradient(145deg,#17181e,#0d0e12);border:1px solid #34353d;border-radius:14px}
+.exercise-photo.equipment-photo img{height:210px;max-height:210px;object-fit:contain;background:radial-gradient(ellipse at center,#292a31 0,#121318 72%);border-radius:9px}
+.exercise-photo.equipment-photo figcaption{font-size:9px;line-height:1.5}
+.equipment-photo-placeholder{min-height:110px;border:1px solid #34353d;background:linear-gradient(145deg,#1a1b21,#101115);border-radius:14px}
+.equipment-photo-placeholder span{font-size:10px;font-weight:900;letter-spacing:1.5px;color:#f1f1f3}
+.detail-visual svg{filter:drop-shadow(0 3px 7px #0008)}
