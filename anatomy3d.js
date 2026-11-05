@@ -10,7 +10,7 @@ const LABELS={
  "biceps-femoris":"Бицепс бедра","hamstring":"Бицепс бедра","gastrocnemius":"Икры","soleus":"Икры"
 };
 const GROUPS=["Грудь","Спина","Плечи","Бицепс","Трицепс","Квадрицепс","Бицепс бедра","Ягодицы","Икры","Пресс"];
-let THREE,scene,camera,renderer,bodyGroup,activeView="front",lastTotals={},drag=null,zoom=1,ready=false,pinchDistance=0;
+let THREE,scene,camera,renderer,bodyGroup,activeView="front",lastTotals={},drag=null,zoom=1,ready=false,pinchDistance=0,suppressClick=false;
 const pointers=new Map();let raycaster=null,mouse=null;
 const hint=()=>document.querySelector(".anatomy3d-hint");
 function groupForName(name){
@@ -33,11 +33,9 @@ function applyLoad(){
  if(!ready)return;
  bodyGroup.traverse(o=>{
   if(!o.isMesh||!o.userData.muscleGroup)return;
-  const g=o.userData.muscleGroup,v=Number(lastTotals[g]||0),active=v>0;
-  const mat=o.userData.baseMaterial;
-  if(active){
-   const m=mat.clone();m.color.set("#d6a4aa");m.emissive.set("#c20c2d");m.emissiveIntensity=Math.min(.12+v*.12,.72);m.roughness=.38;o.material=m;
-  }else o.material=mat;
+  const g=o.userData.muscleGroup,v=Math.max(0,Number(lastTotals[g]||0)),active=v>0;
+  o.material=active?o.userData.activeMaterial:o.userData.baseMaterial;
+  if(active)o.userData.activeMaterial.emissiveIntensity=Math.min(.12+v*.12,.72);
  });
 }
 function setView(which){if(which!=="front"&&which!=="back")return;activeView=which;if(bodyGroup)bodyGroup.rotation.y=which==="front"?0:Math.PI;document.querySelectorAll("[data-anatomy-view]").forEach(b=>b.classList.toggle("active",b.dataset.anatomyView===which));}
@@ -55,6 +53,7 @@ function addBlankHead(){
  head.position.set(0,2.92,0);head.scale.set(1,1.25,.92);head.castShadow=true;bodyGroup.add(head);
 }
 async function init(){
+ host.innerHTML='<div class="anatomy3d-loading" role="status">Загрузка 3D-анатомии…</div>';
  try{
   const THREEmod=await import("https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js");
   THREE=THREEmod;raycaster=new THREE.Raycaster();mouse=new THREE.Vector2();
@@ -78,38 +77,45 @@ async function init(){
    if(isFaceOrScalp(n)){o.visible=false;return;}
    const g=groupForName(n);
    const mat=new THREE.MeshStandardMaterial({color:"#aeb5bf",roughness:.46,metalness:.28});
-   o.material=mat;o.userData.baseMaterial=mat;o.userData.muscleGroup=g||null;
+   const activeMat=mat.clone();activeMat.color.set("#d6a4aa");activeMat.emissive.set("#c20c2d");activeMat.emissiveIntensity=.12;activeMat.roughness=.38;
+   o.material=mat;o.userData.baseMaterial=mat;o.userData.activeMaterial=activeMat;o.userData.muscleGroup=g||null;
    o.castShadow=true;o.receiveShadow=true;
   });
   bodyGroup.add(source);fitModel(source);
   // A smooth, neutral head replaces facial/scalp anatomy: no hair or facial features.
+  const bounds=new THREE.Box3().setFromObject(source);
+  const topY=(bounds.max.y-bounds.getCenter(new THREE.Vector3()).y)*(6.25/Math.max(bounds.getSize(new THREE.Vector3()).y,.001));
   const headGeometry=new THREE.SphereGeometry(.29,40,32),headMaterial=new THREE.MeshStandardMaterial({color:"#aeb5bf",roughness:.5,metalness:.25});
-  const head=new THREE.Mesh(headGeometry,headMaterial);head.name="Faceless head";head.position.set(0,2.86,0);head.scale.set(1,1.22,.92);head.castShadow=true;bodyGroup.add(head);
+  const head=new THREE.Mesh(headGeometry,headMaterial);head.name="Faceless head";head.position.set(0,topY+.27,0);head.scale.set(1,1.22,.92);head.castShadow=true;bodyGroup.add(head);
   ready=true;applyLoad();resize();new ResizeObserver(resize).observe(host);
   renderer.setAnimationLoop(()=>renderer.render(scene,camera));
   setView(activeView);
  }catch(err){
-  host.innerHTML='<div class="anatomy3d-error">Не удалось загрузить анатомическую 3D-модель. Проверь подключение к интернету и обнови страницу.</div>';
+  host.innerHTML='<div class="anatomy3d-error" role="alert">Не удалось загрузить 3D-анатомию. Проверь подключение к интернету и обнови страницу.</div>';
   console.error("Anatomy GLB load failed",err);
  }
 }
 function update(totals={}){lastTotals=totals||{};applyLoad();}
 function pointerDown(e){
- host.setPointerCapture?.(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
- if(pointers.size===1)drag={x:e.clientX,y:e.clientY};
- if(pointers.size===2){const p=[...pointers.values()];pinchDistance=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);drag=null;}
+ host.setPointerCapture?.(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY,moved:false});
+ if(pointers.size===1){drag={x:e.clientX,y:e.clientY};suppressClick=false;}
+ if(pointers.size===2){const p=[...pointers.values()];pinchDistance=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);drag=null;suppressClick=true;}
 }
 function pointerMove(e){
  if(!pointers.has(e.pointerId))return;const prev=pointers.get(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(Math.hypot(e.clientX-prev.startX,e.clientY-prev.startY)>7){prev.moved=true;suppressClick=true;}
  if(pointers.size>=2){const p=[...pointers.values()],d=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);if(pinchDistance&&camera){zoom=Math.max(.72,Math.min(1.65,zoom+(d-pinchDistance)*.004));camera.position.z=10.5/zoom;}pinchDistance=d;return;}
  if(!drag)return;const dx=e.clientX-prev.x,dy=e.clientY-prev.y;drag={x:e.clientX,y:e.clientY};
  if(bodyGroup){bodyGroup.rotation.y+=dx*.008;bodyGroup.rotation.x=Math.max(-.4,Math.min(.4,bodyGroup.rotation.x+dy*.005));}
 }
-function pointerUp(e){if(e?.pointerId!==undefined)pointers.delete(e.pointerId);drag=pointers.size===1?[...pointers.values()][0]:null;if(pointers.size<2)pinchDistance=0;}
+function pointerUp(e){
+ if(e?.pointerId!==undefined){const p=pointers.get(e.pointerId);if(p?.moved)suppressClick=true;pointers.delete(e.pointerId);}
+ drag=pointers.size===1?[...pointers.values()][0]:null;if(pointers.size<2)pinchDistance=0;
+}
 host.addEventListener("pointerdown",pointerDown);host.addEventListener("pointermove",pointerMove);host.addEventListener("pointerup",pointerUp);host.addEventListener("pointercancel",pointerUp);
 host.addEventListener("wheel",e=>{e.preventDefault();zoom=Math.max(.72,Math.min(1.65,zoom-e.deltaY*.001));if(camera)camera.position.z=10.5/zoom;},{passive:false});
 host.addEventListener("click",e=>{
- if(!ready)return;const rect=renderer.domElement.getBoundingClientRect();mouse.set((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1);
+ if(!ready||suppressClick){suppressClick=false;return;}const rect=renderer.domElement.getBoundingClientRect();mouse.set((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1);
  raycaster.setFromCamera(mouse,camera);const hits=raycaster.intersectObject(bodyGroup,true);
  const hit=hits.find(h=>h.object.userData.muscleGroup);if(hit){const g=hit.object.userData.muscleGroup;if(hint())hint().textContent=(g||hit.object.name)+" · нагрузка за 7 дней: "+Number(lastTotals[g]||0).toFixed(1);}
 });
