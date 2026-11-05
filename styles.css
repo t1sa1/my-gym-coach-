@@ -124,3 +124,57 @@ button:focus-visible,.exercise:focus-visible{outline:3px solid #8cc8a0;outline-o
 .detail-tip>span{color:#1d8152;font-size:15px}
 .detail-tip p{font-size:10px;line-height:1.55;color:#43594b;margin:0}
 @media(max-width:370px){.detail-visual{grid-template-columns:1fr 120px;padding:13px}.detail-muscles>div{padding:10px}.detail-muscles b{font-size:9px}}
+
+
+/* BLACK + RED theme */
+:root{
+ --bg:#0b0b0e;--ink:#f3f3f4;--muted:#a0a0a8;--green:#ef3038;--mint:#351417;
+ --line:#303035;--white:#17171b;--dark:#09090b;--lime:#ff5a60;
+}
+body{background:radial-gradient(ellipse at 90% 0%,#351216 0,transparent 38%),var(--bg);color:var(--ink)}
+.top{background:rgba(8,8,10,.97)}
+.brand .mark{background:#401317;color:#ff555b}
+.brand small{color:#d08b8e}
+.top-pill{background:#291114;color:#ffb4b7;border-color:#6b292e}
+.hero{background:linear-gradient(132deg,#09090b 0%,#251013 58%,#5a171d 100%);box-shadow:0 16px 36px #0008}
+.hero .eyebrow{color:#ff9a9e}
+.hero h1 em{color:#ff424a}
+.tabs{background:#1b1b20;border-color:#303036;box-shadow:0 6px 20px #0006}
+.tab{color:#b4b4bc}.tab.active{background:#35353b;color:#ff535a;box-shadow:0 3px 10px #0008}
+.panel,.plan-day,.history-item,.exercise,.body-map-card,.exercise-detail{background:#17171b;border-color:#303036;box-shadow:0 5px 18px #0005}
+.coach-panel{background:linear-gradient(120deg,#271417,#1b171a);border-color:#542328}
+.coach-icon{background:#491b20;color:#ff555c}
+.coach-panel p{color:#c0b5b7}
+.tag{color:#ff666c;background:#351619}
+.day-btn{background:#17171b;border-color:#35353b;color:#d0d0d5}
+.day-btn.active{background:#e52d36;color:#fff;border-color:#e52d36}
+.exercise.selected{background:linear-gradient(110deg,#321619,#1b171a);border-color:#ed3b43;box-shadow:0 5px 15px #b51f2926}
+.exercise .num{background:#302024;color:#ff7379}
+.exercise .check{color:#ff555c}
+.field-row label,.wide-label{color:#c0b8bb}
+.field-row input,.field-row select,.wide-label input,.wide-label select,.ai-compose textarea,.ai-compose select{background:#101014;border-color:#393940;color:#f3f3f4}
+input:focus,select:focus,textarea:focus{border-color:#f0444c!important;box-shadow:0 0 0 3px #f0444c25}
+.primary{background:linear-gradient(135deg,#f0444c,#b71925);color:#fff;box-shadow:0 5px 12px #d3223038}
+.secondary,.import-label{background:#29292f;border-color:#414148;color:#eee}
+.finish{background:linear-gradient(135deg,#4a171c,#190b0d);color:#fff}
+.chart-empty{background:#111115;border-color:#3c3033;color:#aaa}
+.chart{background:linear-gradient(180deg,#211518,#17171b)}
+.ai-message.assistant{background:#242428;border-color:#393940;color:#f1edef}
+.ai-message.user{background:linear-gradient(135deg,#ed3c45,#a91824);color:white}
+.muscle-panel{background:linear-gradient(160deg,#1b1b20,#121216)}
+.body-map-card{background:#1d1d22}
+.body-map-card>b,.detail-muscles b{color:#f0e9ea}
+.muscle-track{background:#39393f}
+.detail-visual{background:linear-gradient(125deg,#2b171a,#17171b)}
+.detail-muscles{border-color:#393238}
+.detail-muscles>div+div{border-color:#393238}
+.detail-muscles small{color:#c09b9e}
+.detail-steps li>span{background:#481b20;color:#ff7278}
+.detail-steps li p{color:#c4bec0}
+.detail-tip{background:#2a191c}
+.detail-tip>span{color:#ff6269}
+.detail-tip p{color:#d7cacc}
+.plan-day li,.muted,.exercise small,.history-item p{color:#b5b2b8}
+.history-item strong{color:#ff5a62}
+footer{color:#77747b}
+button:focus-visible,.exercise:focus-visible{outline-color:#ff6269}
