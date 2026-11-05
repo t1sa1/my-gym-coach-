@@ -1,113 +1,119 @@
 (()=> {
+"use strict";
 const host=document.getElementById("anatomy3d");if(!host)return;
-let THREE=null,scene,camera,renderer,bodyGroup,activeView="front",lastTotals={},drag=null,zoom=1,ready=false;const pointers=new Map();
+const MODEL_URL="https://raw.githubusercontent.com/organui/muscles-3d/main/public/models/muscles.glb";
+const LABELS={
+ "pectoralis":"Грудь","deltoid":"Плечи","biceps-brachii":"Бицепс","biceps brachii":"Бицепс",
+ "triceps-brachii":"Трицепс","triceps brachii":"Трицепс","rectus-abdominis":"Пресс","oblique":"Пресс",
+ "latissimus-dorsi":"Спина","trapezius":"Спина","rhomboid":"Спина","erector-spinae":"Спина",
+ "gluteus":"Ягодицы","quadriceps":"Квадрицепс","rectus-femoris":"Квадрицепс","vastus":"Квадрицепс",
+ "biceps-femoris":"Бицепс бедра","hamstring":"Бицепс бедра","gastrocnemius":"Икры","soleus":"Икры"
+};
+const GROUPS=["Грудь","Спина","Плечи","Бицепс","Трицепс","Квадрицепс","Бицепс бедра","Ягодицы","Икры","Пресс"];
+let THREE,scene,camera,renderer,bodyGroup,activeView="front",lastTotals={},drag=null,zoom=1,ready=false,pinchDistance=0;
+const pointers=new Map(),raycaster=null,mouse=null,highlighted=new Set();
 const hint=()=>document.querySelector(".anatomy3d-hint");
-const material=(color,roughness=.48,metalness=.32)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
-const baseMat=()=>material("#9da5b0",.52,.38),muscleMat=()=>material("#c0c6ce",.4,.42);
-const hotMat=()=>material("#ed263f",.34,.35,{});
-function ellipsoid(parent,name,pos,scale,mat,muscle=null){
- const geometry=new THREE.SphereGeometry(1,48,32);
- if(muscle){
-  const p=geometry.attributes.position;
-  for(let i=0;i<p.count;i++){
-   const y=p.getY(i), taper=.34+.66*Math.pow(Math.max(0,1-y*y),.42);
-   p.setX(i,p.getX(i)*taper);
-   p.setZ(i,p.getZ(i)*taper);
-  }
-  geometry.computeVertexNormals();
- }
- const mesh=new THREE.Mesh(geometry,mat);
- mesh.name=name;mesh.position.set(...pos);mesh.scale.set(...scale);mesh.castShadow=true;mesh.receiveShadow=true;
- if(muscle)mesh.userData.muscle=muscle;
- parent.add(mesh);return mesh;
+function groupForName(name){
+ const n=String(name||"").toLowerCase().replace(/[_ .]+/g,"-");
+ if(/pectoralis|pectoral/.test(n))return "Грудь";
+ if(/deltoid/.test(n))return "Плечи";
+ if(/biceps-brachii|biceps-brachialis/.test(n))return "Бицепс";
+ if(/triceps-brachii/.test(n))return "Трицепс";
+ if(/rectus-abdominis|oblique|transversus-abdominis/.test(n))return "Пресс";
+ if(/latissimus|trapezius|rhomboid|erector-spinae|multifidus|serratus/.test(n))return "Спина";
+ if(/gluteus/.test(n))return "Ягодицы";
+ if(/quadriceps|rectus-femoris|vastus/.test(n))return "Квадрицепс";
+ if(/biceps-femoris|semitendinosus|semimembranosus|hamstring/.test(n))return "Бицепс бедра";
+ if(/gastrocnemius|soleus|plantaris/.test(n))return "Икры";
+ for(const [key,value] of Object.entries(LABELS))if(n.includes(key))return value;
+ return null;
 }
-function limb(parent,name,a,b,radii,mat,muscle){
- const mid=a.map((v,i)=>(v+b[i])/2),d=new THREE.Vector3(b[0]-a[0],b[1]-a[1],b[2]-a[2]);
- const mesh=ellipsoid(parent,name,mid,[radii[0],d.length()/2+radii[1],radii[2]],mat,muscle);
- mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());return mesh;
-}
-function paired(parent,name,y,z,sx,sy,sz,offset=.34){
- for(const side of [-1,1])ellipsoid(parent,name,[side*offset,y,z],[sx,sy,sz],muscleMat(),name);
-}
-function buildBody(){
- bodyGroup=new THREE.Group();scene.add(bodyGroup);
- const shell=baseMat();
- // Neutral, faceless anatomical base: no hair, eyes, nose or mouth.
- ellipsoid(bodyGroup,"torso",[0,1.15,0],[.78,1.25,.39],shell);
- ellipsoid(bodyGroup,"pelvis",[0,-.38,0],[.62,.55,.34],shell);
- ellipsoid(bodyGroup,"neck",[0,2.28,0],[.23,.42,.23],shell);
- ellipsoid(bodyGroup,"head",[0,2.92,0],[.37,.52,.34],shell);
- // Arms and legs are real 3D meshes, not SVG paths.
- for(const s of [-1,1]){
-  limb(bodyGroup,"upper arm",[s*.72,1.88,0],[s*1.02,.72,0],[.19,.13,.2],shell);
-  limb(bodyGroup,"forearm",[s*1.02,.72,0],[s*1.13,-.18,.02],[.145,.1,.15],shell);
-  ellipsoid(bodyGroup,"hand",[s*1.14,-.34,.02],[.13,.2,.09],shell);
-  limb(bodyGroup,"thigh",[s*.34,-.55,0],[s*.42,-1.85,0],[.27,.16,.29],shell);
-  limb(bodyGroup,"shin",[s*.42,-1.85,0],[s*.43,-3.12,.02],[.17,.13,.18],shell);
-  ellipsoid(bodyGroup,"foot",[s*.43,-3.25,.12],[.17,.25,.3],shell);
- }
- // Front anatomy
- paired(bodyGroup,"Плечи",1.93,.27,.24,.31,.25,.76);
- paired(bodyGroup,"Грудь",1.48,.34,.38,.3,.16,.39);
- paired(bodyGroup,"Бицепс",.91,.2,.17,.39,.17,.91);
- paired(bodyGroup,"Предплечья",.24,.16,.13,.39,.13,1.08);
- paired(bodyGroup,"Пресс",.57,.3,.16,.49,.1,.43);
- 
- for(let row=0;row<3;row++)for(const s of [-1,1])
-  ellipsoid(bodyGroup,"Пресс",[s*.115,.98-row*.34,.365],[.105,.145,.075],muscleMat(),"Пресс");
- paired(bodyGroup,"Квадрицепс",-1.22,.2,.205,.61,.18,.43);
- paired(bodyGroup,"Икры",-2.55,.13,.16,.43,.15,.43);
- // Back anatomy, positioned behind the torso.
- paired(bodyGroup,"Спина",1.82,-.28,.33,.55,.13,.0);
- paired(bodyGroup,"Спина",.93,-.31,.39,.72,.13,.39);
- paired(bodyGroup,"Трицепс",.94,-.2,.17,.4,.16,.91);
- paired(bodyGroup,"Предплечья",.23,-.15,.13,.39,.13,1.08);
- paired(bodyGroup,"Ягодицы",-0.48,-.31,.29,.36,.16,.32);
- paired(bodyGroup,"Бицепс бедра",-1.3,-.2,.21,.62,.16,.43);
- // A fine central line and anatomical clavicle/rib relief, kept subtle.
- const detailMat=new THREE.MeshStandardMaterial({color:"#e0e4e9",roughness:.55,metalness:.22,transparent:true,opacity:.28});
- for(const s of [-1,1]){
-  limb(bodyGroup,"clavicle",[0,1.83,.38],[s*.48,1.72,.34],[.035,.035,.035],detailMat);
- }
-}
+function isFaceOrScalp(name){return /frontalis|occipitalis|temporalis|masseter|orbicularis|zygomatic|nasalis|buccinator|mentalis|corrugator|epicranial|temporoparietalis|facial|scalp|eye|eyelid|tongue/i.test(name);}
 function applyLoad(){
  if(!ready)return;
- bodyGroup.traverse(o=>{if(!o.isMesh||!o.userData.muscle)return;
-  const value=Number(lastTotals[o.userData.muscle]||0),active=value>0;
-  o.material=active?new THREE.MeshStandardMaterial({color:"#ef3048",roughness:.35,metalness:.25,emissive:"#8b071b",emissiveIntensity:Math.min(.15+value*.025,.65)}):muscleMat();
+ bodyGroup.traverse(o=>{
+  if(!o.isMesh||!o.userData.muscleGroup)return;
+  const g=o.userData.muscleGroup,v=Number(lastTotals[g]||0),active=v>0;
+  const mat=o.userData.baseMaterial;
+  if(active){
+   const m=mat.clone();m.color.set("#d6a4aa");m.emissive.set("#c20c2d");m.emissiveIntensity=Math.min(.12+v*.12,.72);m.roughness=.38;o.material=m;
+  }else o.material=mat;
  });
 }
 function setView(which){if(which!=="front"&&which!=="back")return;activeView=which;if(bodyGroup)bodyGroup.rotation.y=which==="front"?0:Math.PI;document.querySelectorAll("[data-anatomy-view]").forEach(b=>b.classList.toggle("active",b.dataset.anatomyView===which));}
 function resize(){if(!renderer||!camera)return;const w=Math.max(1,host.clientWidth),h=Math.max(1,host.clientHeight);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+function fitModel(root){
+ const box=new THREE.Box3().setFromObject(root),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());
+ root.position.sub(center);
+ const scale=6.25/Math.max(size.y,0.001);root.scale.setScalar(scale);
+ // Center model at the visual middle of the card after scaling.
+ root.position.y+=0;
+}
+function addBlankHead(){
+ const geo=new THREE.SphereGeometry(.31,40,32);
+ const mat=new THREE.MeshStandardMaterial({color:"#aeb5bf",roughness:.48,metalness:.25});
+ const head=new THREE.Mesh(geo,mat);head.name="Neutral faceless head";
+ head.position.set(0,2.92,0);head.scale.set(1,1.25,.92);head.castShadow=true;bodyGroup.add(head);
+}
 async function init(){
  try{
-  THREE=await import("https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js");
-  scene=new THREE.Scene();scene.background=null;
-  camera=new THREE.PerspectiveCamera(34,1,.1,100);camera.position.set(0,0,12.2);
+  const THREEmod=await import("https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js");
+  THREE=THREEmod;
+  const {GLTFLoader}=await import("https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/loaders/GLTFLoader.js");
+  scene=new THREE.Scene();
+  camera=new THREE.PerspectiveCamera(34,1,.1,100);camera.position.set(0,0,10.5);
   renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:"high-performance"});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;
-  renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-  host.innerHTML="";host.appendChild(renderer.domElement);renderer.domElement.setAttribute("aria-label","Интерактивная трёхмерная анатомическая модель");
-  scene.add(new THREE.HemisphereLight("#e8edf5","#242832",2.1));
-  const key=new THREE.DirectionalLight("#ffffff",3.2);key.position.set(-3,5,6);key.castShadow=true;scene.add(key);
-  const rim=new THREE.DirectionalLight("#8c9bb4",2.4);rim.position.set(4,1,-5);scene.add(rim);
-  const fill=new THREE.PointLight("#ff4359",.45,12);fill.position.set(0,0,4);scene.add(fill);
-  buildBody();ready=true;applyLoad();resize();
-  new ResizeObserver(resize).observe(host);
-  renderer.setAnimationLoop(()=>{renderer.render(scene,camera);});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.75));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;
+  host.innerHTML="";host.appendChild(renderer.domElement);renderer.domElement.setAttribute("aria-label","Настоящая трёхмерная анатомическая модель мышц");
+  scene.add(new THREE.HemisphereLight("#f0f2f7","#30343d",2.0));
+  const key=new THREE.DirectionalLight("#ffffff",3.0);key.position.set(-3,5,7);scene.add(key);
+  const rim=new THREE.DirectionalLight("#a9b6ca",2.2);rim.position.set(4,2,-5);scene.add(rim);
+  const fill=new THREE.PointLight("#ff4058",.3,14);fill.position.set(0,0,4);scene.add(fill);
+  const loader=new GLTFLoader();
+  const gltf=await loader.loadAsync(MODEL_URL);
+  bodyGroup=new THREE.Group();scene.add(bodyGroup);
+  const source=gltf.scene;
+  source.traverse(o=>{
+   if(!o.isMesh)return;
+   const n=o.name||o.parent?.name||"";
+   if(isFaceOrScalp(n)){o.visible=false;return;}
+   const g=groupForName(n);
+   const mat=new THREE.MeshStandardMaterial({color:"#aeb5bf",roughness:.46,metalness:.28});
+   o.material=mat;o.userData.baseMaterial=mat;o.userData.muscleGroup=g||null;
+   o.castShadow=true;o.receiveShadow=true;
+  });
+  bodyGroup.add(source);fitModel(source);
+  // A smooth, neutral head replaces facial/scalp anatomy: no hair or facial features.
+  const headGeometry=new THREE.SphereGeometry(.29,40,32),headMaterial=new THREE.MeshStandardMaterial({color:"#aeb5bf",roughness:.5,metalness:.25});
+  const head=new THREE.Mesh(headGeometry,headMaterial);head.name="Faceless head";head.position.set(0,2.86,0);head.scale.set(1,1.22,.92);head.castShadow=true;bodyGroup.add(head);
+  ready=true;applyLoad();resize();new ResizeObserver(resize).observe(host);
+  renderer.setAnimationLoop(()=>renderer.render(scene,camera));
   setView(activeView);
- }catch(err){host.innerHTML='<div class="anatomy3d-error">Не удалось загрузить 3D-движок. Проверь подключение к интернету и обнови страницу.</div>';console.error("3D anatomy init failed",err);}
+ }catch(err){
+  host.innerHTML='<div class="anatomy3d-error">Не удалось загрузить анатомическую 3D-модель. Проверь подключение к интернету и обнови страницу.</div>';
+  console.error("Anatomy GLB load failed",err);
+ }
 }
 function update(totals={}){lastTotals=totals||{};applyLoad();}
-function pointerDown(e){host.setPointerCapture?.(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===1)drag={x:e.clientX,y:e.clientY};else if(pointers.size===2){const p=[...pointers.values()];pinchDistance=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);drag=null;}}
-let pinchDistance=0;
-function pointerMove(e){if(!pointers.has(e.pointerId))return;const prev=pointers.get(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
- if(pointers.size>=2){const p=[...pointers.values()],d=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);if(pinchDistance&&camera){zoom=Math.max(.72,Math.min(1.65,zoom+(d-pinchDistance)*.004));camera.position.z=12.2/zoom;}pinchDistance=d;return;}
- if(!drag)return;const dx=e.clientX-prev.x,dy=e.clientY-prev.y;drag={x:e.clientX,y:e.clientY};if(bodyGroup){bodyGroup.rotation.y+=dx*.009;bodyGroup.rotation.x=Math.max(-.45,Math.min(.45,bodyGroup.rotation.x+dy*.006));}}
+function pointerDown(e){
+ host.setPointerCapture?.(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(pointers.size===1)drag={x:e.clientX,y:e.clientY};
+ if(pointers.size===2){const p=[...pointers.values()];pinchDistance=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);drag=null;}
+}
+function pointerMove(e){
+ if(!pointers.has(e.pointerId))return;const prev=pointers.get(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(pointers.size>=2){const p=[...pointers.values()],d=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);if(pinchDistance&&camera){zoom=Math.max(.72,Math.min(1.65,zoom+(d-pinchDistance)*.004));camera.position.z=10.5/zoom;}pinchDistance=d;return;}
+ if(!drag)return;const dx=e.clientX-prev.x,dy=e.clientY-prev.y;drag={x:e.clientX,y:e.clientY};
+ if(bodyGroup){bodyGroup.rotation.y+=dx*.008;bodyGroup.rotation.x=Math.max(-.4,Math.min(.4,bodyGroup.rotation.x+dy*.005));}
+}
 function pointerUp(e){if(e?.pointerId!==undefined)pointers.delete(e.pointerId);drag=pointers.size===1?[...pointers.values()][0]:null;if(pointers.size<2)pinchDistance=0;}
 host.addEventListener("pointerdown",pointerDown);host.addEventListener("pointermove",pointerMove);host.addEventListener("pointerup",pointerUp);host.addEventListener("pointercancel",pointerUp);
-host.addEventListener("wheel",e=>{e.preventDefault();zoom=Math.max(.78,Math.min(1.4,zoom-e.deltaY*.001));camera?.position.set(0,0,12.2/zoom);},{passive:false});
-host.addEventListener("click",e=>{if(!ready)return;const rect=renderer.domElement.getBoundingClientRect(),mouse=new THREE.Vector2((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1),ray=new THREE.Raycaster();ray.setFromCamera(mouse,camera);const hits=ray.intersectObjects(bodyGroup.children,true);if(hits.length){const muscle=hits.find(h=>h.object.userData.muscle)?.object.userData.muscle;if(muscle&&hint())hint().textContent=muscle+" · нагрузка за 7 дней: "+Number(lastTotals[muscle]||0).toFixed(1);}});
+host.addEventListener("wheel",e=>{e.preventDefault();zoom=Math.max(.72,Math.min(1.65,zoom-e.deltaY*.001));if(camera)camera.position.z=10.5/zoom;},{passive:false});
+host.addEventListener("click",e=>{
+ if(!ready)return;const rect=renderer.domElement.getBoundingClientRect();mouse.set((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1);
+ raycaster.setFromCamera(mouse,camera);const hits=raycaster.intersectObject(bodyGroup,true);
+ const hit=hits.find(h=>h.object.userData.muscleGroup);if(hit){const g=hit.object.userData.muscleGroup;if(hint())hint().textContent=(g||hit.object.name)+" · нагрузка за 7 дней: "+Number(lastTotals[g]||0).toFixed(1);}
+});
 document.querySelectorAll("[data-anatomy-view]").forEach(b=>b.addEventListener("click",()=>setView(b.dataset.anatomyView)));
 window.MGC3D={update,view:setView};
 init();
