@@ -337,8 +337,41 @@ cs:{settingsEyebrow:"PŘIZPŮSOBENÍ",settingsTitle:"Nastavení",settingsSubtitl
 };
 const MGC_TRANSLATIONS={
 "Главная":["Home","Domů"],"Тренировки":["Workouts","Tréninky"],"Прогресс":["Progress","Pokrok"],"Питание":["Nutrition","Výživa"],"Чат":["Chat","Chat"],"Профиль":["Profile","Profil"],"ТВОЯ СИЛА. ТВОЙ ПУТЬ.":["YOUR STRENGTH. YOUR JOURNEY.","TVÁ SÍLA. TVÁ CESTA."],"Тренируйся умнее. Становись сильнее.":["Train smarter. Get stronger.","Trénuj chytřeji. Sílej."],"Начать тренировку":["Start workout","Začít trénink"],"ПЛАН НА СЕГОДНЯ":["TODAY'S PLAN","DNEŠNÍ PLÁN"],"Твоя следующая тренировка":["Your next workout","Tvůj další trénink"],"Упражнения":["Exercises","Cviky"],"Вес, кг":["Weight, kg","Váha, kg"],"Повторения":["Reps","Opakování"],"Заметка":["Note","Poznámka"],"Записать подход":["Log set","Zapsat sérii"],"Отметить упражнение выполненным":["Mark exercise as complete","Označit cvik jako dokončený"],"Завершить тренировку":["Finish workout","Dokončit trénink"],"ТВОИ РЕЗУЛЬТАТЫ":["YOUR RESULTS","TVOJE VÝSLEDKY"],"Каждая тренировка приближает к цели.":["Every workout brings you closer to your goal.","Každý trénink tě přibližuje k cíli."],"ДНЕВНИК ПИТАНИЯ":["FOOD DIARY","JÍDELNÍČEK"],"Добавить продукт или блюдо":["Add food or meal","Přidat potravinu nebo jídlo"],"Название":["Name","Název"],"Калории, ккал":["Calories, kcal","Kalorie, kcal"],"Белки, г":["Protein, g","Bílkoviny, g"],"Жиры, г":["Fat, g","Tuky, g"],"Углеводы, г":["Carbs, g","Sacharidy, g"],"Добавить в дневник":["Add to diary","Přidat do deníku"],"AI-тренер":["AI Coach","AI trenér"],"Персональные рекомендации на основе твоих результатов.":["Personalized recommendations based on your results.","Osobní doporučení na základě tvých výsledků."],"Отправить тренеру ↗":["Send to coach ↗","Odeslat trenérovi ↗"],"ТВОЙ ВОПРОС":["YOUR QUESTION","TVŮJ DOTAZ"],"Профиль":["Profile","Profil"],"Настрой тренировки под свои цели.":["Set up your training around your goals.","Přizpůsob trénink svým cílům."],"Твои параметры и тренировочные предпочтения":["Your stats and training preferences","Tvé údaje a tréninkové preference"],"Вес тела, кг":["Body weight, kg","Tělesná hmotnost, kg"],"Рост, см":["Height, cm","Výška, cm"],"Возраст":["Age","Věk"],"Пол":["Sex","Pohlaví"],"Мужской":["Male","Muž"],"Женский":["Female","Žena"],"Цель":["Goal","Cíl"],"Набор массы":["Muscle gain","Nabírání svalů"],"Поддержание веса":["Maintenance","Udržení hmotnosti"],"Снижение жира":["Fat loss","Redukce tuku"],"Рекомпозиция":["Recomposition","Rekompozice"],"Начинающий":["Beginner","Začátečník"],"Средний":["Intermediate","Pokročilý"],"Продвинутый":["Advanced","Pokročilý"],"Резервная копия":["Backup","Záloha"],"Экспорт данных ↓":["Export data ↓","Exportovat data ↓"],"Импорт данных ↑":["Import data ↑","Importovat data ↑"],"ТРЕНИРОВОК":["WORKOUTS","TRÉNINKŮ"],"ПОДХОДОВ":["SETS","SÉRIÍ"],"ОБЪЁМ, КГ":["VOLUME, KG","OBJEM, KG"],"ПРОГРАММА":["PROGRAM","PROGRAM"],"СОВЕТ AI-ТРЕНЕРА":["AI COACH TIP","TIP AI TRENÉRA"],"ПРОГРАММА ДНЯ":["TODAY'S PROGRAM","DNEŠNÍ PROGRAM"],"Запись результата":["Log result","Záznam výsledku"],"Твой вопрос":["Your question","Tvůj dotaz"],"Подключение настроено":["Connection configured","Připojení nastaveno"]
+,"Жим штанги лёжа":["Barbell bench press","Bench-press s velkou činkou"]
+,"Тяга верхнего блока":["Lat pulldown","Stahování horní kladky"]
+,"Жим гантелей под наклоном":["Incline dumbbell press","Tlaky s jednoručkami na šikmé lavici"]
+,"Горизонтальная тяга":["Seated cable row","Veslování na kladce"]
+,"Подъём гантелей в стороны":["Dumbbell lateral raise","Upažování s jednoručkami"]
+,"Сгибание рук EZ":["EZ-bar curl","Bicepsový zdvih s EZ osou"]
+,"Разгибание рук на блоке":["Cable triceps pushdown","Stahování kladky na triceps"]
+,"Приседания":["Squats","Dřepy"]
+,"Румынская тяга":["Romanian deadlift","Rumunský mrtvý tah"]
+,"Жим ногами":["Leg press","Leg press"]
+,"Сгибание ног":["Leg curl","Zakopávání"]
+,"Подъёмы на носки":["Calf raises","Výpony na lýtka"]
+,"Пресс":["Abs","Břicho"]
+,"Подтягивания / верхний блок":["Pull-ups / lat pulldown","Shyby / stahování horní kladky"]
+,"Жим в тренажёре на грудь":["Chest press machine","Tlak na prsa ve stroji"]
+,"Тяга с упором грудью":["Chest-supported row","Přítahy s oporou hrudníku"]
+,"Жим гантелей сидя":["Seated dumbbell shoulder press","Tlaky s jednoručkami vsedě"]
+,"Обратная бабочка":["Reverse pec deck","Rozpažování obráceně na stroji"]
+,"Молотковые сгибания":["Hammer curls","Kladivové zdvihy"]
+,"Разгибание рук из-за головы":["Overhead triceps extension","Tricepsové extenze nad hlavou"]
+,"Гакк-приседания":["Hack squats","Hack dřepy"]
+,"Ягодичный мост":["Glute bridge","Glute bridge"]
+,"Болгарские выпады":["Bulgarian split squats","Bulharské dřepy"]
+,"Сгибание ног лёжа":["Lying leg curl","Zakopávání vleže"]
+,"Разгибание ног":["Leg extension","Předkopávání"]
+,"Икры сидя":["Seated calf raises","Výpony na lýtka vsedě"]
+,"Жим гантелей на наклонной":["Incline dumbbell press","Tlaky s jednoručkami na šikmé lavici"]
+,"Тяга верхнего блока нейтральным хватом":["Neutral-grip lat pulldown","Stahování horní kladky neutrálním úchopem"]
+,"Сведение рук в кроссовере":["Cable fly","Rozpažování na kladkách"]
+,"Горизонтальная тяга блока":["Seated cable row","Veslování na kladce"]
+,"Сгибание рук на скамье Скотта":["Preacher curl","Bicepsový zdvih na Scottově lavici"]
+,"Грудь":["Chest","Hrudník"],"Спина":["Back","Záda"],"Плечи":["Shoulders","Ramena"],"Бицепс":["Biceps","Biceps"],"Трицепс":["Triceps","Triceps"],"Квадрицепс":["Quadriceps","Kvadriceps"],"Бицепс бедра":["Hamstrings","Hamstringy"],"Ягодицы":["Glutes","Hýždě"]
+
 };
-function mgcTranslateTextNode(node){if(!node||node.nodeType!==Node.TEXT_NODE)return;const original=node.nodeValue.trim();if(!original)return;let source=original;if(state.settings.language==="ru"){for(const [ru,pair] of Object.entries(MGC_TRANSLATIONS)){if(pair.includes(original)){source=ru;break;}}if(source!==original)node.nodeValue=node.nodeValue.replace(original,source);return;}const tr=MGC_TRANSLATIONS[source];if(tr)node.nodeValue=node.nodeValue.replace(original,tr[state.settings.language==="en"?0:1]);}
+function mgcTranslateTextNode(node){if(!node||node.nodeType!==Node.TEXT_NODE)return;let value=node.nodeValue;if(!value.trim())return;const lang=state.settings.language;if(lang==="ru"){for(const [ru,pair] of Object.entries(MGC_TRANSLATIONS)){const en=pair[0],cs=pair[1];value=value.split(en).join(ru).split(cs).join(ru);}node.nodeValue=value;return;}for(const [ru,pair] of Object.entries(MGC_TRANSLATIONS)){const translated=pair[lang==="en"?0:1];value=value.split(ru).join(translated);}node.nodeValue=value;}
 function mgcApplyLanguage(){const lang=state.settings.language||"ru",d=MGC_I18N[lang]||MGC_I18N.ru;document.documentElement.lang=lang;
 document.querySelectorAll("[data-i18n]").forEach(el=>{const k=el.dataset.i18n;if(d[k]){const first=Array.from(el.childNodes).find(n=>n.nodeType===Node.TEXT_NODE&&n.nodeValue.trim());if(first)first.nodeValue=" "+d[k];else el.prepend(document.createTextNode(d[k]));}});
 document.querySelectorAll("body *").forEach(el=>{if(el.children.length===0)mgcTranslateTextNode(el.firstChild);});
