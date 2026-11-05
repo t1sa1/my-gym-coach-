@@ -158,7 +158,8 @@ function muscleRow(m,v){
 function muscleFigure(side,totals){
  const front=side==="front";
  const fill=m=>totals[m]>0?MUSCLE_COLORS[m]:"#8b929a";
- const op=m=>totals[m]>0?".88":".22";
+ const peak=Math.max(1,...Object.values(totals));
+ const op=m=>totals[m]>0?String(.3+.68*totals[m]/peak):".16";
  const muscle=(m,d)=>'<path d="'+d+'" fill="'+fill(m)+'" fill-opacity="'+op(m)+'" stroke="#e6e8eb" stroke-opacity=".48" stroke-width="1.05" stroke-linejoin="round"/>';
  const base='<g fill="#68717b" fill-opacity=".20" stroke="#d8dce1" stroke-opacity=".78" stroke-width="1.45" stroke-linejoin="round"><ellipse cx="110" cy="24" rx="17" ry="21"/><path d="M96 44L92 53 78 58Q65 59 58 75L39 143Q35 155 43 160Q51 164 57 150L82 100 86 145 82 190 89 224 92 242 86 303 94 365 89 410Q101 418 108 410L110 370 112 410Q122 418 132 410L126 365 134 303 128 242 131 224 138 190 134 145 138 100 163 150Q169 164 177 160Q185 155 181 143L162 75Q155 59 142 58L128 53 124 44Z"/></g>';
  let d="";
