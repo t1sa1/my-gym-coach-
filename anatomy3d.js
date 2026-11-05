@@ -15,12 +15,12 @@ const pointers=new Map();let raycaster=null,mouse=null;
 const hint=()=>document.querySelector(".anatomy3d-hint");
 function groupForName(name){
  const n=String(name||"").toLowerCase().replace(/[_ .]+/g,"-");
- if(/pectoralis|pectoral/.test(n))return "Грудь";
- if(/deltoid/.test(n))return "Плечи";
- if(/biceps-brachii|biceps-brachialis/.test(n))return "Бицепс";
+ if(/pectoralis|pectoral|serratus-anterior/.test(n))return "Грудь";
+ if(/deltoid|supraspinatus|infraspinatus|teres-minor|teres-major|subscapularis|levator-scapulae/.test(n))return "Плечи";
+ if(/biceps-brachii|biceps-brachialis|brachialis|brachioradialis/.test(n))return "Бицепс";
  if(/triceps-brachii/.test(n))return "Трицепс";
  if(/rectus-abdominis|oblique|transversus-abdominis/.test(n))return "Пресс";
- if(/latissimus|trapezius|rhomboid|erector-spinae|multifidus|serratus/.test(n))return "Спина";
+ if(/latissimus|trapezius|rhomboid|erector-spinae|iliocostalis|longissimus|spinalis|multifidus|serratus-posterior/.test(n))return "Спина";
  if(/gluteus/.test(n))return "Ягодицы";
  if(/quadriceps|rectus-femoris|vastus/.test(n))return "Квадрицепс";
  if(/biceps-femoris|semitendinosus|semimembranosus|hamstring/.test(n))return "Бицепс бедра";
