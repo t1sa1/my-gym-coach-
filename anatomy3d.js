@@ -103,7 +103,7 @@ function pointerDown(e){
  if(pointers.size===2){const p=[...pointers.values()];pinchDistance=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);drag=null;suppressClick=true;}
 }
 function pointerMove(e){
- if(!pointers.has(e.pointerId))return;const prev=pointers.get(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(!pointers.has(e.pointerId))return;const prev=pointers.get(e.pointerId);pointers.set(e.pointerId,{...prev,x:e.clientX,y:e.clientY});
  if(Math.hypot(e.clientX-prev.startX,e.clientY-prev.startY)>7){prev.moved=true;suppressClick=true;}
  if(pointers.size>=2){const p=[...pointers.values()],d=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);if(pinchDistance&&camera){zoom=Math.max(.72,Math.min(1.65,zoom+(d-pinchDistance)*.004));camera.position.z=10.5/zoom;}pinchDistance=d;return;}
  if(!drag)return;const dx=e.clientX-prev.x,dy=e.clientY-prev.y;drag={x:e.clientX,y:e.clientY};
