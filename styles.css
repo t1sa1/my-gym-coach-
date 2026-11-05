@@ -10,3 +10,93 @@
 .ai-compose button:disabled{opacity:.65;cursor:wait}
 
 .muscle-panel{overflow:hidden}.body-map-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.body-map-card{min-width:0;border:1px solid var(--line);border-radius:12px;padding:10px 7px}.body-map-card>b{font-size:11px;display:block;text-align:center}.body-figure{width:100%;height:190px;display:block;margin:5px auto}.muscle-row{display:flex;align-items:center;gap:5px;margin:7px 0;font-size:9px}.muscle-dot{width:8px;height:8px;border-radius:50%;flex:0 0 8px}.muscle-name{min-width:0;flex:1}.muscle-track{height:6px;background:#edf0ed;border-radius:8px;overflow:hidden;flex:1}.muscle-track i{display:block;height:100%;border-radius:8px}.muscle-row>b{font-size:9px;min-width:16px;text-align:right}@media(max-width:370px){.body-map-grid{gap:6px}.body-map-card{padding:7px 4px}.muscle-name{font-size:8px}}
+
+
+/* MY GYM COACH — unified premium app design */
+:root{
+ --bg:#eef2ee;--ink:#17251f;--muted:#718078;--green:#176b49;--mint:#dff2e6;
+ --line:#dfe7e0;--white:#fff;--dark:#14271f;--lime:#b8edc8;
+}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(ellipse at 90% 0%,#dcebe1 0,transparent 34%),var(--bg);color:var(--ink);letter-spacing:-.01em}
+.top{height:72px;background:rgba(20,39,31,.97);backdrop-filter:blur(14px);position:sticky;top:0;z-index:20;box-shadow:0 8px 24px #10251b18}
+.brand .mark{width:34px;height:34px;display:grid;place-items:center;background:#254c38;border-radius:12px;font-size:20px}
+.brand b{font-size:12px;letter-spacing:1.5px}
+.top-pill{border:1px solid #ffffff18;background:#ffffff0d;color:#c7e6d2}
+main{max-width:820px;padding:18px 16px 34px}
+.hero{border-radius:26px;padding:27px 24px;background:linear-gradient(132deg,#14271f 0%,#1d4935 58%,#276448 100%);box-shadow:0 16px 36px #193d2a24}
+.hero:after{width:230px;height:230px;right:-80px;top:-82px;border-color:#ffffff25;box-shadow:0 0 0 28px #ffffff0a,0 0 0 58px #ffffff08}
+.hero h1{font-size:clamp(39px,10vw,54px);letter-spacing:-.055em;font-weight:800}
+.hero p{font-size:12px;max-width:290px}
+.hero-stats{gap:0;justify-content:space-between;max-width:420px;border-top:1px solid #ffffff20;padding-top:17px}
+.hero-stats>div{flex:1}
+.hero-stats strong{font-size:24px;letter-spacing:-.04em}
+.hero-stats span{font-size:9px;letter-spacing:.04em}
+.tabs{position:sticky;top:72px;z-index:15;margin:14px -2px 23px;padding:5px;gap:3px;background:#e1e9e2eF;border:1px solid #d8e2da;box-shadow:0 6px 20px #1d382510;backdrop-filter:blur(12px)}
+.tab{flex:1;padding:11px 8px;font-size:10px;transition:background .2s,color .2s,transform .2s}
+.tab.active{background:#fff;color:var(--green);box-shadow:0 3px 10px #173d2817}
+.view h2{font-size:27px;letter-spacing:-.045em;font-weight:800;margin:6px 0 18px}
+h3{letter-spacing:-.025em}
+.section-head{margin:24px 0 14px}
+.section-head h2{margin-bottom:0}
+.panel,.plan-day,.history-item,.exercise,.body-map-card{
+ background:rgba(255,255,255,.94);border:1px solid #e1e9e2;box-shadow:0 5px 18px #1b39250a;
+}
+.panel{border-radius:19px;padding:17px;margin:13px 0}
+.coach-panel{background:linear-gradient(120deg,#e8f5ec,#f4faf5);border-color:#d4e8da}
+.coach-icon{border-radius:12px;background:#d4ecdc}
+.day-select{gap:7px}
+.day-btn{border:1px solid #e0e8e1;border-radius:12px;padding:12px 3px;background:#fff;box-shadow:0 2px 7px #1b392508;transition:.18s}
+.day-btn.active{background:var(--dark);border-color:var(--dark);box-shadow:0 5px 12px #14271f24}
+.exercise-list{gap:9px}
+.exercise{border-radius:15px;padding:14px;min-height:62px;transition:transform .16s,border-color .16s,box-shadow .16s}
+.exercise:active,.day-btn:active,.primary:active,.secondary:active{transform:scale(.985)}
+.exercise.selected{background:linear-gradient(110deg,#f0f8f2,#fff);border:1.5px solid #4b9b6b;box-shadow:0 5px 15px #1d6b4512}
+.exercise .num{width:31px;height:31px;border-radius:10px;background:#edf4ee;color:#286444}
+.exercise b{font-size:12px;letter-spacing:-.015em}
+.exercise small{display:block;margin-top:4px;line-height:1.4}
+.log-panel{border-radius:21px;padding:19px;border-color:#d8e5db;box-shadow:0 9px 25px #183b2610}
+.log-panel h3{font-size:18px}
+.field-row input,.field-row select,.wide-label input,.wide-label select,.ai-compose textarea,.ai-compose select{
+ border:1px solid #dce6de;background:#f8fbf8;border-radius:12px;min-height:45px
+}
+input:focus,select:focus,textarea:focus{border-color:#62a77b!important;box-shadow:0 0 0 3px #5eaa791a}
+.primary,.secondary,.finish,.import-label{min-height:45px;border-radius:12px;font-size:11px;transition:transform .15s,filter .15s}
+.primary{background:linear-gradient(135deg,#1c7951,#155b3d);box-shadow:0 5px 12px #176b4925}
+.secondary,.import-label{border:1px solid #dce7de;background:#f0f5f1}
+.finish{background:linear-gradient(135deg,#1b3026,#101e18);box-shadow:0 5px 12px #172b201c}
+.tag{letter-spacing:.8px}
+.chart-empty{border:1px dashed #dce6de;border-radius:13px;background:#f8fbf8;margin-top:12px}
+.chart{background:linear-gradient(180deg,#f7fbf8,#fff);border-radius:13px;margin-top:10px}
+.history-item{border-radius:14px;padding:14px}
+.history-item strong{color:var(--green);font-size:14px}
+.plan-day{border-radius:17px;padding:17px;margin:11px 0}
+.plan-day h3{align-items:center}
+.plan-day li{line-height:1.5;padding-left:2px}
+.ai-chat{padding:13px 3px}
+.ai-message{font-size:12px;border-radius:17px;padding:13px 15px;box-shadow:0 3px 10px #152d1e0a}
+.ai-message.assistant{background:#fff;border:1px solid #e1e9e2}
+.ai-message.user{background:linear-gradient(135deg,#1d7952,#155c3e)}
+.ai-compose{position:sticky;bottom:8px;box-shadow:0 8px 28px #173c2518}
+.muscle-panel{background:linear-gradient(160deg,#fff,#f7faf7)}
+.body-map-card{border-radius:15px;background:#f9fbf9}
+.body-figure{height:215px}
+.muscle-row{font-size:9px}
+footer{padding:25px 15px 35px;letter-spacing:.08em}
+button,label.import-label{ -webkit-tap-highlight-color:transparent }
+button:focus-visible,.exercise:focus-visible{outline:3px solid #8cc8a0;outline-offset:2px}
+@media(max-width:420px){
+ main{padding:14px 12px 28px}
+ .hero{padding:24px 20px;border-radius:22px}
+ .hero-stats{gap:10px}
+ .tabs{top:72px}
+ .tab{font-size:9px;padding:10px 5px}
+ .view h2{font-size:24px}
+ .panel{padding:15px}
+ .body-figure{height:190px}
+}
+@media(min-width:700px){
+ .hero{padding:36px}
+ .panel{padding:20px}
+ .exercise{padding:16px}
+}
