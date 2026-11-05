@@ -84,7 +84,8 @@ async function init(){
   bodyGroup.add(source);fitModel(source);
   // A smooth, neutral head replaces facial/scalp anatomy: no hair or facial features.
   const bounds=new THREE.Box3().setFromObject(source);
-  const topY=(bounds.max.y-bounds.getCenter(new THREE.Vector3()).y)*(6.25/Math.max(bounds.getSize(new THREE.Vector3()).y,.001));
+  // source has already been normalized and centered by fitModel().
+  const topY=bounds.max.y;
   const headGeometry=new THREE.SphereGeometry(.29,40,32),headMaterial=new THREE.MeshStandardMaterial({color:"#aeb5bf",roughness:.5,metalness:.25});
   const head=new THREE.Mesh(headGeometry,headMaterial);head.name="Faceless head";head.position.set(0,topY+.27,0);head.scale.set(1,1.22,.92);head.castShadow=true;bodyGroup.add(head);
   ready=true;applyLoad();resize();new ResizeObserver(resize).observe(host);
