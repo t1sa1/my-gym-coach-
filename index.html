@@ -65,6 +65,15 @@
     <div class="panel"><h3>Динамика рабочих весов</h3><p class="muted">Выбери упражнение, чтобы увидеть историю лучших подходов.</p>
       <select id="progressExercise"></select><div id="progressChart" class="chart-empty">Добавь результаты тренировок, чтобы увидеть график.</div>
     </div>
+    <div class="panel muscle-panel">
+      <div class="eyebrow">ВОССТАНОВЛЕНИЕ И БАЛАНС</div><h3>Карта мышечной нагрузки</h3>
+      <p id="musclePeriod" class="muted">Последние 7 дней · рабочие подходы</p>
+      <div class="body-map-grid">
+        <div class="body-map-card"><b>Спереди</b><div id="muscleFront"></div><div id="muscleFrontLegend"></div></div>
+        <div class="body-map-card"><b>Сзади</b><div id="muscleBack"></div><div id="muscleBackLegend"></div></div>
+      </div>
+      <p class="muted">Цвет показывает группы, задействованные в записанных упражнениях. Подходы основных мышц учитываются полностью, вспомогательных — частично.</p>
+    </div>
     <div class="section-head compact"><h3>Последние записи</h3></div><div id="historyList"></div>
   </section>
 
