@@ -115,3 +115,7 @@ body.theme-light .settings-panel input[type=color]{background:#fff}
 .equipment-caption .eyebrow{font-size:9px;color:#9b9da7;letter-spacing:1px}
 .equipment-caption b{font-size:11px;text-align:right}
 .exercise-photo.equipment-photo img{object-fit:contain}
+
+.photo-load-fallback{min-height:150px;display:grid;place-items:center;padding:20px;text-align:center;border-radius:9px;background:linear-gradient(145deg,#202127,#121318);color:#aeb0ba;font-size:11px}
+.exercise-photo.equipment-photo{overflow:hidden}
+.exercise-photo.equipment-photo img{display:block;width:100%;max-height:230px;min-height:130px;object-fit:contain}
