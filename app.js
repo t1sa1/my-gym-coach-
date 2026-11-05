@@ -84,7 +84,7 @@ function exercisePhoto(name){
   {re:/разгибание рук/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Role_doing_cable_tricep_extension_exercise.jpg",credit:"PTPioneer",page:"https://commons.wikimedia.org/wiki/File:Role_doing_cable_tricep_extension_exercise.jpg"},
   {re:/приседания|гакк-приседания|болгарские выпады|румынская тяга|ягодичный мост|сгибание ног|разгибание ног|подъёмы на носки|икры/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Woman_doing_squat_workout_in_gym_with_barbell,_back_view.jpg",credit:"Nenad Stojkovic",page:"https://commons.wikimedia.org/wiki/File:Woman_doing_squat_workout_in_gym_with_barbell,_back_view.jpg"}
  ];
- return items.find(x=>x.re.test(n))||{url:"https://upload.wikimedia.org/wikipedia/commons/e/e8/184kg_bench.jpg",credit:"John049",page:"https://commons.wikimedia.org/wiki/File:184kg_bench.jpg"};
+ return items.find(x=>x.re.test(n))||null;
 }
 function exerciseMuscleMini(name){
  const selected=musclesForExercise(name);
