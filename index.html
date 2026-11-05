@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css">
 <title>MY GYM COACH</title></head>
 <body>
-<header class="top"><a class="brand" href="#" aria-label="MY GYM COACH"><span class="brand-copy"><b>MY GYM <em>COACH</em></b><small>YOUR PERSONAL AI TRAINER</small></span></a><div class="top-right"><span class="live-dot"></span><span>ТРЕНЕР АКТИВЕН</span><button class="profile-shortcut" data-open-tab="profile" aria-label="Профиль">⌘</button></div></header>
+<header class="top"><a class="brand" href="#" aria-label="MY GYM COACH"><span class="brand-copy"><b>MY GYM <em>COACH</em></b><small>YOUR PERSONAL AI TRAINER</small></span></a><div class="top-right"><span class="live-dot"></span><span>ТРЕНЕР АКТИВЕН</span><button class="profile-shortcut" data-open-tab="profile" aria-label="Профиль"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 21c.5-4.2 2.8-6.5 7-6.5s6.5 2.3 7 6.5"/></svg></button></div></header>
 <main>
 <section id="view-train" class="view active">
  <div class="hero">
@@ -19,7 +19,7 @@
  <div class="section-head home-heading"><div><div class="eyebrow">ПЛАН НА СЕГОДНЯ</div><h2>Твоя следующая тренировка</h2></div><span class="tag" id="dayTag">ДЕНЬ 1</span></div>
  <div class="panel next-workout"><div><span class="panel-kicker">ПРОГРАММА</span><h3 id="homeWorkoutName">Upper Body A</h3><p class="muted">Сохраняй технику и постепенно увеличивай нагрузку.</p></div><button class="round-arrow" id="goWorkout" aria-label="К упражнениям">↗</button></div>
  <div class="quick-stats"><div class="panel quick-stat"><span>♨</span><b id="homeSessions">0</b><small>Тренировок</small></div><div class="panel quick-stat"><span>⚡</span><b id="homeVolume">0</b><small>Объём, кг</small></div><div class="panel quick-stat"><span>↗</span><b id="homeSets">0</b><small>Подходов</small></div></div>
- <div class="panel coach-panel"><div class="coach-icon">✦</div><div><b>СОВЕТ AI-ТРЕНЕРА</b><p id="coachAdvice">Записывай результаты — после нескольких тренировок приложение сможет сравнивать твои рабочие веса.</p></div></div>
+ <div class="panel coach-panel"><div class="coach-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 14.5 9.5 22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5z"/></svg></div><div><b>СОВЕТ AI-ТРЕНЕРА</b><p id="coachAdvice">Записывай результаты — после нескольких тренировок приложение сможет сравнивать твои рабочие веса.</p></div></div>
  <div id="workoutArea"><div class="section-head"><div><div class="eyebrow">ПРОГРАММА ДНЯ</div><h3>Упражнения</h3></div><span class="count-pill" id="exerciseCount"></span></div>
   <div class="day-select" id="daySelect"></div><div id="exerciseList" class="exercise-list"></div><div id="exerciseDetail" class="exercise-detail"></div>
   <div class="panel log-panel"><div class="panel-kicker">ЗАПИСЬ РЕЗУЛЬТАТА</div><h3 id="selectedExercise">Жим штанги лёжа</h3>
@@ -39,7 +39,7 @@
 </section>
 <section id="view-plan" class="view"><div class="page-heading"><div><div class="eyebrow">ТВОЯ СИСТЕМА</div><h2>План тренировок</h2><p class="muted">Цикл через день: 3 тренировки верха и 2 тренировки низа за 8 дней.</p></div></div><div id="fullPlan"></div></section>
 <section id="view-ai" class="view"><div class="page-heading"><div><div class="eyebrow">SMART COACH</div><h2>AI-тренер</h2><p class="muted">Персональные рекомендации на основе твоих результатов.</p></div><span class="tag">ONLINE</span></div>
- <div class="panel ai-intro"><div class="ai-avatar">✦</div><div><b>ТВОЙ ПЕРСОНАЛЬНЫЙ ТРЕНЕР</b><p class="muted">Анализирую профиль, тренировки и динамику рабочих весов.</p><div id="aiStatus" class="tag">Подключение настроено</div></div></div>
+ <div class="panel ai-intro"><div class="ai-avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 14.5 9.5 22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5z"/></svg></div><div><b>ТВОЙ ПЕРСОНАЛЬНЫЙ ТРЕНЕР</b><p class="muted">Анализирую профиль, тренировки и динамику рабочих весов.</p><div id="aiStatus" class="tag">Подключение настроено</div></div></div>
  <div id="aiChat" class="ai-chat" aria-live="polite"><div class="ai-message assistant">Привет! Я твой AI-тренер. Могу разобрать прогресс, предложить рабочие веса и помочь скорректировать тренировку. С чего начнём?</div></div>
  <div class="panel ai-compose"><label class="wide-label" for="aiQuestion">ТВОЙ ВОПРОС</label><textarea id="aiQuestion" rows="3" placeholder="Например: проанализируй мой прогресс в жиме лёжа..."></textarea><button class="primary full" id="aiSend">Отправить тренеру ↗</button></div>
 </section>
@@ -54,5 +54,5 @@
  <div class="panel"><div class="panel-kicker">ПОДКЛЮЧЕНИЕ</div><h3>AI-тренер</h3><p class="muted">API-ключ хранится на сервере и не раскрывается приложению.</p><span class="tag">AI API · ПОДКЛЮЧЁН</span></div>
 </section>
 </main>
-<nav class="tabs" aria-label="Основная навигация"><button class="tab active" data-tab="train"><span class="nav-icon">⌂</span><span>Главная</span></button><button class="tab" data-tab="train" data-scroll="workoutArea"><span class="nav-icon">♧</span><span>Тренировки</span></button><button class="tab" data-tab="progress"><span class="nav-icon">⌁</span><span>Прогресс</span></button><button class="tab" data-tab="ai"><span class="nav-icon">✦</span><span>Чат</span></button><button class="tab" data-tab="profile"><span class="nav-icon">♙</span><span>Профиль</span></button></nav>
+<nav class="tabs" aria-label="Основная навигация"><button class="tab active" data-tab="train"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></span><span>Главная</span></button><button class="tab" data-tab="train" data-scroll="workoutArea"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12v4H6zM4 10h16v4H4zM7 16h10v4H7z"/><path d="M9 6h6M8 12h8M10 18h4"/></svg></span><span>Тренировки</span></button><button class="tab" data-tab="progress"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20V4M3 20h18"/><path d="m6 15 4-4 3 2 6-7"/></svg></span><span>Прогресс</span></button><button class="tab" data-tab="ai"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 14.5 9.5 22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5z"/></svg></span><span>Чат</span></button><button class="tab" data-tab="profile"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c.5-4.5 3.2-7 8-7s7.5 2.5 8 7z"/></svg></span><span>Профиль</span></button></nav>
 <footer>MY GYM COACH <span>·</span> TRAIN SMARTER. GET STRONGER.</footer><script src="app.js"></script></body></html>
