@@ -42,7 +42,7 @@ function buildBody(){
  paired(bodyGroup,"Бицепс",.91,.2,.17,.39,.17,.91);
  paired(bodyGroup,"Предплечья",.24,.16,.13,.39,.13,1.08);
  paired(bodyGroup,"Косые мышцы живота",.57,.3,.16,.49,.1,.43);
- paired(bodyGroup,"Пресс",.68,.34,.2,.22,.105,.0);
+ 
  for(let row=0;row<3;row++)for(const s of [-1,1])
   ellipsoid(bodyGroup,"Пресс",[s*.115,.98-row*.34,.365],[.105,.145,.075],muscleMat(),"Пресс");
  paired(bodyGroup,"Квадрицепс",-1.22,.2,.205,.61,.18,.43);
@@ -73,7 +73,7 @@ async function init(){
  try{
   THREE=await import("https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js");
   scene=new THREE.Scene();scene.background=null;
-  camera=new THREE.PerspectiveCamera(34,1,.1,100);camera.position.set(0,0,9.5);
+  camera=new THREE.PerspectiveCamera(34,1,.1,100);camera.position.set(0,0,12.2);
   renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:"high-performance"});
   renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;
   renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
@@ -93,7 +93,7 @@ function pointerDown(e){host.setPointerCapture?.(e.pointerId);if(!drag)drag={x:e
 function pointerMove(e){if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;drag={x:e.clientX,y:e.clientY};if(bodyGroup){bodyGroup.rotation.y+=dx*.009;bodyGroup.rotation.x=Math.max(-.45,Math.min(.45,bodyGroup.rotation.x+dy*.006));}}
 function pointerUp(){drag=null;}
 host.addEventListener("pointerdown",pointerDown);host.addEventListener("pointermove",pointerMove);host.addEventListener("pointerup",pointerUp);host.addEventListener("pointercancel",pointerUp);
-host.addEventListener("wheel",e=>{e.preventDefault();zoom=Math.max(.78,Math.min(1.4,zoom-e.deltaY*.001));camera?.position.set(0,0,9.5/zoom);},{passive:false});
+host.addEventListener("wheel",e=>{e.preventDefault();zoom=Math.max(.78,Math.min(1.4,zoom-e.deltaY*.001));camera?.position.set(0,0,12.2/zoom);},{passive:false});
 host.addEventListener("click",e=>{if(!ready)return;const rect=renderer.domElement.getBoundingClientRect(),mouse=new THREE.Vector2((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1),ray=new THREE.Raycaster();ray.setFromCamera(mouse,camera);const hits=ray.intersectObjects(bodyGroup.children,true);if(hits.length){const muscle=hits.find(h=>h.object.userData.muscle)?.object.userData.muscle;if(muscle&&hint())hint().textContent=muscle+" · нагрузка за 7 дней: "+Number(lastTotals[muscle]||0).toFixed(1);}});
 document.querySelectorAll("[data-anatomy-view]").forEach(b=>b.addEventListener("click",()=>setView(b.dataset.anatomyView)));
 window.MGC3D={update,view:setView};
