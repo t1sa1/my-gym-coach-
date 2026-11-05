@@ -1,71 +1,15 @@
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js";
-import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/controls/OrbitControls.js";
-
-const host=document.getElementById("anatomy3d");
-if(host){
- const scene=new THREE.Scene(); scene.background=new THREE.Color(0x14151b);
- const camera=new THREE.PerspectiveCamera(34,1,.1,100); camera.position.set(0,1.7,8.8);
- const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true}); renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.outputColorSpace=THREE.SRGBColorSpace; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.15; host.innerHTML="";host.appendChild(renderer.domElement);
- const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.07;controls.minDistance=5.2;controls.maxDistance=12;controls.target.set(0,1.45,0);controls.maxPolarAngle=Math.PI*.88;
- scene.add(new THREE.HemisphereLight(0xdce7ff,0x271b20,2.1));
- const key=new THREE.DirectionalLight(0xffe1d7,3.3);key.position.set(-4,7,6);scene.add(key);
- const rim=new THREE.DirectionalLight(0x789cff,2.2);rim.position.set(4,4,-5);scene.add(rim);
- const fill=new THREE.PointLight(0xffffff,18,10);fill.position.set(0,2.4,4);scene.add(fill);
- const floor=new THREE.Mesh(new THREE.CircleGeometry(2.4,64),new THREE.MeshBasicMaterial({color:0x20232c,transparent:true,opacity:.55}));floor.rotation.x=-Math.PI/2;floor.position.y=-.04;scene.add(floor);
- const body=new THREE.Group();body.scale.set(.88,1,.92);scene.add(body);
- const materials={base:new THREE.MeshStandardMaterial({color:0x9da3ac,roughness:.62,metalness:.02}),muscle:new THREE.MeshStandardMaterial({color:0x9da3ac,roughness:.56}),deep:new THREE.MeshStandardMaterial({color:0x9da3ac,roughness:.62}),tendon:new THREE.MeshStandardMaterial({color:0x9da3ac,roughness:.72}),bone:new THREE.MeshStandardMaterial({color:0x9da3ac,roughness:.8}),hot:new THREE.MeshStandardMaterial({color:0xff263f,emissive:0x8e071c,emissiveIntensity:.65,roughness:.38})};
- const parts={};
- function ell(group,name,pos,scale,mat="muscle",rot=[0,0,0]){const mesh=new THREE.Mesh(new THREE.SphereGeometry(1,24,18),materials[mat]);mesh.position.set(...pos);const factor=name?0.88:1;mesh.scale.set(scale[0]*factor,scale[1]*factor,scale[2]*factor);mesh.rotation.set(...rot);mesh.userData.muscle=name;body.add(mesh);if(name)(parts[name]??=[]).push(mesh);return mesh;}
- function limb(name,a,b,r1,r2,mat="muscle"){const mid=new THREE.Vector3(...a).add(new THREE.Vector3(...b)).multiplyScalar(.5);const d=new THREE.Vector3(...b).sub(new THREE.Vector3(...a));const m=ell(null,name,mid.toArray(),[r1,d.length()*.62,r2],mat);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());return m;}
- // torso core, neck and head
- ell(null,null,[0,2.35,0],[.66,.91,.34],"base");
- ell(null,null,[0,3.15,0],[.23,.28,.22],"tendon");ell(null,null,[0,3.55,0],[.27,.34,.25],"base");
- // clavicle / sternum and rib/abdominal layers
- ell(null,"Грудь",[-.39,2.82,.27],[.43,.27,.19]);ell(null,"Грудь",[.39,2.82,.27],[.43,.27,.19]);
- ell(null,"Пресс",[-.17,2.37,.31],[.16,.34,.095]);ell(null,"Пресс",[.17,2.37,.31],[.16,.34,.095]);
- for(let y=2.52;y>=2.0;y-=.17){ell(null,"Пресс",[-.17,y,.385],[.145,.075,.065]);ell(null,"Пресс",[.17,y,.385],[.145,.075,.065]);}
- ell(null,"Пресс",[-.53,2.36,.16],[.12,.39,.12],"deep",[0,0,-.22]);ell(null,"Пресс",[.53,2.36,.16],[.12,.39,.12],"deep",[0,0,.22]);
- // upper back, lats and spinal erectors
- ell(null,"Спина",[0,2.9,-.29],[.32,.38,.14],"deep");ell(null,"Спина",[-.39,2.5,-.27],[.3,.52,.15]);ell(null,"Спина",[.39,2.5,-.27],[.3,.52,.15]);
- ell(null,"Спина",[-.12,2.45,-.36],[.095,.63,.09],"deep");ell(null,"Спина",[.12,2.45,-.36],[.095,.63,.09],"deep");
- // shoulders and arms, both sides
- for(const s of [-1,1]){
-  ell(null,"Плечи",[s*.72,2.98,0],[.29,.31,.29]);
-  limb("Бицепс",[s*.83,2.82,.05],[s*1.02,2.15,.08],.19,.17);
-  limb("Трицепс",[s*.84,2.78,-.13],[s*1.04,2.12,-.12],.19,.16);
-  ell(null,"Бицепс",[s*1.02,2.36,.19],[.14,.31,.13]);
-  limb("Трицепс",[s*1.04,2.18,-.12],[s*1.13,1.73,-.08],.14,.13);
-  limb("Бицепс",[s*1.04,2.18,.12],[s*1.13,1.73,.14],.13,.12);
-  ell(null,null,[s*1.13,1.66,0],[.12,.12,.12],"tendon");
- }
- // pelvis, glutes and legs
- ell(null,null,[0,1.65,0],[.48,.36,.29],"deep");
- for(const s of [-1,1]){
-  ell(null,"Ягодицы",[s*.25,1.62,-.27],[.29,.34,.2]);
-  limb("Квадрицепс",[s*.25,1.52,.12],[s*.3,.62,.1],.25,.21);
-  ell(null,"Квадрицепс",[s*.3,1.16,.26],[.19,.47,.13]);
-  limb("Бицепс бедра",[s*.25,1.5,-.17],[s*.3,.65,-.17],.22,.17);
-  ell(null,"Бицепс бедра",[s*.3,1.1,-.22],[.17,.42,.13]);
-  ell(null,null,[s*.3,.57,.03],[.15,.16,.15],"bone");
-  limb("Икры",[s*.3,.52,-.04],[s*.32,.12,-.02],.17,.17);
-  ell(null,"Икры",[s*.32,.32,.13],[.15,.31,.16]);
-  ell(null,null,[s*.32,.08,.1],[.14,.1,.27],"tendon");
- }
- // fine tendon lines as sculpted landmarks
- function tendon(a,b,r=.018){const v1=new THREE.Vector3(...a),v2=new THREE.Vector3(...b),d=v2.clone().sub(v1);const m=new THREE.Mesh(new THREE.CylinderGeometry(r*.65,r,d.length(),8),materials.tendon);m.position.copy(v1.add(v2).multiplyScalar(.5));m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());body.add(m);}
- tendon([0,3.05,.18],[0,2.78,.36],.02);tendon([0,2.02,.31],[0,1.83,.25],.025);
- for(const s of [-1,1]){tendon([s*.72,2.9,.2],[s*.45,2.85,.37]);tendon([s*.3,.68,.2],[s*.3,.53,.18]);}
- // floor shadow
- const shadow=new THREE.Mesh(new THREE.CircleGeometry(1.25,48),new THREE.MeshBasicMaterial({color:0x050609,transparent:true,opacity:.55}));shadow.rotation.x=-Math.PI/2;shadow.position.y=-.035;shadow.scale.set(1.15,1.8,1);scene.add(shadow);
- const defaults={};for(const [name,list] of Object.entries(parts))list.forEach(m=>defaults[name]=materials.muscle);
- let current={};
- function update(totals={}){current=totals;for(const [name,list] of Object.entries(parts)){const on=(totals[name]||0)>0;list.forEach(m=>{m.material=on?materials.hot:materials.muscle;});}}
- function view(which){if(which==="front"){camera.position.set(0,1.75,8.8);controls.target.set(0,1.65,0);}else if(which==="back"){camera.position.set(0,1.75,-8.8);controls.target.set(0,1.65,0);}else{camera.position.set(8.8,1.7,0);controls.target.set(0,1.65,0);}controls.update();document.querySelectorAll("[data-anatomy-view]").forEach(b=>b.classList.toggle("active",b.dataset.anatomyView===which));}
- document.querySelectorAll("[data-anatomy-view]").forEach(b=>b.addEventListener("click",()=>view(b.dataset.anatomyView)));
- const names=["Грудь","Спина","Плечи","Бицепс","Трицепс","Пресс","Квадрицепс","Бицепс бедра","Ягодицы","Икры"];
- document.getElementById("anatomy3dLegend").innerHTML=names.map(n=>'<span><i></i>'+n+'</span>').join("");
- function resize(){const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
- new ResizeObserver(resize).observe(host);resize();
- function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera);}animate();
- window.MGC3D={update,view};
-}
+(()=>{
+const host=document.getElementById("anatomy3d");if(!host)return;
+const NS="http://www.w3.org/2000/svg";
+const paths={
+front:`<path class="base" d="M245 42 Q300 15 355 42 L379 88 Q410 103 421 145 L407 220 Q399 247 382 270 L374 330 Q392 365 385 414 L372 494 L365 592 Q362 626 347 650 L329 650 L326 595 L316 520 L300 455 L284 520 L274 595 L271 650 L253 650 Q238 626 235 592 L228 494 L215 414 Q208 365 226 330 L218 270 Q201 247 193 220 L179 145 Q190 103 221 88 Z"/><path class="base" d="M245 42 Q300 15 355 42 Q352 91 300 104 Q248 91 245 42Z"/><path data-muscle="Плечи" d="M218 102 Q188 91 170 119 Q154 147 172 177 Q190 190 211 168 L235 133Z M382 102 Q412 91 430 119 Q446 147 428 177 Q410 190 389 168 L365 133Z"/><path data-muscle="Грудь" d="M238 130 Q263 111 296 127 L296 190 Q269 205 239 184 Q219 165 238 130Z M362 130 Q337 111 304 127 L304 190 Q331 205 361 184 Q381 165 362 130Z"/><path class="detail" d="M300 112 L300 220 M236 194 Q300 218 364 194"/><path data-muscle="Бицепс" d="M184 174 Q205 166 218 184 L224 250 Q214 270 194 260 Q178 239 184 174Z M416 174 Q395 166 382 184 L376 250 Q386 270 406 260 Q422 239 416 174Z"/><path data-muscle="Пресс" d="M260 207 Q280 197 296 207 L296 294 Q278 302 260 289Z M340 207 Q320 197 304 207 L304 294 Q322 302 340 289Z M261 300 Q280 294 296 300 L296 345 Q278 350 261 343Z M339 300 Q320 294 304 300 L304 345 Q322 350 339 343Z"/><path class="detail" d="M300 203 V354 M260 250 H296 M304 250 H340 M260 300 H296 M304 300 H340"/><path class="base" d="M247 346 Q300 365 353 346 L365 400 Q350 425 300 428 Q250 425 235 400Z"/><path data-muscle="Квадрицепс" d="M244 409 Q268 397 291 414 L285 523 Q277 551 258 558 Q237 541 235 492Z M356 409 Q332 397 309 414 L315 523 Q323 551 342 558 Q363 541 365 492Z"/><path class="detail" d="M300 420 V556"/><path class="base" d="M240 555 Q266 565 286 550 L280 603 Q274 627 264 645 L247 645 Q237 620 237 590Z M360 555 Q334 565 314 550 L320 603 Q326 627 336 645 L353 645 Q363 620 363 590Z"/><path class="detail" d="M248 566 Q260 580 270 566 M352 566 Q340 580 330 566"/><path class="base" d="M248 645 L270 645 L273 690 Q265 703 232 701 L220 692 Q222 681 248 645Z M352 645 L330 645 L327 690 Q335 703 368 701 L380 692 Q378 681 352 645Z"/><path class="detail" d="M251 652 L245 688 M349 652 L355 688"/><path class="base" d="M222 690 Q246 681 273 691 L275 716 Q260 729 218 723 Q207 717 222 690Z M378 690 Q354 681 327 691 L325 716 Q340 729 382 723 Q393 717 378 690Z"/><path class="detail" d="M220 710 Q245 718 270 708 M380 710 Q355 718 330 708"/><path class="base" d="M181 177 Q163 191 164 229 L177 282 Q187 292 195 280 L190 224 L202 190Z M419 177 Q437 191 436 229 L423 282 Q413 292 405 280 L410 224 L398 190Z"/><path class="detail" d="M179 205 L186 270 M421 205 L414 270"/> `,
+back:`<path class="base" d="M245 42 Q300 15 355 42 L379 88 Q410 103 421 145 L407 220 Q399 247 382 270 L374 330 Q392 365 385 414 L372 494 L365 592 Q362 626 347 650 L329 650 L326 595 L316 520 L300 455 L284 520 L274 595 L271 650 L253 650 Q238 626 235 592 L228 494 L215 414 Q208 365 226 330 L218 270 Q201 247 193 220 L179 145 Q190 103 221 88 Z"/><path data-muscle="Спина" d="M238 119 Q267 104 296 121 L288 244 Q266 263 238 238 Q220 205 238 119Z M362 119 Q333 104 304 121 L312 244 Q334 263 362 238 Q380 205 362 119Z M292 122 Q300 111 308 122 L308 328 Q300 344 292 328Z M235 244 Q260 235 292 259 L280 338 Q251 348 229 310Z M365 244 Q340 235 308 259 L320 338 Q349 348 371 310Z"/><path data-muscle="Плечи" d="M218 102 Q188 91 170 119 Q154 147 172 177 Q190 190 211 168 L235 133Z M382 102 Q412 91 430 119 Q446 147 428 177 Q410 190 389 168 L365 133Z"/><path data-muscle="Трицепс" d="M184 174 Q205 166 218 184 L224 250 Q214 270 194 260 Q178 239 184 174Z M416 174 Q395 166 382 184 L376 250 Q386 270 406 260 Q422 239 416 174Z"/><path data-muscle="Ягодицы" d="M238 352 Q267 337 296 357 L292 430 Q267 445 241 420 Q225 393 238 352Z M362 352 Q333 337 304 357 L308 430 Q333 445 359 420 Q375 393 362 352Z"/><path data-muscle="Бицепс бедра" d="M242 433 Q267 427 291 440 L284 548 Q270 574 250 565 Q234 527 242 433Z M358 433 Q333 427 309 440 L316 548 Q330 574 350 565 Q366 527 358 433Z"/><path data-muscle="Икры" d="M246 558 Q265 551 282 566 L277 638 Q265 654 250 642 Q238 615 246 558Z M354 558 Q335 551 318 566 L323 638 Q335 654 350 642 Q362 615 354 558Z"/><path class="base" d="M181 177 Q163 191 164 229 L177 282 Q187 292 195 280 L190 224 L202 190Z M419 177 Q437 191 436 229 L423 282 Q413 292 405 280 L410 224 L398 190Z M248 645 L270 645 L273 690 Q265 703 232 701 L220 692 Q222 681 248 645Z M352 645 L330 645 L327 690 Q335 703 368 701 L380 692 Q378 681 352 645Z M222 690 Q246 681 273 691 L275 716 Q260 729 218 723 Q207 717 222 690Z M378 690 Q354 681 327 691 L325 716 Q340 729 382 723 Q393 717 378 690Z"/><path class="detail" d="M300 112 V348 M242 430 Q300 452 358 430 M250 570 Q300 586 350 570"/> `,
+side:`<path class="base" d="M275 40 Q324 28 348 62 L360 111 Q378 143 369 203 L352 260 Q367 308 352 354 L358 421 L348 525 L340 638 L324 650 L313 590 L302 500 L287 423 L269 353 L258 270 Q242 221 254 166 L253 105Z"/><path data-muscle="Плечи" d="M268 108 Q235 106 232 143 Q238 174 267 178 L285 142Z"/><path data-muscle="Грудь" d="M283 130 Q315 121 340 151 L334 193 Q306 201 278 176Z"/><path data-muscle="Спина" d="M261 152 Q246 188 264 256 L287 310 L301 245 L293 164Z"/><path data-muscle="Бицепс" d="M238 174 Q257 168 266 189 L264 255 Q247 270 235 249Z"/><path data-muscle="Пресс" d="M285 205 Q310 199 327 211 L320 300 Q300 311 282 292Z"/><path data-muscle="Ягодицы" d="M278 340 Q313 328 344 356 L340 422 Q315 440 286 412Z"/><path data-muscle="Квадрицепс" d="M287 411 Q318 404 340 427 L329 540 Q312 559 294 541Z"/><path data-muscle="Бицепс бедра" d="M268 413 Q288 410 300 435 L296 540 Q278 555 266 530Z"/><path data-muscle="Икры" d="M292 551 Q314 543 329 563 L322 638 Q304 654 292 632Z"/><path class="base" d="M232 173 Q215 199 221 247 L235 283 L249 277 L244 221 L260 184Z M324 640 L340 638 L350 690 Q340 703 309 698 L303 688Z M309 692 Q334 684 352 697 L357 715 Q339 728 304 718Z"/><path class="detail" d="M300 118 Q319 220 300 337 M287 430 L307 546"/> `
+};
+let activeView="front",lastTotals={};
+function paint(){host.innerHTML='<svg class="anatomy-svg" viewBox="0 0 600 760" role="img" aria-label="Подробная карта мышц" xmlns="'+NS+'"><g class="figure">'+paths[activeView]+'</g></svg>';host.querySelectorAll("[data-muscle]").forEach(el=>{if((lastTotals[el.getAttribute("data-muscle")]||0)>0)el.classList.add("is-active");});}
+function update(totals={}){lastTotals=totals||{};paint();}
+function view(which){activeView=which;paint();document.querySelectorAll("[data-anatomy-view]").forEach(b=>b.classList.toggle("active",b.dataset.anatomyView===which));}
+document.querySelectorAll("[data-anatomy-view]").forEach(b=>b.addEventListener("click",()=>view(b.dataset.anatomyView)));
+paint();window.MGC3D={update,view};
+})();
