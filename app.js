@@ -371,7 +371,7 @@ const MGC_TRANSLATIONS={
 ,"Грудь":["Chest","Hrudník"],"Спина":["Back","Záda"],"Плечи":["Shoulders","Ramena"],"Бицепс":["Biceps","Biceps"],"Трицепс":["Triceps","Triceps"],"Квадрицепс":["Quadriceps","Kvadriceps"],"Бицепс бедра":["Hamstrings","Hamstringy"],"Ягодицы":["Glutes","Hýždě"]
 
 };
-function mgcTranslateTextNode(node){if(!node||node.nodeType!==Node.TEXT_NODE)return;let value=node.nodeValue;if(!value.trim())return;const lang=state.settings.language;for(const [ru,pair] of Object.entries(MGC_TRANSLATIONS)){value=value.split(pair[0]).join(ru).split(pair[1]).join(ru);}if(lang!=="ru"){for(const [ru,pair] of Object.entries(MGC_TRANSLATIONS)){value=value.split(ru).join(pair[lang==="en"?0:1]);}}node.nodeValue=value;}
+function mgcTranslateTextNode(node){if(!node||node.nodeType!==Node.TEXT_NODE)return;let value=node.nodeValue;if(!value.trim())return;const lang=state.settings.language;for(const [ru,pair] of Object.entries(MGC_TRANSLATIONS)){value=value.split(pair[0]).join(ru).split(pair[1]).join(ru);}if(lang!=="ru"){for(const [ru,pair] of Object.entries(MGC_TRANSLATIONS)){value=value.split(ru).join(pair[lang==="en"?0:1]);}}if(value!==node.nodeValue)node.nodeValue=value;}
 function mgcApplyLanguage(){const lang=state.settings.language||"ru",d=MGC_I18N[lang]||MGC_I18N.ru;document.documentElement.lang=lang;
 document.querySelectorAll("[data-i18n]").forEach(el=>{const k=el.dataset.i18n;if(d[k]){const first=Array.from(el.childNodes).find(n=>n.nodeType===Node.TEXT_NODE&&n.nodeValue.trim());if(first)first.nodeValue=" "+d[k];else el.prepend(document.createTextNode(d[k]));}});
 document.querySelectorAll("body *").forEach(el=>{if(el.children.length===0)mgcTranslateTextNode(el.firstChild);});
@@ -402,4 +402,4 @@ let mgcInterval=null,mgcLeft=0;
 $("startRestTimer").onclick=()=>{clearInterval(mgcInterval);mgcLeft=state.settings.rest;const out=$("restTimerDisplay");const tick=()=>{out.textContent=Math.floor(mgcLeft/60)+":"+String(mgcLeft%60).padStart(2,"0");if(mgcLeft<=0){clearInterval(mgcInterval);if(state.settings.sounds){try{const ctx=new(window.AudioContext||window.webkitAudioContext)(),osc=ctx.createOscillator();osc.connect(ctx.destination);osc.frequency.value=880;osc.start();osc.stop(ctx.currentTime+.35);}catch{}}return;}mgcLeft--;};tick();mgcInterval=setInterval(tick,1000);};
 mgcApplySettings();mgcApplyLanguage();
 const mgcObserver=new MutationObserver(records=>{if(state.settings.language==="ru")return;records.forEach(r=>{if(r.type==="characterData")mgcTranslateTextNode(r.target);else r.addedNodes.forEach(n=>{if(n.nodeType===Node.TEXT_NODE)mgcTranslateTextNode(n);else if(n.querySelectorAll)n.querySelectorAll("*").forEach(el=>{if(el.children.length===0)mgcTranslateTextNode(el.firstChild);});});});});
-mgcObserver.observe(document.body,{subtree:true,childList:true,characterData:true});
+mgcObserver.observe(document.body,{subtree:true,childList:true});
