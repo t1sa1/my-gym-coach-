@@ -106,3 +106,12 @@ body.theme-light .settings-panel input[type=color]{background:#fff}
 .equipment-photo-placeholder{min-height:110px;border:1px solid #34353d;background:linear-gradient(145deg,#1a1b21,#101115);border-radius:14px}
 .equipment-photo-placeholder span{font-size:10px;font-weight:900;letter-spacing:1.5px;color:#f1f1f3}
 .detail-visual svg{filter:drop-shadow(0 3px 7px #0008)}
+
+/* Equipment is shown as photography only; exercise markers are typographic */
+.exercise-thumb.exercise-icon{display:grid;place-items:center;background:linear-gradient(145deg,#21171c,#111216);border:1px solid #4a2831;color:#ff4057}
+.exercise-thumb .exercise-icon-mark{display:grid;place-items:center;width:38px;height:38px;border:1px solid #78303e;border-radius:12px;background:linear-gradient(145deg,#2b171e,#15161b);color:#ff6477;font-size:12px;font-weight:900;letter-spacing:-.5px}
+.exercise-thumb.exercise-icon svg{display:none!important}
+.equipment-caption{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:9px 2px 13px;padding:10px 12px;border-left:2px solid var(--red);background:#17181e;border-radius:0 10px 10px 0}
+.equipment-caption .eyebrow{font-size:9px;color:#9b9da7;letter-spacing:1px}
+.equipment-caption b{font-size:11px;text-align:right}
+.exercise-photo.equipment-photo img{object-fit:contain}
