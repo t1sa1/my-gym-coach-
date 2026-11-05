@@ -53,15 +53,16 @@ function exercisePhoto(name){
   {re:/жим в тренажёре на грудь/i,p:make("Bench_press_Machine.jpg","Тренажёр для жима","Aliva Sahoo · CC BY-SA 4.0","Bench_Press.jpg")},
   {re:/жим штанги лёжа/i,p:make("Bench_Press.jpg","Скамья и штанга для жима","Aditya Oberai · CC BY-SA 4.0","Bench_press_Machine.jpg")},
   {re:/жим гантелей под наклоном|жим гантелей на наклонной|жим гантелей сидя|подъём гантелей в стороны|молотковые сгибания/i,p:make("Dumbells_and_free_weights_in_a_gym.jpg","Гантели и свободные веса","KeepActive Australia · CC BY-SA 4.0","Fitness_dumbbell_marked_with_a_green_logo_resting_on_a_gym_rack.jpg")},
-  {re:/тяга верхнего блока|подтягивания/i,p:make("Lat_Pull_down_Machine.jpg","Верхний блок для тяги","SAgbley · Wikimedia Commons","Diverging_Lat_Pulldown_Machine.jpg")},
+  {re:/подтягивания/i,p:make("Pull-up_bar.JPG","Турник для подтягиваний","Santeri Viinamäki · CC BY 4.0","Pull_up_bar_stand.jpg")},
+  {re:/тяга верхнего блока/i,p:make("Lat_Pull_down_Machine.jpg","Верхний блок для тяги","SAgbley · CC BY-SA 4.0","Diverging_Lat_Pulldown_Machine.jpg")},
   {re:/горизонтальная тяга|тяга с упором грудью/i,p:make("Multifunctional_cable_and_row_machines_in_a_gym.jpg","Горизонтальная блочная тяга","San Francisco Foghorn · CC BY 2.0","Functional_Trainer_Exercise_Machine_at_Gym.jpg")},
   {re:/кроссовер|разгибание рук на блоке|разгибание рук из-за головы/i,p:make("Functional_Trainer_Exercise_Machine_at_Gym.jpg","Кроссовер / блочный тренажёр","KeepActive Australia · Wikimedia Commons","Multifunctional_cable_and_row_machines_in_a_gym.jpg")},
   {re:/жим ногами/i,p:make("Leg_Press_Machine.jpg","Тренажёр для жима ногами","Paulmcdonald · CC BY-SA 4.0")},
   {re:/гакк-приседания/i,p:make("HackSquatMachineExercise.JPG","Гакк-тренажёр","GeorgeStepanek · Wikimedia Commons","Leg_Press_Machine.jpg")},
-  {re:/сгибание ног/i,p:make("LyingLegCurlMachineExercise.JPG","Тренажёр сгибания ног","GeorgeStepanek · Wikimedia Commons","Leg_Press_Machine.jpg")},
+  {re:/сгибание ног/i,p:make("LyingLegCurlMachineExercise.JPG","Тренажёр сгибания ног","GeorgeStepanek · CC BY-SA 3.0","Leg_Press_Machine.jpg")},
   {re:/разгибание ног/i,p:make("Young_man_doing_leg_with_machine_in_gym.jpg","Тренажёр для ног","Nenad Stojkovic · CC BY 2.0","Leg_Press_Machine.jpg")},
-  {re:/подъёмы на носки|икры сидя/i,p:make("SeatedCalfRaiseMachineExercise.JPG","Тренажёр для икр сидя","GeorgeStepanek · Wikimedia Commons","Seated_calf_machine.jpg")},
-  {re:/обратная бабочка/i,p:make("Chest_Fly_Machine_1.jpg","Тренажёр сведения / разведения рук","Wikimedia Commons · Chest Fly Machine","Functional_Trainer_Exercise_Machine_at_Gym.jpg")},
+  {re:/подъёмы на носки|икры сидя/i,p:make("SeatedCalfRaiseMachineExercise.JPG","Тренажёр для икр сидя","GeorgeStepanek · CC BY-SA 3.0","Seated_calf_machine.jpg")},
+  {re:/обратная бабочка/i,p:make("Chest_Fly_Machine_1.jpg","Тренажёр сведения / разведения рук","SAgbley · CC BY-SA 4.0","Functional_Trainer_Exercise_Machine_at_Gym.jpg")},
   {re:/скамье скотта/i,p:make("Preacher_curl.webp","Скамья Скотта для сгибаний","SALlM BlN YOUSUF · CC BY 4.0","Dumbells_and_free_weights_in_a_gym.jpg")},
   {re:/приседания|румынская тяга|ягодичный мост|болгарские выпады|сгибание рук EZ/i,p:make("Barbell_and_Dumbbells_in_a_local_health_club.jpg","Штанга и свободные веса","Alvinategyeka · CC BY-SA 4.0","Free_weight_for_exercises_in_a_gym.jpg")},
   {re:/пресс/i,p:make("P90xgym.jpg","Инвентарь для упражнений с собственным весом","Andman8 · Wikimedia Commons","Gym_workout_machine.jpg")}
@@ -109,7 +110,8 @@ function exerciseMuscleMini(name){
 function renderExerciseDetail(name){
  const g=exerciseGuide(name), steps=g.steps.map((x,i)=>'<li><span>'+(i+1)+'</span><p>'+x+'</p></li>').join('');
  const photo=exercisePhoto(name);
- const photoBlock=photo?'<figure class="exercise-photo equipment-photo">'+equipmentImageMarkup(photo,"Фотография оборудования: "+photo.label,false)+'<figcaption>'+photo.label+' · '+photo.credit+' · <a href="'+photo.page+'" target="_blank" rel="noopener">источник и лицензия</a></figcaption></figure>':'<div class="photo-placeholder equipment-photo-placeholder"><span>ОБОРУДОВАНИЕ</span><small>'+g.equipment+' · фото будет добавлено в библиотеку оборудования</small></div>';
+ const credit=photo&&photo.credit.indexOf("KeepActive")===0?photo.credit+' · <a href="https://keepactive.com.au/" target="_blank" rel="noopener">KeepActive</a>':photo&&photo.credit;
+ const photoBlock=photo?'<figure class="exercise-photo equipment-photo">'+equipmentImageMarkup(photo,"Фотография оборудования: "+photo.label,false)+'<figcaption>'+photo.label+' · '+credit+' · <a href="'+photo.page+'" target="_blank" rel="noopener">источник и лицензия</a></figcaption></figure>':'<div class="photo-placeholder equipment-photo-placeholder"><span>ОБОРУДОВАНИЕ</span><small>'+g.equipment+' · фото будет добавлено в библиотеку оборудования</small></div>';
  $('exerciseDetail').innerHTML=photoBlock+'<div class="equipment-caption"><span class="eyebrow">ОБОРУДОВАНИЕ</span><b>'+g.equipment+'</b></div>'+exerciseMuscleMini(name)+'<div class="detail-muscles"><div><small>ОСНОВНАЯ НАГРУЗКА</small><b>'+g.primary+'</b></div><div><small>ДОПОЛНИТЕЛЬНО</small><b>'+g.secondary+'</b></div></div><div class="detail-steps"><h3>Как выполнять</h3><ol>'+steps+'</ol></div><div class="detail-tip"><span>✦</span><p>'+g.tip+'</p></div>';
 }
 
