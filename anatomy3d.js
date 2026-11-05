@@ -1,50 +1,70 @@
 (()=> {
 const host=document.getElementById("anatomy3d");if(!host)return;
-const NS="http://www.w3.org/2000/svg";let activeView="front",lastTotals={},scale=1,startX=0,startY=0,pointers=new Map(),lastPinch=0,suppressSwipe=false;
-const base='<defs><linearGradient id="body" x1="0" y1="0" x2="1" y2=".15"><stop stop-color="#535a65"/><stop offset=".22" stop-color="#c6cbd2"/><stop offset=".48" stop-color="#737b86"/><stop offset=".72" stop-color="#dce0e5"/><stop offset="1" stop-color="#555d68"/></linearGradient><linearGradient id="muscle" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e2e6eb"/><stop offset=".22" stop-color="#aeb5bf"/><stop offset=".52" stop-color="#68717d"/><stop offset=".78" stop-color="#cbd0d7"/><stop offset="1" stop-color="#515a66"/></linearGradient><linearGradient id="hot" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff9aa5"/><stop offset=".24" stop-color="#ff4058"/><stop offset=".62" stop-color="#bb102c"/><stop offset="1" stop-color="#ff6478"/></linearGradient><linearGradient id="dark" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#252a32"/><stop offset="1" stop-color="#7b8490"/></linearGradient><filter id="shadow" x="-30%" y="-20%" width="160%" height="150%"><feGaussianBlur stdDeviation="7"/></filter></defs>';
-const path=(d,m,cls="")=>'<path '+(m?'data-muscle="'+m+'"':'class="'+cls+'"')+' d="'+d+'" />';
-const detail=d=>path(d,null,"detail");
+const NS="http://www.w3.org/2000/svg";
+let activeView="front",lastTotals={},scale=1,startX=0,startY=0,pointers=new Map(),lastPinch=0,suppressSwipe=false;
+const defs='<defs>'+
+'<linearGradient id="body" x1="0" y1="0" x2="1" y2=".2"><stop stop-color="#525a66"/><stop offset=".18" stop-color="#cbd0d8"/><stop offset=".42" stop-color="#737d89"/><stop offset=".68" stop-color="#e0e4e9"/><stop offset="1" stop-color="#555e69"/></linearGradient>'+
+'<linearGradient id="muscle" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f0f2f5"/><stop offset=".18" stop-color="#b9c0ca"/><stop offset=".48" stop-color="#707986"/><stop offset=".75" stop-color="#d7dce3"/><stop offset="1" stop-color="#555e6b"/></linearGradient>'+
+'<linearGradient id="hot" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff9da7"/><stop offset=".25" stop-color="#ff4058"/><stop offset=".62" stop-color="#c41430"/><stop offset="1" stop-color="#ff7888"/></linearGradient>'+
+'<radialGradient id="head" cx=".35" cy=".22" r=".8"><stop stop-color="#edf0f4"/><stop offset=".35" stop-color="#aab2bd"/><stop offset=".72" stop-color="#66707d"/><stop offset="1" stop-color="#424b57"/></radialGradient>'+
+'<filter id="softShadow" x="-30%" y="-20%" width="160%" height="150%"><feGaussianBlur stdDeviation="9"/></filter></defs>';
+const p=(d,m,cls)=>'<path '+(m?'data-muscle="'+m+'"':'class="'+(cls||"detail")+'"')+' d="'+d+'"/>';
+const line=d=>p(d,null,"detail");
+const silhouette='<path class="body-shape" d="M202 139Q185 120 187 82Q190 23 240 20Q290 23 293 82Q295 120 278 139L309 167Q357 169 386 204Q410 236 395 300L375 382Q369 421 352 451L365 536Q377 585 362 650L345 760Q339 805 321 851L299 849L292 766L275 652L240 560L205 652L188 766L181 849L159 851Q141 805 135 760L118 650Q103 585 115 536L128 451Q111 421 105 382L85 300Q70 236 94 204Q123 169 171 167Z"/>';
+const head='<ellipse class="head-shape" cx="240" cy="82" rx="51" ry="64"/><path class="detail" d="M201 105Q240 121 279 105M211 129Q240 138 269 129"/>';
+const neck='<path class="body-shape" d="M205 133Q210 165 186 183L215 211H265L294 183Q270 165 275 133Q240 157 205 133Z"/>';
 const front=[
-path("M203 143Q188 126 190 83Q193 31 240 24Q287 31 290 83Q292 126 277 143L302 171Q350 171 375 202Q402 237 388 302L370 382Q365 418 350 451L360 535Q373 583 358 647L340 760Q334 798 318 829L304 824L297 754L278 650L240 555L202 650L183 754L176 824L162 829Q146 798 140 760L122 647Q107 583 120 535L130 451Q115 418 110 382L92 302Q78 237 105 202Q130 171 178 171Z",null,"body-shape"),
-path("M203 143Q240 164 277 143L294 181Q274 205 240 204Q206 205 186 181Z",null,"neck"),
-path("M191 78Q205 48 240 47Q275 48 289 78Q278 104 240 108Q202 104 191 78Z",null,"head"),
-path("M111 194Q82 184 65 213Q45 251 62 286Q81 315 112 294L145 236Z M369 194Q398 184 415 213Q435 251 418 286Q399 315 368 294L335 236Z","Плечи"),
-path("M151 218Q182 190 235 213L237 300Q207 321 165 296Q132 274 151 218Z M329 218Q298 190 245 213L243 300Q273 321 315 296Q348 274 329 218Z","Грудь"),
-path("M99 282Q119 264 139 287L130 391Q117 426 92 404Q74 371 78 322Z M381 282Q361 264 341 287L350 391Q363 426 388 404Q406 371 402 322Z","Бицепс"),
-path("M78 310Q94 287 111 304L103 408Q91 431 72 410Q60 372 65 340Z M402 310Q386 287 369 304L377 408Q389 431 408 410Q420 372 415 340Z","Трицепс"),
-path("M194 310Q216 300 237 312L237 365Q216 377 194 365Z M286 310Q264 300 243 312L243 365Q264 377 286 365Z M194 371Q216 363 237 374L237 428Q216 440 194 428Z M286 371Q264 363 243 374L243 428Q264 440 286 428Z M194 434Q216 427 237 438L237 487Q216 498 194 487Z M286 434Q264 427 243 438L243 487Q264 498 286 487Z","Пресс"),
-path("M151 496Q191 481 235 501L230 557Q201 578 163 557Q140 537 151 496Z M329 496Q289 481 245 501L250 557Q279 578 317 557Q340 537 329 496Z","Пресс"),
-path("M144 557Q182 540 231 564L222 703Q207 746 175 758Q145 744 132 674Q125 606 144 557Z M336 557Q298 540 249 564L258 703Q273 746 305 758Q335 744 348 674Q355 606 336 557Z","Квадрицепс"),
-path("M171 755Q198 748 220 766L207 862Q192 895 169 881Q151 845 156 798Z M309 755Q282 748 260 766L273 862Q288 895 311 881Q329 845 324 798Z","Икры"),
-detail("M240 177V505 M151 218Q184 231 235 249 M329 218Q296 231 245 249 M149 303Q178 323 235 315 M331 303Q302 323 245 315 M194 366H237 M243 366H286 M194 429H237 M243 429H286 M194 487H237 M243 487H286 M240 502V556 M151 575Q179 600 219 588 M329 575Q301 600 261 588 M176 600Q190 671 175 730 M304 600Q290 671 305 730 M180 770Q193 808 178 854 M300 770Q287 808 302 854"),
-detail("M103 225Q119 242 131 270 M377 225Q361 242 349 270 M91 328Q105 355 96 389 M389 328Q375 355 384 389 M210 95Q240 119 270 95")
+ silhouette,head,neck,
+ p("M171 177Q137 165 111 190Q82 219 91 269Q101 309 143 307Q166 286 177 239Z M309 177Q343 165 369 190Q398 219 389 269Q379 309 337 307Q314 286 303 239Z","Плечи"),
+ p("M145 211Q177 183 235 208L237 301Q216 324 175 312Q135 295 130 258Q128 231 145 211Z M335 211Q303 183 245 208L243 301Q264 324 305 312Q345 295 350 258Q352 231 335 211Z","Грудь"),
+ p("M101 277Q122 260 146 282Q159 316 143 371Q130 410 105 414Q81 401 79 357Q77 306 101 277Z M379 277Q358 260 334 282Q321 316 337 371Q350 410 375 414Q399 401 401 357Q403 306 379 277Z","Biceps"),
+ p("M84 354Q105 337 128 359L119 433Q105 461 83 449Q66 426 68 391Z M396 354Q375 337 352 359L361 433Q375 461 397 449Q414 426 412 391Z","Трицепс"),
+ p("M76 438Q95 424 115 442L128 529Q121 561 99 568Q77 555 67 510Z M404 438Q385 424 365 442L352 529Q359 561 381 568Q403 555 413 510Z","Предплечья"),
+ p("M188 308Q211 298 237 309L237 360Q214 374 188 359Z M292 308Q269 298 243 309L243 360Q266 374 292 359Z M188 365Q211 355 237 367L237 420Q214 433 188 420Z M292 365Q269 355 243 367L243 420Q266 433 292 420Z M188 425Q211 415 237 427L237 480Q214 492 188 480Z M292 425Q269 415 243 427L243 480Q266 492 292 480Z","Пресс"),
+ p("M145 300Q164 314 184 321L174 430Q157 447 139 422Q127 370 145 300Z M335 300Q316 314 296 321L306 430Q323 447 341 422Q353 370 335 300Z","Косые мышцы живота"),
+ p("M157 491Q194 475 235 496L231 551Q205 574 165 556Q143 536 157 491Z M323 491Q286 475 245 496L249 551Q275 574 315 556Q337 536 323 491Z","Ягодицы"),
+ p("M145 552Q182 536 230 559L222 709Q205 750 174 765Q144 747 132 678Q125 611 145 552Z M335 552Q298 536 250 559L258 709Q275 750 306 765Q336 747 348 678Q355 611 335 552Z","Квадрицепс"),
+ p("M177 757Q198 745 221 766L210 861Q194 895 169 881Q150 845 157 800Z M303 757Q282 745 259 766L270 861Q286 895 311 881Q330 845 323 800Z","Икры"),
+ line("M240 170V489 M151 213Q187 232 235 247 M329 213Q293 232 245 247 M142 291Q174 321 235 311 M338 291Q306 321 245 311 M188 360H237M243 360H292M188 421H237M243 421H292M188 481H237M243 481H292M240 493V554 M160 510Q188 530 226 522 M320 510Q292 530 254 522 M177 576Q194 640 176 728 M303 576Q286 640 304 728 M184 776Q197 817 178 859 M296 776Q283 817 302 859"),
+ line("M110 202Q128 224 143 257 M370 202Q352 224 337 257 M91 362Q108 386 101 424 M389 362Q372 386 379 424 M206 81Q240 93 274 81")
 ].join("");
 const back=[
-path("M203 143Q188 126 190 83Q193 31 240 24Q287 31 290 83Q292 126 277 143L302 171Q350 171 375 202Q402 237 388 302L370 382Q365 418 350 451L360 535Q373 583 358 647L340 760Q334 798 318 829L304 824L297 754L278 650L240 555L202 650L183 754L176 824L162 829Q146 798 140 760L122 647Q107 583 120 535L130 451Q115 418 110 382L92 302Q78 237 105 202Q130 171 178 171Z",null,"body-shape"),
-path("M203 78Q205 48 240 47Q275 48 289 78Q278 104 240 108Q202 104 191 78Z",null,"head"),
-path("M111 194Q82 184 65 213Q45 251 62 286Q81 315 112 294L145 236Z M369 194Q398 184 415 213Q435 251 418 286Q399 315 368 294L335 236Z","Плечи"),
-path("M180 205Q211 185 237 206L230 360Q211 389 173 370Q145 328 151 253Z M300 205Q269 185 243 206L250 360Q269 389 307 370Q335 328 329 253Z M173 367Q203 350 235 374L224 471Q192 490 163 455Z M307 367Q277 350 245 374L256 471Q288 490 317 455Z","Спина"),
-path("M99 282Q119 264 139 287L130 391Q117 426 92 404Q74 371 78 322Z M381 282Q361 264 341 287L350 391Q363 426 388 404Q406 371 402 322Z","Трицепс"),
-path("M78 310Q94 287 111 304L103 408Q91 431 72 410Q60 372 65 340Z M402 310Q386 287 369 304L377 408Q389 431 408 410Q420 372 415 340Z","Бицепс"),
-path("M151 470Q190 450 237 474L238 554Q204 579 163 548Q139 521 151 470Z M329 470Q290 450 243 474L242 554Q276 579 317 548Q341 521 329 470Z","Ягодицы"),
-path("M144 556Q183 540 231 568L220 721Q199 757 171 749Q140 710 132 638Z M336 556Q297 540 249 568L260 721Q281 757 309 749Q340 710 348 638Z","Бицепс бедра"),
-path("M171 746Q198 735 220 759L207 863Q192 895 169 881Q151 845 156 798Z M309 746Q282 735 260 759L273 863Q288 895 311 881Q329 845 324 798Z","Икры"),
-detail("M240 177V466 M151 231Q191 255 235 229 M329 231Q289 255 245 229 M155 277Q190 309 228 290 M325 277Q290 309 252 290 M172 376Q204 397 230 376 M308 376Q276 397 250 376 M240 476V554 M151 493Q190 520 235 506 M329 493Q290 520 245 506 M171 582Q190 633 175 714 M309 582Q290 633 305 714 M180 768Q193 810 178 854 M300 768Q287 810 302 854"),
-detail("M103 225Q119 242 131 270 M377 225Q361 242 349 270")
+ silhouette,head,neck,
+ p("M171 177Q137 165 111 190Q82 219 91 269Q101 309 143 307Q166 286 177 239Z M309 177Q343 165 369 190Q398 219 389 269Q379 309 337 307Q314 286 303 239Z","Плечи"),
+ p("M183 190Q211 173 237 198L232 350Q211 385 174 367Q144 331 151 255Z M297 190Q269 173 243 198L248 350Q269 385 306 367Q336 331 329 255Z","Спина"),
+ p("M163 340Q195 324 235 352L229 460Q197 487 160 454Q143 397 163 340Z M317 340Q285 324 245 352L251 460Q283 487 320 454Q337 397 317 340Z","Спина"),
+ p("M101 277Q122 260 146 282Q159 316 143 371Q130 410 105 414Q81 401 79 357Q77 306 101 277Z M379 277Q358 260 334 282Q321 316 337 371Q350 410 375 414Q399 401 401 357Q403 306 379 277Z","Трицепс"),
+ p("M84 354Q105 337 128 359L119 433Q105 461 83 449Q66 426 68 391Z M396 354Q375 337 352 359L361 433Q375 461 397 449Q414 426 412 391Z","Biceps"),
+ p("M76 438Q95 424 115 442L128 529Q121 561 99 568Q77 555 67 510Z M404 438Q385 424 365 442L352 529Q359 561 381 568Q403 555 413 510Z","Предплечья"),
+ p("M151 466Q190 444 237 469L239 556Q203 582 161 549Q137 519 151 466Z M329 466Q290 444 243 469L241 556Q277 582 319 549Q343 519 329 466Z","Ягодицы"),
+ p("M145 552Q182 536 230 559L222 713Q204 755 174 765Q143 745 132 678Q125 611 145 552Z M335 552Q298 536 250 559L258 713Q276 755 306 765Q337 745 348 678Q355 611 335 552Z","Biceps femoris"),
+ p("M177 757Q198 745 221 766L210 861Q194 895 169 881Q150 845 157 800Z M303 757Q282 745 259 766L270 861Q286 895 311 881Q330 845 323 800Z","Икры"),
+ line("M240 170V557 M152 218Q190 252 235 226 M328 218Q290 252 245 226 M157 276Q190 318 230 297 M323 276Q290 318 250 297 M166 355Q197 384 230 367 M314 355Q283 384 250 367 M160 425Q196 449 230 430 M320 425Q284 449 250 430 M240 470V555 M151 492Q191 521 235 507 M329 492Q289 521 245 507 M174 578Q194 642 176 730 M306 578Q286 642 304 730 M184 776Q197 817 178 859 M296 776Q283 817 302 859"),
+ line("M110 202Q128 224 143 257 M370 202Q352 224 337 257 M91 362Q108 386 101 424 M389 362Q372 386 379 424")
 ].join("");
 function render(){
- const content=activeView==="front"?front:back;
- const svg='<svg class="anatomy-svg premium-anatomy" viewBox="0 0 480 920" role="img" aria-label="Объёмная анатомическая модель '+(activeView==="front"?"спереди":"сзади")+'" xmlns="'+NS+'">'+base+'<ellipse cx="240" cy="884" rx="105" ry="13" fill="#000" opacity=".55" filter="url(#shadow)"/><g id="anatomyScale" transform="translate(240 460) scale('+scale+') translate(-240 -460)">'+content+'</g></svg>';
- host.innerHTML=svg;
- host.querySelectorAll("[data-muscle]").forEach(el=>{const m=el.dataset.muscle;const v=Number(lastTotals[m]||0);el.style.fill=v>0?"url(#hot)":"url(#muscle)";el.style.filter=v>0?"drop-shadow(0 0 8px #f12a4388)":"";el.style.opacity=v>0?String(Math.min(.75+v*.08,1)):"1";el.style.cursor="pointer";el.addEventListener("click",()=>{const hint=document.querySelector(".anatomy3d-hint");if(hint)hint.textContent=m+" · нагрузка за 7 дней: "+v.toFixed(1);});});
+ const body=activeView==="front"?front:back;
+ host.innerHTML='<svg class="anatomy-svg premium-anatomy" viewBox="0 0 480 920" role="img" aria-label="Анатомическая модель без лица и волос, '+(activeView==="front"?"спереди":"сзади")+'" xmlns="'+NS+'">'+defs+'<ellipse cx="240" cy="890" rx="116" ry="12" fill="#000" opacity=".55" filter="url(#softShadow)"/><g id="anatomyScale" transform="translate(240 460) scale('+scale+') translate(-240 -460)">'+body+'</g></svg>';
+ host.querySelectorAll("[data-muscle]").forEach(el=>{
+  const key=el.dataset.muscle;
+  const v=Number(lastTotals[key]||0);
+  const active=v>0;
+  el.style.fill=active?"url(#hot)":"url(#muscle)";
+  el.style.filter=active?"drop-shadow(0 0 7px #f12a4388)":"";
+  el.style.opacity=active?String(Math.min(.78+v*.08,1)):"1";
+  el.style.cursor="pointer";
+  el.addEventListener("click",()=>{
+   const hint=document.querySelector(".anatomy3d-hint");
+   if(hint)hint.textContent=key+" · нагрузка за 7 дней: "+v.toFixed(1);
+  });
+ });
 }
 function update(totals={}){lastTotals=totals||{};render();}
 function view(which){if(which!=="front"&&which!=="back")return;activeView=which;render();document.querySelectorAll("[data-anatomy-view]").forEach(b=>b.classList.toggle("active",b.dataset.anatomyView===which));}
 document.querySelectorAll("[data-anatomy-view]").forEach(b=>b.addEventListener("click",()=>view(b.dataset.anatomyView)));
-host.addEventListener("pointerdown",e=>{host.setPointerCapture?.(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===1){startX=e.clientX;startY=e.clientY;}if(pointers.size===2){const p=[...pointers.values()];lastPinch=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);suppressSwipe=true;}});
-host.addEventListener("pointermove",e=>{if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===2){const p=[...pointers.values()],d=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);if(lastPinch>0){scale=Math.max(.78,Math.min(1.4,scale*d/lastPinch));const g=host.querySelector("#anatomyScale");if(g)g.setAttribute("transform","translate(240 460) scale("+scale+") translate(-240 -460)");}lastPinch=d;}});
-function releasePointer(e){pointers.delete(e.pointerId);if(pointers.size<2)lastPinch=0;if(pointers.size===0){const dx=e.clientX-startX,dy=e.clientY-startY;if(!suppressSwipe&&Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy))view(activeView==="front"?"back":"front");suppressSwipe=false;}}
-host.addEventListener("pointerup",releasePointer);host.addEventListener("pointercancel",releasePointer);
-host.addEventListener("wheel",e=>{if(!e.ctrlKey)return;e.preventDefault();scale=Math.max(.85,Math.min(1.3,scale+(e.deltaY<0?.05:-.05)));const g=host.querySelector("#anatomyScale");if(g)g.setAttribute("transform","translate(240 460) scale("+scale+") translate(-240 -460)");},{passive:false});
+host.addEventListener("pointerdown",e=>{host.setPointerCapture?.(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===1){startX=e.clientX;startY=e.clientY;}if(pointers.size===2){const a=[...pointers.values()];lastPinch=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);suppressSwipe=true;}});
+host.addEventListener("pointermove",e=>{if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===2){const a=[...pointers.values()],d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);if(lastPinch>0){scale=Math.max(.8,Math.min(1.35,scale*d/lastPinch));const g=host.querySelector("#anatomyScale");if(g)g.setAttribute("transform","translate(240 460) scale("+scale+") translate(-240 -460)");}lastPinch=d;}});
+function release(e){pointers.delete(e.pointerId);if(pointers.size<2)lastPinch=0;if(!pointers.size){const dx=e.clientX-startX,dy=e.clientY-startY;if(!suppressSwipe&&Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy))view(activeView==="front"?"back":"front");suppressSwipe=false;}}
+host.addEventListener("pointerup",release);host.addEventListener("pointercancel",release);
 render();window.MGC3D={update,view};
 })();
