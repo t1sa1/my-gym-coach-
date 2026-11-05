@@ -11,7 +11,7 @@ const LABELS={
 };
 const GROUPS=["Грудь","Спина","Плечи","Бицепс","Трицепс","Квадрицепс","Бицепс бедра","Ягодицы","Икры","Пресс"];
 let THREE,scene,camera,renderer,bodyGroup,activeView="front",lastTotals={},drag=null,zoom=1,ready=false,pinchDistance=0;
-const pointers=new Map(),raycaster=null,mouse=null,highlighted=new Set();
+const pointers=new Map();let raycaster=null,mouse=null;
 const hint=()=>document.querySelector(".anatomy3d-hint");
 function groupForName(name){
  const n=String(name||"").toLowerCase().replace(/[_ .]+/g,"-");
@@ -44,8 +44,7 @@ function setView(which){if(which!=="front"&&which!=="back")return;activeView=whi
 function resize(){if(!renderer||!camera)return;const w=Math.max(1,host.clientWidth),h=Math.max(1,host.clientHeight);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
 function fitModel(root){
  const box=new THREE.Box3().setFromObject(root),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());
- root.position.sub(center);
- const scale=6.25/Math.max(size.y,0.001);root.scale.setScalar(scale);
+ const scale=6.25/Math.max(size.y,0.001);root.scale.setScalar(scale);root.position.set(-center.x*scale,-center.y*scale,-center.z*scale);
  // Center model at the visual middle of the card after scaling.
  root.position.y+=0;
 }
@@ -58,7 +57,7 @@ function addBlankHead(){
 async function init(){
  try{
   const THREEmod=await import("https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js");
-  THREE=THREEmod;
+  THREE=THREEmod;raycaster=new THREE.Raycaster();mouse=new THREE.Vector2();
   const {GLTFLoader}=await import("https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/loaders/GLTFLoader.js");
   scene=new THREE.Scene();
   camera=new THREE.PerspectiveCamera(34,1,.1,100);camera.position.set(0,0,10.5);
