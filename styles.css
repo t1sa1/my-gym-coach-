@@ -225,3 +225,5 @@ footer{color:#666b75}
  .exercise-photo img{height:190px}
 }
 @media(min-width:601px){.tabs{position:sticky;top:72px}}
+
+.exercise-photo.photo-failed:before{content:"Фото временно недоступно";display:grid;place-items:center;min-height:140px;color:#a1a1aa;font-size:11px}
