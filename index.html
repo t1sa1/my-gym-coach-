@@ -1,93 +1,58 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#090a0d">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="MY GYM COACH">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icon-192.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
-<title>MY GYM COACH</title>
-</head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08090c"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="MY GYM COACH">
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css">
+<title>MY GYM COACH</title></head>
 <body>
-<header class="top">
- <a class="brand" href="#" aria-label="MY GYM COACH — главная"><span class="brand-mark"><span> M </span></span><span class="brand-copy"><b>MY GYM COACH</b><small>PERSONAL TRAINING SYSTEM</small></span></a>
- <div class="top-right"><span class="live-dot"></span><span>ТРЕНЕР АКТИВЕН</span></div>
-</header>
+<header class="top"><a class="brand" href="#" aria-label="MY GYM COACH"><span class="brand-copy"><b>MY GYM <em>COACH</em></b><small>YOUR PERSONAL AI TRAINER</small></span></a><div class="top-right"><span class="live-dot"></span><span>ТРЕНЕР АКТИВЕН</span><button class="profile-shortcut" data-open-tab="profile" aria-label="Профиль">⌘</button></div></header>
 <main>
- <section class="hero">
-  <div class="hero-copy"><div class="eyebrow"><span class="eyebrow-line"></span> ТВОЙ ПРОГРЕСС НАЧИНАЕТСЯ ЗДЕСЬ</div>
-   <h1>СТАНОВИСЬ<br><em>СИЛЬНЕЕ.</em></h1>
-   <p>Тренируйся осознанно. Фиксируй каждый подход. Становись лучше с каждой неделей.</p>
-   <div class="hero-actions"><span class="hero-status"><i></i> ТВОЙ ТРЕНИРОВОЧНЫЙ ДНЕВНИК</span><span class="hero-cycle">ЦИКЛ 01 / 08</span></div>
-  </div>
-  <div class="hero-art" aria-hidden="true"><div class="hero-ring ring-one"></div><div class="hero-ring ring-two"></div><div class="hero-figure"><span></span><i></i><b></b></div><div class="hero-art-label">NO<br>LIMITS</div></div>
-  <div class="hero-stats">
-   <div><strong id="statSessions">0</strong><span>ТРЕНИРОВОК</span></div>
-   <div><strong id="statSets">0</strong><span>ПОДХОДОВ</span></div>
-   <div><strong id="statVolume">0</strong><span>ОБЪЁМ, КГ</span></div>
-  </div>
- </section>
- <nav class="tabs" aria-label="Основная навигация">
-  <button class="tab active" data-tab="train"><span class="nav-icon">⌁</span><span>Зал</span></button>
-  <button class="tab" data-tab="progress"><span class="nav-icon">◫</span><span>Прогресс</span></button>
-  <button class="tab" data-tab="plan"><span class="nav-icon">▤</span><span>План</span></button>
-  <button class="tab" data-tab="ai"><span class="nav-icon">✦</span><span>AI-тренер</span></button>
-  <button class="tab" data-tab="profile"><span class="nav-icon">◉</span><span>Профиль</span></button>
- </nav>
-
- <section id="view-train" class="view active">
-  <div class="page-heading"><div><div class="eyebrow">ТРЕНИРОВОЧНЫЙ ЦИКЛ</div><h2>Твоя тренировка</h2><p class="muted">Выбери день и начни записывать результаты.</p></div><span class="tag" id="dayTag">ДЕНЬ 1</span></div>
-  <div class="day-select" id="daySelect"></div>
-  <div class="panel coach-panel"><div class="coach-icon">✦</div><div><b>СОВЕТ AI-ТРЕНЕРА</b><p id="coachAdvice">Записывай результаты — после нескольких тренировок приложение сможет сравнивать твои рабочие веса.</p></div><span class="coach-spark">✧</span></div>
-  <div class="section-head"><div><div class="eyebrow">ПРОГРАММА ДНЯ</div><h3>Упражнения</h3></div><span class="count-pill" id="exerciseCount"></span></div>
-  <div id="exerciseList" class="exercise-list"></div>
-  <div id="exerciseDetail" class="exercise-detail"></div>
-  <div class="panel log-panel">
-   <div class="panel-kicker">ЗАПИСЬ РЕЗУЛЬТАТА</div><h3 id="selectedExercise">Жим штанги лёжа</h3>
+<section id="view-train" class="view active">
+ <div class="hero">
+  <div class="hero-photo" aria-hidden="true"><div class="hero-glow"></div><div class="hero-athlete"><i class="head"></i><i class="torso"></i><i class="arm left"></i><i class="arm right"></i><i class="leg left"></i><i class="leg right"></i></div></div>
+  <div class="hero-copy"><div class="eyebrow">ТВОЯ СИЛА. ТВОЙ ПУТЬ.</div><h1>MY GYM<br><em>COACH</em></h1><p>Тренируйся умнее. Становись сильнее.</p><div class="hero-actions"><button class="primary" id="startWorkout">Начать тренировку <span>▶</span></button></div></div>
+  <div class="hero-stats"><div><strong id="statSessions">0</strong><span>ТРЕНИРОВОК</span></div><div><strong id="statSets">0</strong><span>ПОДХОДОВ</span></div><div><strong id="statVolume">0</strong><span>ОБЪЁМ, КГ</span></div></div>
+ </div>
+ <div class="section-head home-heading"><div><div class="eyebrow">ПЛАН НА СЕГОДНЯ</div><h2>Твоя следующая тренировка</h2></div><span class="tag" id="dayTag">ДЕНЬ 1</span></div>
+ <div class="panel next-workout"><div><span class="panel-kicker">ПРОГРАММА</span><h3 id="homeWorkoutName">Upper Body A</h3><p class="muted">Сохраняй технику и постепенно увеличивай нагрузку.</p></div><button class="round-arrow" id="goWorkout" aria-label="К упражнениям">↗</button></div>
+ <div class="quick-stats"><div class="panel quick-stat"><span>♨</span><b id="homeSessions">0</b><small>Тренировок</small></div><div class="panel quick-stat"><span>⚡</span><b id="homeVolume">0</b><small>Объём, кг</small></div><div class="panel quick-stat"><span>↗</span><b id="homeSets">0</b><small>Подходов</small></div></div>
+ <div class="panel coach-panel"><div class="coach-icon">✦</div><div><b>СОВЕТ AI-ТРЕНЕРА</b><p id="coachAdvice">Записывай результаты — после нескольких тренировок приложение сможет сравнивать твои рабочие веса.</p></div></div>
+ <div id="workoutArea"><div class="section-head"><div><div class="eyebrow">ПРОГРАММА ДНЯ</div><h3>Упражнения</h3></div><span class="count-pill" id="exerciseCount"></span></div>
+  <div class="day-select" id="daySelect"></div><div id="exerciseList" class="exercise-list"></div><div id="exerciseDetail" class="exercise-detail"></div>
+  <div class="panel log-panel"><div class="panel-kicker">ЗАПИСЬ РЕЗУЛЬТАТА</div><h3 id="selectedExercise">Жим штанги лёжа</h3>
    <div class="field-row"><label>Вес, кг<input id="weight" type="number" min="0" step="0.5" inputmode="decimal" placeholder="40"></label><label>Повторения<input id="reps" type="number" min="1" step="1" inputmode="numeric" placeholder="10"></label></div>
-   <label class="wide-label">Заметка <input id="notes" type="text" placeholder="Например: осталось 2 повтора в запасе"></label>
-   <button class="primary full" id="addSet">＋ Записать подход</button>
-   <div id="currentSets" class="current-sets"></div>
-   <button class="secondary full" id="finishExercise">Отметить упражнение выполненным</button>
-   <button class="finish full" id="finishWorkout">Завершить тренировку</button>
+   <label class="wide-label">Заметка<input id="notes" type="text" placeholder="Например: осталось 2 повтора в запасе"></label>
+   <button class="primary full" id="addSet">＋ Записать подход</button><div id="currentSets" class="current-sets"></div>
+   <button class="secondary full" id="finishExercise">Отметить упражнение выполненным</button><button class="finish full" id="finishWorkout">Завершить тренировку</button>
   </div>
- </section>
-
- <section id="view-progress" class="view">
-  <div class="page-heading"><div><div class="eyebrow">ТВОИ РЕЗУЛЬТАТЫ</div><h2>Прогресс</h2><p class="muted">Смотри, как меняются рабочие веса и нагрузка.</p></div></div>
-  <div class="panel chart-panel"><div class="panel-kicker">СИЛА И ДИНАМИКА</div><h3>Динамика рабочих весов</h3><p class="muted">Выбери упражнение, чтобы увидеть историю лучших подходов.</p><select id="progressExercise"></select><div id="progressChart" class="chart-empty">Добавь результаты тренировок, чтобы увидеть график.</div></div>
-  <div class="panel muscle-panel"><div class="panel-kicker">АНАЛИЗ НАГРУЗКИ</div><h3>Карта мышц</h3><p id="musclePeriod" class="muted">Последние 7 дней · рабочие подходы</p>
-   <div class="body-map-grid"><div class="body-map-card"><b>СПЕРЕДИ</b><div id="muscleFront"></div><div id="muscleFrontLegend"></div></div><div class="body-map-card"><b>СЗАДИ</b><div id="muscleBack"></div><div id="muscleBackLegend"></div></div></div>
-   <p class="map-note">Цвет и интенсивность показывают группы, задействованные в записанных упражнениях. Основные мышцы учитываются полностью, вспомогательные — частично.</p>
-  </div>
-  <div class="section-head"><div><div class="eyebrow">ЖУРНАЛ</div><h3>Последние записи</h3></div></div><div id="historyList"></div>
- </section>
-
- <section id="view-plan" class="view"><div class="page-heading"><div><div class="eyebrow">ТВОЯ СИСТЕМА</div><h2>План тренировок</h2><p class="muted">Цикл через день: 3 тренировки верха и 2 тренировки низа за 8 дней.</p></div></div><div id="fullPlan"></div></section>
-
- <section id="view-ai" class="view"><div class="page-heading"><div><div class="eyebrow">SMART COACH</div><h2>AI-тренер</h2><p class="muted">Персональные рекомендации на основе твоих результатов.</p></div><span class="tag">ONLINE</span></div>
-  <div class="panel ai-intro"><div class="ai-avatar">✦</div><div><b>ТВОЙ ПЕРСОНАЛЬНЫЙ ТРЕНЕР</b><p class="muted">Анализирую твой профиль, тренировки и динамику рабочих весов.</p><div id="aiStatus" class="tag">Подключение настроено</div></div></div>
-  <div id="aiChat" class="ai-chat" aria-live="polite"><div class="ai-message assistant">Привет! Я твой AI-тренер. Могу разобрать прогресс, предложить рабочие веса и помочь скорректировать тренировку. С чего начнём?</div></div>
-  <div class="panel ai-compose"><label class="wide-label" for="aiQuestion">ТВОЙ ВОПРОС</label><textarea id="aiQuestion" rows="3" placeholder="Например: проанализируй мой прогресс в жиме лёжа..."></textarea><button class="primary full" id="aiSend">Отправить тренеру ↗</button></div>
- </section>
-
- <section id="view-profile" class="view"><div class="page-heading"><div><div class="eyebrow">НАСТРОЙКИ</div><h2>Профиль</h2><p class="muted">Данные, цели и персональные настройки.</p></div></div>
-  <div class="panel"><div class="panel-kicker">ТВОИ ПАРАМЕТРЫ</div><div class="field-row"><label>Вес тела, кг<input id="bodyWeight" type="number" step="0.1" value="90"></label><label>Рост, см<input id="height" type="number" value="186"></label></div>
-   <div class="field-row"><label>Возраст<input id="age" type="number" value="20"></label><label>Цель<select id="goal"><option>Гипертрофия</option><option>Сила и масса</option><option>Рекомпозиция</option><option>Снижение жира</option></select></label></div>
-   <div class="field-row"><label>Опыт тренировок<select id="experience"><option>Начинающий</option><option>Средний</option><option>Продвинутый</option></select></label><label>Тренировок в неделю<select id="frequency"><option value="2">2 раза</option><option value="3">3 раза</option><option value="4">4 раза</option><option value="5">5 раз</option><option value="6">6 раз</option></select></label></div>
-   <label class="wide-label">Приоритетная группа мышц<select id="priority"><option>Верх тела</option><option>Грудь</option><option>Спина</option><option>Плечи</option><option>Руки</option><option>Ноги</option><option>Равномерное развитие</option></select></label><button class="primary full" id="saveProfile">Сохранить профиль</button>
-  </div>
-  <div class="panel"><div class="panel-kicker">БЕЗОПАСНОСТЬ ДАННЫХ</div><h3>Резервная копия</h3><p class="muted">Тренировки хранятся на этом устройстве. Экспортируй копию, чтобы не потерять историю при смене устройства.</p><div class="button-row"><button class="secondary" id="exportData">Экспорт данных ↓</button><label class="secondary import-label">Импорт данных ↑<input id="importData" type="file" accept="application/json" hidden></label></div></div>
-  <div class="panel"><div class="panel-kicker">ПОДКЛЮЧЕНИЕ</div><h3>AI-тренер</h3><p class="muted">AI-тренер подключается через защищённый сервер. API-ключ хранится на сервере и не раскрывается приложению.</p><span class="tag">AI API · ПОДКЛЮЧЁН</span></div>
- </section>
+ </div>
+</section>
+<section id="view-progress" class="view">
+ <div class="page-heading"><div><div class="eyebrow">ТВОИ РЕЗУЛЬТАТЫ</div><h2>Прогресс</h2><p class="muted">Каждая тренировка приближает к цели.</p></div></div>
+ <div class="progress-overview"><div class="panel progress-stat"><small>ТРЕНИРОВОК</small><b id="progressSessions">0</b><span>всего</span></div><div class="panel progress-stat"><small>ОБЩИЙ ОБЪЁМ</small><b id="progressVolume">0</b><span>кг × повторы</span></div><div class="panel progress-stat"><small>ПОДХОДОВ</small><b id="progressSets">0</b><span>записано</span></div></div>
+ <div class="panel muscle-panel"><div class="panel-kicker">АНАЛИЗ ТЕЛА</div><h3>Карта мышц</h3><p id="musclePeriod" class="muted">Последние 7 дней · рабочие подходы</p><div class="body-map-grid"><div class="body-map-card"><b>СПЕРЕДИ</b><div id="muscleFront"></div><div id="muscleFrontLegend"></div></div><div class="body-map-card"><b>СЗАДИ</b><div id="muscleBack"></div><div id="muscleBackLegend"></div></div></div><p class="map-note">Подсветка отражает нагрузку по записанным упражнениям за последние 7 дней.</p></div>
+ <div class="panel chart-panel"><div class="panel-kicker">СИЛА И ДИНАМИКА</div><h3>Динамика рабочих весов</h3><p class="muted">История лучших записанных подходов.</p><select id="progressExercise"></select><div id="progressChart" class="chart-empty">Добавь результаты тренировок, чтобы увидеть график.</div></div>
+ <div class="section-head"><div><div class="eyebrow">ЖУРНАЛ</div><h3>Последние записи</h3></div></div><div id="historyList"></div>
+</section>
+<section id="view-plan" class="view"><div class="page-heading"><div><div class="eyebrow">ТВОЯ СИСТЕМА</div><h2>План тренировок</h2><p class="muted">Цикл через день: 3 тренировки верха и 2 тренировки низа за 8 дней.</p></div></div><div id="fullPlan"></div></section>
+<section id="view-ai" class="view"><div class="page-heading"><div><div class="eyebrow">SMART COACH</div><h2>AI-тренер</h2><p class="muted">Персональные рекомендации на основе твоих результатов.</p></div><span class="tag">ONLINE</span></div>
+ <div class="panel ai-intro"><div class="ai-avatar">✦</div><div><b>ТВОЙ ПЕРСОНАЛЬНЫЙ ТРЕНЕР</b><p class="muted">Анализирую профиль, тренировки и динамику рабочих весов.</p><div id="aiStatus" class="tag">Подключение настроено</div></div></div>
+ <div id="aiChat" class="ai-chat" aria-live="polite"><div class="ai-message assistant">Привет! Я твой AI-тренер. Могу разобрать прогресс, предложить рабочие веса и помочь скорректировать тренировку. С чего начнём?</div></div>
+ <div class="panel ai-compose"><label class="wide-label" for="aiQuestion">ТВОЙ ВОПРОС</label><textarea id="aiQuestion" rows="3" placeholder="Например: проанализируй мой прогресс в жиме лёжа..."></textarea><button class="primary full" id="aiSend">Отправить тренеру ↗</button></div>
+</section>
+<section id="view-profile" class="view"><div class="page-heading"><div><div class="eyebrow">ПЕРСОНАЛЬНЫЕ НАСТРОЙКИ</div><h2>Профиль</h2><p class="muted">Настрой тренировки под свои цели.</p></div></div>
+ <div class="profile-card panel"><div class="profile-avatar">M</div><div><b>МОЙ ПРОФИЛЬ</b><p class="muted">Твои параметры и тренировочные предпочтения</p></div></div>
+ <div class="panel"><div class="panel-kicker">ТВОИ ПАРАМЕТРЫ</div><div class="field-row"><label>Вес тела, кг<input id="bodyWeight" type="number" step="0.1" value="90"></label><label>Рост, см<input id="height" type="number" value="186"></label></div>
+  <div class="field-row"><label>Возраст<input id="age" type="number" value="20"></label><label>Цель<select id="goal"><option>Гипертрофия</option><option>Сила и масса</option><option>Рекомпозиция</option><option>Снижение жира</option></select></label></div>
+  <div class="field-row"><label>Опыт тренировок<select id="experience"><option>Начинающий</option><option>Средний</option><option>Продвинутый</option></select></label><label>Тренировок в неделю<select id="frequency"><option value="2">2 раза</option><option value="3">3 раза</option><option value="4">4 раза</option><option value="5">5 раз</option><option value="6">6 раз</option></select></label></div>
+  <label class="wide-label">Приоритетная группа мышц<select id="priority"><option>Верх тела</option><option>Грудь</option><option>Спина</option><option>Плечи</option><option>Руки</option><option>Ноги</option><option>Равномерное развитие</option></select></label><button class="primary full" id="saveProfile">Сохранить профиль</button>
+ </div>
+ <div class="panel"><div class="panel-kicker">БЕЗОПАСНОСТЬ ДАННЫХ</div><h3>Резервная копия</h3><p class="muted">Тренировки хранятся на этом устройстве. Экспортируй копию, чтобы не потерять историю при смене устройства.</p><div class="button-row"><button class="secondary" id="exportData">Экспорт данных ↓</button><label class="secondary import-label">Импорт данных ↑<input id="importData" type="file" accept="application/json" hidden></label></div></div>
+ <div class="panel"><div class="panel-kicker">ПОДКЛЮЧЕНИЕ</div><h3>AI-тренер</h3><p class="muted">API-ключ хранится на сервере и не раскрывается приложению.</p><span class="tag">AI API · ПОДКЛЮЧЁН</span></div>
+</section>
 </main>
-<footer>MY GYM COACH <span>·</span> TRAIN SMARTER. GET STRONGER.</footer>
-<script src="app.js"></script>
-</body></html>
+<nav class="tabs" aria-label="Основная навигация"><button class="tab active" data-tab="train"><span class="nav-icon">⌂</span><span>Главная</span></button><button class="tab" data-tab="train" data-scroll="workoutArea"><span class="nav-icon">♧</span><span>Тренировки</span></button><button class="tab" data-tab="progress"><span class="nav-icon">⌁</span><span>Прогресс</span></button><button class="tab" data-tab="ai"><span class="nav-icon">✦</span><span>Чат</span></button><button class="tab" data-tab="profile"><span class="nav-icon">♙</span><span>Профиль</span></button></nav>
+<footer>MY GYM COACH <span>·</span> TRAIN SMARTER. GET STRONGER.</footer><script src="app.js"></script></body></html>
