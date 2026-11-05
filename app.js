@@ -50,9 +50,9 @@ function exercisePhoto(name){
  const n=String(name||"").toLowerCase();
  const items=[
   {re:/жим в тренажёре на грудь/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Bench_press_Machine.jpg",credit:"Aliva Sahoo · CC BY-SA 4.0",page:"https://commons.wikimedia.org/wiki/File:Bench_press_Machine.jpg",label:"Тренажёр для жима"},
-  {re:/жим ногами/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Gym_Leg_Press_Machine.jpg",credit:"Aliva Sahoo · CC BY-SA 4.0",page:"https://commons.wikimedia.org/wiki/File:Gym_Leg_Press_Machine.jpg",label:"Тренажёр для жима ногами"},
+  {re:/жим ногами/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Leg_Press_Machine.jpg",credit:"Paulmcdonald · CC BY-SA 4.0",page:"https://commons.wikimedia.org/wiki/File:Leg_Press_Machine.jpg",label:"Тренажёр для жима ногами"},
   {re:/гантел|молотковые|сгибание рук на скамье скотта/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Dumbells_and_free_weights_in_a_gym.jpg",credit:"KeepActive Australia · CC BY-SA 4.0",page:"https://commons.wikimedia.org/wiki/File:Dumbells_and_free_weights_in_a_gym.jpg",label:"Гантели и свободные веса"},
-  {re:/кроссовер|верхний блок|горизонтальная тяга|разгибание рук на блоке|тяга с упором грудью/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Functional_Trainer_Exercise_Machine_at_Gym.jpg",credit:"KeepActive Australia · CC BY-SA 4.0",page:"https://commons.wikimedia.org/wiki/File:Functional_Trainer_Exercise_Machine_at_Gym.jpg",label:"Блочный тренажёр / кроссовер"}
+  {re:/кроссовер|верхний блок|горизонтальная тяга|разгибание рук на блоке|тяга с упором грудью/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Multifunctional_cable_and_row_machines_in_a_gym.jpg",credit:"San Francisco Foghorn · CC BY 2.0",page:"https://commons.wikimedia.org/wiki/File:Multifunctional_cable_and_row_machines_in_a_gym.jpg",label:"Блочный тренажёр / кроссовер"}
  ];
  return items.find(x=>x.re.test(n))||null;
 }
@@ -80,7 +80,7 @@ function exerciseMuscleMini(name){
 function renderExerciseDetail(name){
  const g=exerciseGuide(name), steps=g.steps.map((x,i)=>'<li><span>'+(i+1)+'</span><p>'+x+'</p></li>').join('');
  const photo=exercisePhoto(name);
- const photoBlock=photo?'<figure class="exercise-photo equipment-photo"><img src="'+photo.url+'" alt="Фотография оборудования: '+photo.label+'" loading="lazy" onerror="this.closest(\'figure\').classList.add(\'photo-failed\');this.remove()"><figcaption>'+photo.label+' · '+photo.credit+' · <a href="'+photo.page+'" target="_blank" rel="noopener">источник и лицензия</a></figcaption></figure>':'<div class="photo-placeholder equipment-photo-placeholder"><span>ОБОРУДОВАНИЕ</span><small>'+g.equipment+' · фото будет добавлено в библиотеку оборудования</small></div>';
+ const photoBlock=photo?'<figure class="exercise-photo equipment-photo"><img src="'+photo.url+'" alt="Фотография оборудования: '+photo.label+'" loading="eager" decoding="async" onerror="this.closest(\'figure\').innerHTML=\'<div class=\\\'photo-load-fallback\\\'>Фото оборудования временно недоступно</div>\'"><figcaption>'+photo.label+' · '+photo.credit+' · <a href="'+photo.page+'" target="_blank" rel="noopener">источник и лицензия</a></figcaption></figure>':'<div class="photo-placeholder equipment-photo-placeholder"><span>ОБОРУДОВАНИЕ</span><small>'+g.equipment+' · фото будет добавлено в библиотеку оборудования</small></div>';
  $('exerciseDetail').innerHTML=photoBlock+'<div class="equipment-caption"><span class="eyebrow">ОБОРУДОВАНИЕ</span><b>'+g.equipment+'</b></div>'+exerciseMuscleMini(name)+'<div class="detail-muscles"><div><small>ОСНОВНАЯ НАГРУЗКА</small><b>'+g.primary+'</b></div><div><small>ДОПОЛНИТЕЛЬНО</small><b>'+g.secondary+'</b></div></div><div class="detail-steps"><h3>Как выполнять</h3><ol>'+steps+'</ol></div><div class="detail-tip"><span>✦</span><p>'+g.tip+'</p></div>';
 }
 
