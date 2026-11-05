@@ -96,7 +96,7 @@ function exerciseMuscleMini(name){
 function renderExerciseDetail(name){
  const g=exerciseGuide(name), steps=g.steps.map((x,i)=>'<li><span>'+(i+1)+'</span><p>'+x+'</p></li>').join('');
  const photo=exercisePhoto(name);
- const photoBlock=photo?'<figure class="exercise-photo"><img src="'+photo.url+'" alt="Пример выполнения упражнения '+name+'" loading="lazy" onerror="this.parentElement.classList.add(\'photo-failed\')"><figcaption>Фото-пример · '+photo.credit · <a href="'+photo.page+'" target="_blank" rel="noopener">источник и лицензия</a></figcaption></figure>':'<div class="photo-placeholder"><span>Фото-пример</span><small>Для этого упражнения пока нет проверенного фото в открытой библиотеке</small></div>';
+ const photoBlock=photo?'<figure class="exercise-photo"><img src="'+photo.url+'" alt="Фото-пример упражнения '+name+'" loading="lazy" onerror="this.closest(\'figure\').classList.add(\'photo-failed\');this.remove()"><figcaption>Фото-пример · '+photo.credit+' · <a href="'+photo.page+'" target="_blank" rel="noopener">источник и лицензия</a></figcaption></figure>':'<div class="photo-placeholder"><span>Фото-пример</span><small>Для этого упражнения пока нет проверенного фото в открытой библиотеке</small></div>';
  $('exerciseDetail').innerHTML=photoBlock+'<div class="detail-visual"><div><span class="eyebrow">ОБОРУДОВАНИЕ</span><b>'+g.equipment+'</b></div>'+equipmentArt(g.e)+'</div>'+exerciseMuscleMini(name)+'<div class="detail-muscles"><div><small>ОСНОВНАЯ НАГРУЗКА</small><b>'+g.primary+'</b></div><div><small>ДОПОЛНИТЕЛЬНО</small><b>'+g.secondary+'</b></div></div><div class="detail-steps"><h3>Как выполнять</h3><ol>'+steps+'</ol></div><div class="detail-tip"><span>✦</span><p>'+g.tip+'</p></div>';
 }
 
@@ -123,7 +123,7 @@ function musclesForExercise(name){
   [/тяга верхнего блока|подтягивания|горизонтальная тяга|тяга с упором грудью/,"Спина",["Бицепс","Плечи"]],
   [/жим гантелей сидя/,"Плечи",["Трицепс","Грудь"]],
   [/подъём гантелей в стороны|обратная бабочка/,"Плечи",["Спина"]],
-  [/сгибание рук|молотковые|скамье скотта/,"Бицепс",["Бицепс"]],
+  [/сгибание рук|молотковые|скамье скотта/,"Бицепс",[]],
   [/разгибание рук/,"Трицепс",["Плечи"]],
   [/приседания|гакк-приседания|жим ногами|болгарские выпады|разгибание ног/,"Квадрицепс",["Ягодицы","Бицепс бедра"]],
   [/румынская тяга|сгибание ног/,"Бицепс бедра",["Ягодицы","Спина"]],
