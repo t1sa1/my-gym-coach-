@@ -197,15 +197,20 @@ function muscleFigure(side,totals){
  return '<svg class="body-figure anatomical-figure" viewBox="0 0 300 570" role="img" aria-label="'+(front?"Объёмная анатомическая карта мышц спереди":"Объёмная анатомическая карта мышц сзади")+'" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="'+id+'-skin" x1="0" y1="0" x2="1" y2=".8"><stop offset="0" stop-color="#f0c9b9"/><stop offset=".22" stop-color="#b9857e"/><stop offset=".48" stop-color="#e5b6a7"/><stop offset=".72" stop-color="#80535a"/><stop offset="1" stop-color="#d7a69a"/></linearGradient><linearGradient id="'+id+'-hot" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8b98"/><stop offset=".28" stop-color="#f02c48"/><stop offset=".62" stop-color="#a90d2b"/><stop offset="1" stop-color="#ff5269"/></linearGradient><linearGradient id="'+id+'-cool" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e0e6ec"/><stop offset=".42" stop-color="#84909d"/><stop offset="1" stop-color="#4b5664"/></linearGradient><radialGradient id="'+id+'-shade"><stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient><filter id="'+id+'-shadow" x="-30%" y="-20%" width="160%" height="150%"><feGaussianBlur stdDeviation="5"/></filter></defs><ellipse cx="150" cy="550" rx="92" ry="10" fill="#000" opacity=".45" filter="url(#'+id+'-shadow)"/>'+anatomy+head+muscles+overlays+'</svg>';
 }
 function renderProgress(){
- renderStats();
- try{renderMuscleMap()}catch(error){console.error("Ошибка карты мышц:",error);const f=$("muscleFrontLegend"),b=$("muscleBackLegend");if(f)f.innerHTML='<p class="muted">Карта мышц пока недоступна.</p>';if(b)b.innerHTML="";}
- const logs=Array.isArray(state.logs)?state.logs:[];
- const names=[...new Set(logs.map(x=>String(x.exercise||"Неизвестное упражнение")))];
- const select=$("progressExercise");
- if(select){select.innerHTML=names.map(n=>`<option value="${escHtml(n)}">${escHtml(n)}</option>`).join("");select.onchange=drawChart;}
- drawChart();
- const history=$("historyList");
- if(history)history.innerHTML=logs.slice().reverse().slice(0,30).map(x=>`<div class="history-item"><b>${escHtml(x.exercise)}</b><p>${new Date(x.date).toLocaleString("ru-RU")} · ${escHtml(x.day)}</p><strong>${x.weight} кг × ${x.reps}</strong></div>`).join("")||'<p class="muted">Пока нет сохранённых тренировок. Запиши подход и нажми «Завершить тренировку».</p>';
+ const history=$("historyList"), select=$("progressExercise");
+ const showError=(label,error)=>{
+   console.error(label,error);
+   if(history)history.innerHTML='<div class="panel"><b>Не удалось загрузить часть прогресса</b><p class="muted">'+escHtml(error&&error.message?error.message:String(error))+'</p><p class="muted">Обнови страницу и попробуй снова. Тренировочные данные не удалены.</p></div>';
+ };
+ try{renderStats()}catch(error){showError("Ошибка статистики прогресса",error)}
+ try{renderMuscleMap()}catch(error){console.error("Ошибка карты мышц:",error);const f=$("muscleFrontLegend"),b=$("muscleBackLegend");if(f)f.innerHTML='<p class="muted">Карта мышц временно недоступна.</p>';if(b)b.innerHTML="";}
+ try{
+   const logs=Array.isArray(state.logs)?state.logs:[];
+   const names=[...new Set(logs.map(x=>String(x.exercise||"Неизвестное упражнение")))];
+   if(select){select.innerHTML=names.map(n=>'<option value="'+escHtml(n)+'">'+escHtml(n)+'</option>').join("");select.onchange=drawChart;}
+   drawChart();
+   if(history)history.innerHTML=logs.slice().reverse().slice(0,30).map(x=>'<div class="history-item"><b>'+escHtml(x.exercise)+'</b><p>'+new Date(x.date).toLocaleString("ru-RU")+' · '+escHtml(x.day)+'</p><strong>'+x.weight+' кг × '+x.reps+'</strong></div>').join("")||'<p class="muted">Пока нет сохранённых тренировок. Запиши подход и нажми «Завершить тренировку».</p>';
+ }catch(error){showError("Ошибка журнала прогресса",error)}
 }
 function drawChart(){let select=$("progressExercise");let name=select?select.value:"";let arr=state.logs.filter(x=>x.exercise===name);if(!arr.length){$("progressChart").className="chart-empty";$("progressChart").textContent="Добавь результаты тренировок, чтобы увидеть график.";return}let best=arr.map(x=>+x.weight);let max=Math.max(...best,1),min=Math.min(...best);let w=320,h=150,pad=25;let pts=best.map((v,i)=>`${pad+i*(w-2*pad)/Math.max(best.length-1,1)},${h-pad-(v/max)*(h-2*pad)}`).join(" ");$("progressChart").className="";$("progressChart").innerHTML=`<svg class="chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="График веса"><polyline points="${pts}" fill="none" stroke="#1c8b56" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>${best.map((v,i)=>`<circle cx="${pad+i*(w-2*pad)/Math.max(best.length-1,1)}" cy="${h-pad-(v/max)*(h-2*pad)}" r="4" fill="#1c8b56"/>`).join("")}</svg><div class="muted">Последний вес: ${best[best.length-1]} кг · Лучший: ${max} кг · Записей: ${best.length}</div>`}
 function renderPlan(){$("fullPlan").innerHTML=plans.map(p=>`<div class="plan-day"><h3>${p.name}<span class="tag">ДЕНЬ ${p.id}</span></h3><ul>${p.ex.map(e=>`<li>${e[0]} — ${e[1]} × ${e[2]}</li>`).join("")}</ul></div>`).join("")}
