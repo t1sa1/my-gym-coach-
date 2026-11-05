@@ -149,8 +149,8 @@ function renderMuscleMap(){
  $("muscleFrontLegend").innerHTML=frontGroups.map(m=>muscleRow(m,totals[m])).join("");
  $("muscleBackLegend").innerHTML=backGroups.filter((m,i,a)=>a.indexOf(m)===i).map(m=>muscleRow(m,totals[m])).join("");
  if(window.MGC3D?.update){window.MGC3D.update(totals);}else{
-  $("muscleFront").innerHTML=muscleFigure("front",totals);
-  $("muscleBack").innerHTML=muscleFigure("back",totals);
+  const front=$("muscleFront"),back=$("muscleBack");
+  if(front&&back){front.innerHTML=muscleFigure("front",totals);back.innerHTML=muscleFigure("back",totals);}
  }
  $("musclePeriod").textContent="Последние 7 дней · оценка нагрузки по записанным подходам";
 }
