@@ -371,7 +371,7 @@ const MGC_TRANSLATIONS={
 ,"Грудь":["Chest","Hrudník"],"Спина":["Back","Záda"],"Плечи":["Shoulders","Ramena"],"Бицепс":["Biceps","Biceps"],"Трицепс":["Triceps","Triceps"],"Квадрицепс":["Quadriceps","Kvadriceps"],"Бицепс бедра":["Hamstrings","Hamstringy"],"Ягодицы":["Glutes","Hýždě"]
 
 };
-function mgcTranslateTextNode(node){if(!node||node.nodeType!==Node.TEXT_NODE)return;let value=node.nodeValue;if(!value.trim())return;const lang=state.settings.language;if(lang==="ru"){for(const [ru,pair] of Object.entries(MGC_TRANSLATIONS)){const en=pair[0],cs=pair[1];value=value.split(en).join(ru).split(cs).join(ru);}node.nodeValue=value;return;}for(const [ru,pair] of Object.entries(MGC_TRANSLATIONS)){const translated=pair[lang==="en"?0:1];value=value.split(ru).join(translated);}node.nodeValue=value;}
+function mgcTranslateTextNode(node){if(!node||node.nodeType!==Node.TEXT_NODE)return;let value=node.nodeValue;if(!value.trim())return;const lang=state.settings.language;for(const [ru,pair] of Object.entries(MGC_TRANSLATIONS)){value=value.split(pair[0]).join(ru).split(pair[1]).join(ru);}if(lang!=="ru"){for(const [ru,pair] of Object.entries(MGC_TRANSLATIONS)){value=value.split(ru).join(pair[lang==="en"?0:1]);}}node.nodeValue=value;}
 function mgcApplyLanguage(){const lang=state.settings.language||"ru",d=MGC_I18N[lang]||MGC_I18N.ru;document.documentElement.lang=lang;
 document.querySelectorAll("[data-i18n]").forEach(el=>{const k=el.dataset.i18n;if(d[k]){const first=Array.from(el.childNodes).find(n=>n.nodeType===Node.TEXT_NODE&&n.nodeValue.trim());if(first)first.nodeValue=" "+d[k];else el.prepend(document.createTextNode(d[k]));}});
 document.querySelectorAll("body *").forEach(el=>{if(el.children.length===0)mgcTranslateTextNode(el.firstChild);});
