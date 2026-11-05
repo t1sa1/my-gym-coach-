@@ -178,3 +178,50 @@ input:focus,select:focus,textarea:focus{border-color:#f0444c!important;box-shado
 .history-item strong{color:#ff5a62}
 footer{color:#77747b}
 button:focus-visible,.exercise:focus-visible{outline-color:#ff6269}
+
+/* BLACK + RED performance theme */
+:root{--bg:#090a0c;--ink:#f4f4f5;--muted:#a1a1aa;--green:#ef233c;--mint:#32151b;--line:#292b31;--white:#15171b;--dark:#08090b;--lime:#ff5265}
+body{background:radial-gradient(ellipse at 90% 0%,#351017 0,transparent 38%),#090a0c;color:#f4f4f5;padding-bottom:100px}
+.top{background:rgba(7,8,10,.96);border-bottom:1px solid #292b31}
+.brand .mark{background:#391018;color:#ff4057}.brand small{color:#ff9aa7}
+.top-pill{background:#241015;color:#ff9aa7;border-color:#54202a}
+.hero{background:linear-gradient(135deg,#08090b 0%,#260d13 62%,#580f1c 100%);box-shadow:0 16px 36px #0008}
+.hero h1 em{color:#ff4057}.hero .eyebrow{color:#ff9aa7}
+.tabs{background:#111318;border-color:#2b2d34}
+.tab{color:#a1a1aa}.tab.active{background:#e9233d;color:#fff;box-shadow:0 3px 14px #e9233d44}
+.panel,.exercise,.history-item,.plan-day,.body-map-card{background:#14161b;border-color:#2b2e35;color:#f4f4f5}
+.coach-panel{background:#201318;border-color:#49202a}.coach-icon{background:#40131c;color:#ff5368}
+.exercise.selected{background:#241319;border-color:#ed2944}
+.exercise .num{background:#292b32;color:#fca5b1}
+.field-row input,.field-row select,.wide-label input,select,.ai-compose textarea{background:#0d0f13;border-color:#333640;color:#f4f4f5}
+.primary{background:#e9233d;color:#fff}.secondary,.import-label{background:#282a31;color:#f4f4f5}.finish{background:#6f1020;color:#fff}
+.tag{background:#32151b;color:#ff7889}
+.chart-empty{color:#a1a1aa}.ai-message.assistant{background:#21171b;color:#f8dfe3}.ai-message.user{background:#d91f39;color:#fff}
+.detail-visual,.detail-tip{background:#21171b!important;border-color:#4a2029!important;color:#f4f4f5}
+.detail-muscles>div{background:#17191e!important;border-color:#333640!important}
+.detail-steps li span{background:#e9233d!important;color:#fff!important}
+.body-map-card{background:#111318}.muscle-track{background:#292c33}
+footer{color:#666b75}
+.exercise-photo{margin:0 0 12px;border:1px solid #343740;border-radius:16px;overflow:hidden;background:#101216}
+.exercise-photo img{display:block;width:100%;height:210px;object-fit:cover;background:#0d0f13}
+.exercise-photo figcaption{padding:8px 11px;font-size:10px;color:#a1a1aa}
+.exercise-photo a{color:#ff7182;text-decoration:none}
+.photo-placeholder{min-height:90px;border:1px dashed #464953;border-radius:14px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;color:#b7bbc4;margin-bottom:12px}
+.photo-placeholder small{font-size:10px;color:#818793;text-align:center;padding:0 12px}
+.mini-muscle-map{background:#101216;border:1px solid #343740;border-radius:15px;padding:12px;margin:12px 0}
+.mini-map-head b{display:block;font-size:12px}.mini-map-head small{display:block;color:#969ba5;font-size:9px;margin-top:4px}
+.mini-map-figures{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:250px;margin:6px auto}
+.mini-map-figures .body-figure{height:150px;margin:0}
+.mini-map-legend{display:flex;flex-wrap:wrap;gap:7px}
+.mini-map-legend span{display:flex;align-items:center;gap:5px;font-size:9px;color:#c8cbd1}
+.mini-map-legend i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.nav-icon{font-size:19px;line-height:1;display:block;margin-bottom:4px}
+@media(max-width:600px){
+ body{padding-bottom:calc(88px + env(safe-area-inset-bottom))}
+ .tabs{position:fixed;top:auto;bottom:calc(8px + env(safe-area-inset-bottom));left:10px;right:10px;width:auto;max-width:800px;margin:0 auto;transform:none;z-index:50;border-radius:18px;padding:7px 5px;background:rgba(19,20,25,.96);box-shadow:0 10px 35px #000b;border:1px solid #373941;backdrop-filter:blur(18px)}
+ .tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:7px 3px;font-size:9px;border-radius:12px}
+ .nav-icon{font-size:18px;margin:0}
+ .hero{padding:23px 19px}.hero h1{font-size:42px}
+ .exercise-photo img{height:190px}
+}
+@media(min-width:601px){.tabs{position:sticky;top:72px}}
