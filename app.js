@@ -56,12 +56,35 @@ function muscleRow(m,v){
 }
 function muscleFigure(side,totals){
  const front=side==="front";
- const fill=m=>totals[m]>0?MUSCLE_COLORS[m]:"#65716c";
- const opacity=m=>totals[m]>0?".95":".22";
- const shapes=front
- ? `<ellipse cx="50" cy="13" rx="9" ry="11" fill="#929d98"/><path d="M39 28 Q50 22 61 28 L66 65 L60 82 L57 108 L53 132 L47 132 L43 108 L40 82 L34 65Z" fill="#59645f"/><path d="M35 31 L22 36 L13 70 L18 73 L31 48 L39 42Z M65 31 L78 36 L87 70 L82 73 L69 48 L61 42Z" fill="#59645f"/><path d="M40 34 Q50 29 50 47 Q42 54 35 44Z M60 34 Q50 29 50 47 Q58 54 65 44Z" fill="${fill("Грудь")}" opacity="${opacity("Грудь")}"/><path d="M42 51 L58 51 L57 75 L43 75Z" fill="${fill("Пресс")}" opacity="${opacity("Пресс")}"/><ellipse cx="34" cy="35" rx="8" ry="7" fill="${fill("Плечи")}" opacity="${opacity("Плечи")}"/><ellipse cx="66" cy="35" rx="8" ry="7" fill="${fill("Плечи")}" opacity="${opacity("Плечи")}"/><path d="M30 48 L39 50 L36 73 L27 70Z M70 48 L61 50 L64 73 L73 70Z" fill="${fill("Бицепс")}" opacity="${opacity("Бицепс")}"/><path d="M40 80 L49 80 L47 125 L39 125Z M60 80 L51 80 L53 125 L61 125Z" fill="${fill("Квадрицепс")}" opacity="${opacity("Квадрицепс")}"/><path d="M39 127 L47 127 L46 158 L39 158Z M61 127 L53 127 L54 158 L61 158Z" fill="${fill("Икры")}" opacity="${opacity("Икры")}"/>`
- : `<ellipse cx="50" cy="13" rx="9" ry="11" fill="#929d98"/><path d="M39 28 Q50 22 61 28 L66 65 L60 82 L57 108 L53 132 L47 132 L43 108 L40 82 L34 65Z" fill="#59645f"/><path d="M35 31 L22 36 L13 70 L18 73 L31 48 L39 42Z M65 31 L78 36 L87 70 L82 73 L69 48 L61 42Z" fill="#59645f"/><path d="M40 32 Q50 28 50 59 L39 62 L34 43Z M60 32 Q50 28 50 59 L61 62 L66 43Z" fill="${fill("Спина")}" opacity="${opacity("Спина")}"/><path d="M33 34 L40 30 L43 42 L35 48Z M67 34 L60 30 L57 42 L65 48Z" fill="${fill("Плечи")}" opacity="${opacity("Плечи")}"/><ellipse cx="50" cy="76" rx="13" ry="9" fill="${fill("Ягодицы")}" opacity="${opacity("Ягодицы")}"/><path d="M40 84 L49 84 L47 124 L39 124Z M60 84 L51 84 L53 124 L61 124Z" fill="${fill("Бицепс бедра")}" opacity="${opacity("Бицепс бедра")}"/><path d="M39 127 L47 127 L46 158 L39 158Z M61 127 L53 127 L54 158 L61 158Z" fill="${fill("Икры")}" opacity="${opacity("Икры")}"/>`;
- return `<svg class="body-figure" viewBox="0 0 100 170" role="img" aria-label="${front?"Передняя":"Задняя"} схема мышц">${shapes}<path d="M50 25 V158" stroke="#d3dad6" stroke-width=".7" opacity=".3"/></svg>`;
+ const fill=m=>totals[m]>0?MUSCLE_COLORS[m]:"#87928d";
+ const op=m=>totals[m]>0?".96":".25";
+ const muscle=(m,d)=>`<path d="${d}" fill="${fill(m)}" opacity="${op(m)}" stroke="#26332e" stroke-width="1.1" stroke-linejoin="round"/>`;
+ const base=`<g fill="#59645f" stroke="#aeb8b2" stroke-width="1.5" stroke-linejoin="round">
+ <path d="M91 51 Q110 42 129 51 L145 74 140 151 Q137 176 132 193 L128 235 92 235 88 193 Q83 176 80 151 L75 74Z"/>
+ <path d="M80 62 Q65 59 57 78 L37 144 Q33 157 41 161 Q49 164 55 150 L84 98Z"/>
+ <path d="M140 62 Q155 59 163 78 L183 144 Q187 157 179 161 Q171 164 165 150 L136 98Z"/>
+ <path d="M92 226 Q110 234 128 226 L132 257 125 305 119 367 103 367 96 305 88 257Z"/>
+ <path d="M103 363 L119 363 123 414 Q112 420 101 414Z"/>
+ <path d="M103 363 L119 363 119 414 Q108 420 97 414Z"/>
+ <ellipse cx="110" cy="25" rx="18" ry="22"/>
+ </g>`;
+ let details="";
+ if(front){
+ details+=muscle("Плечи","M80 66 Q66 61 60 79 Q63 91 78 96 L91 80Z M140 66 Q154 61 160 79 Q157 91 142 96 L129 80Z");
+ details+=muscle("Грудь","M91 83 Q99 73 108 84 L107 119 Q94 117 82 104 Q80 91 91 83Z M129 83 Q121 73 112 84 L113 119 Q126 117 138 104 Q140 91 129 83Z");
+ details+=muscle("Бицепс","M57 91 Q68 91 78 102 L67 143 Q55 146 50 135Z M163 91 Q152 91 142 102 L153 143 Q165 146 170 135Z");
+ details+=muscle("Пресс","M100 123 Q110 119 120 123 L119 181 Q110 188 101 181Z");
+ details+=muscle("Квадрицепс","M91 211 Q101 207 108 215 L105 298 Q95 306 89 288Z M129 211 Q119 207 112 215 L115 298 Q125 306 131 288Z");
+ details+=muscle("Икры","M99 315 Q108 310 108 321 L105 404 L96 404Z M121 315 Q112 310 112 321 L115 404 L124 404Z");
+ }else{
+ details+=muscle("Плечи","M80 66 Q66 61 60 79 Q63 91 78 96 L91 80Z M140 66 Q154 61 160 79 Q157 91 142 96 L129 80Z");
+ details+=muscle("Спина","M94 78 Q110 69 126 78 L137 133 Q128 151 110 155 Q92 151 83 133Z");
+ details+=muscle("Трицепс","M57 94 Q68 91 78 102 L67 143 Q55 146 50 135Z M163 94 Q152 91 142 102 L153 143 Q165 146 170 135Z");
+ details+=muscle("Ягодицы","M89 193 Q99 184 109 194 L108 231 Q96 237 87 222Z M131 193 Q121 184 111 194 L112 231 Q124 237 133 222Z");
+ details+=muscle("Бицепс бедра","M91 237 Q101 231 108 240 L105 305 Q95 312 89 292Z M129 237 Q119 231 112 240 L115 305 Q125 312 131 292Z");
+ details+=muscle("Икры","M99 315 Q108 310 108 321 L105 404 L96 404Z M121 315 Q112 310 112 321 L115 404 L124 404Z");
+ }
+ return `<svg class="body-figure" viewBox="0 0 220 430" role="img" aria-label="${front?"Передняя":"Задняя"} анатомическая схема мышц">${base}${details}<path d="M110 48 V408" stroke="#dbe2dd" stroke-width="1" opacity=".25"/></svg>`;
 }
 
 function renderProgress(){renderMuscleMap();let names=[...new Set(state.logs.map(x=>x.exercise))];$("progressExercise").innerHTML=names.map(n=>`<option>${n}</option>`).join("");$("progressExercise").onchange=drawChart;drawChart();$("historyList").innerHTML=state.logs.slice().reverse().slice(0,30).map(x=>`<div class="history-item"><b>${x.exercise}</b><p>${new Date(x.date).toLocaleString("ru-RU")} · ${x.day}</p><strong>${x.weight} кг × ${x.reps}</strong></div>`).join("")||'<p class="muted">Пока нет сохранённых тренировок.</p>'}
