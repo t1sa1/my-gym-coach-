@@ -100,3 +100,27 @@ button:focus-visible,.exercise:focus-visible{outline:3px solid #8cc8a0;outline-o
  .panel{padding:20px}
  .exercise{padding:16px}
 }
+
+
+/* Exercise technique and equipment guide */
+.exercise-detail{margin:12px 0 16px;background:#fff;border:1px solid #dfe8e1;border-radius:19px;overflow:hidden;box-shadow:0 7px 22px #193b270b}
+.detail-visual{min-height:142px;padding:15px 17px 8px;background:linear-gradient(125deg,#edf5ef,#f9fbf9);display:grid;grid-template-columns:1fr 145px;align-items:center;gap:8px}
+.detail-visual>div{display:flex;flex-direction:column;gap:8px}
+.detail-visual .eyebrow{font-size:9px}
+.detail-visual b{font-size:13px;line-height:1.35}
+.detail-visual svg{width:100%;height:105px;overflow:visible}
+.detail-muscles{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid #e8eee9;border-bottom:1px solid #e8eee9}
+.detail-muscles>div{padding:12px 14px;min-width:0}
+.detail-muscles>div+div{border-left:1px solid #e8eee9}
+.detail-muscles small{display:block;color:#819087;font-size:8px;font-weight:800;letter-spacing:.8px;margin-bottom:5px}
+.detail-muscles b{display:block;font-size:10px;line-height:1.45;color:#294535}
+.detail-steps{padding:15px 16px 5px}
+.detail-steps h3{font-size:14px;margin:0 0 10px}
+.detail-steps ol{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.detail-steps li{display:grid;grid-template-columns:23px 1fr;gap:9px;align-items:start}
+.detail-steps li>span{width:22px;height:22px;display:grid;place-items:center;border-radius:8px;background:#e7f2e9;color:#216544;font-size:10px;font-weight:800}
+.detail-steps li p{font-size:10px;line-height:1.55;color:#58675e;margin:2px 0 0}
+.detail-tip{display:flex;gap:9px;align-items:flex-start;margin:12px 13px 14px;padding:11px 12px;border-radius:12px;background:#f1f6f1}
+.detail-tip>span{color:#1d8152;font-size:15px}
+.detail-tip p{font-size:10px;line-height:1.55;color:#43594b;margin:0}
+@media(max-width:370px){.detail-visual{grid-template-columns:1fr 120px;padding:13px}.detail-muscles>div{padding:10px}.detail-muscles b{font-size:9px}}
