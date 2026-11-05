@@ -15,16 +15,16 @@ const pointers=new Map();let raycaster=null,mouse=null;
 const hint=()=>document.querySelector(".anatomy3d-hint");
 function groupForName(name){
  const n=String(name||"").toLowerCase().replace(/[_ .]+/g,"-");
- if(/pectoralis|pectoral|serratus-anterior/.test(n))return "Грудь";
+ if(/pectoralis|pectoral|serratus-anterior|subclavius|intercostal|transversus-thoracis/.test(n))return "Грудь";
  if(/deltoid|supraspinatus|infraspinatus|teres-minor|teres-major|subscapularis|levator-scapulae/.test(n))return "Плечи";
  if(/biceps-brachii|biceps-brachialis|brachialis|brachioradialis/.test(n))return "Бицепс";
- if(/triceps-brachii/.test(n))return "Трицепс";
+ if(/triceps-brachii|anconeus/.test(n))return "Трицепс";
  if(/rectus-abdominis|oblique|transversus-abdominis/.test(n))return "Пресс";
- if(/latissimus|trapezius|rhomboid|erector-spinae|iliocostalis|longissimus|spinalis|multifidus|serratus-posterior/.test(n))return "Спина";
- if(/gluteus/.test(n))return "Ягодицы";
- if(/quadriceps|rectus-femoris|vastus/.test(n))return "Квадрицепс";
+ if(/latissimus|trapezius|rhomboid|erector-spinae|iliocostalis|longissimus|spinalis|multifidus|serratus-posterior|splenius|rotatores|interspinales|intertransversarii|levatores-costarum|quadratus-lumborum/.test(n))return "Спина";
+ if(/gluteus|piriformis|gemellus|obturator|quadratus-femoris|tensor-fasciae-latae/.test(n))return "Ягодицы";
+ if(/quadriceps|rectus-femoris|vastus|iliacus|psoas-major|sartorius|pectineus|adductor|gracilis/.test(n))return "Квадрицепс";
  if(/biceps-femoris|semitendinosus|semimembranosus|hamstring/.test(n))return "Бицепс бедра";
- if(/gastrocnemius|soleus|plantaris/.test(n))return "Икры";
+ if(/gastrocnemius|soleus|plantaris|tibialis|fibularis|popliteus|calcaneal-tendon|extensor-hallucis-longus|extensor-digitorum-longus|flexor-digitorum-longus|flexor-hallucis-longus|abductor-hallucis|quadratus-plantae|lumbricals-foot|interossei-foot/.test(n))return "Икры";
  for(const [key,value] of Object.entries(LABELS))if(n.includes(key))return value;
  return null;
 }
