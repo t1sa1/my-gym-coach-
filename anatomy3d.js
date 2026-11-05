@@ -15,7 +15,7 @@ if(host){
  const body=new THREE.Group();body.scale.set(.88,1,.92);scene.add(body);
  const materials={base:new THREE.MeshStandardMaterial({color:0x9a5149,roughness:.58,metalness:.02}),muscle:new THREE.MeshStandardMaterial({color:0xb45d52,roughness:.48}),deep:new THREE.MeshStandardMaterial({color:0x713b3b,roughness:.6}),tendon:new THREE.MeshStandardMaterial({color:0xd0b4a0,roughness:.72}),bone:new THREE.MeshStandardMaterial({color:0xc8b6a6,roughness:.8}),hot:new THREE.MeshStandardMaterial({color:0xff263f,emissive:0x8e071c,emissiveIntensity:.65,roughness:.38})};
  const parts={};
- function ell(group,name,pos,scale,mat="muscle",rot=[0,0,0]){const mesh=new THREE.Mesh(new THREE.SphereGeometry(1,24,18),materials[mat]);mesh.position.set(...pos);const factor=name?.length?.0.88:1;mesh.scale.set(scale[0]*factor,scale[1]*factor,scale[2]*factor);mesh.rotation.set(...rot);mesh.userData.muscle=name;body.add(mesh);if(name)(parts[name]??=[]).push(mesh);return mesh;}
+ function ell(group,name,pos,scale,mat="muscle",rot=[0,0,0]){const mesh=new THREE.Mesh(new THREE.SphereGeometry(1,24,18),materials[mat]);mesh.position.set(...pos);const factor=name?0.88:1;mesh.scale.set(scale[0]*factor,scale[1]*factor,scale[2]*factor);mesh.rotation.set(...rot);mesh.userData.muscle=name;body.add(mesh);if(name)(parts[name]??=[]).push(mesh);return mesh;}
  function limb(name,a,b,r1,r2,mat="muscle"){const mid=new THREE.Vector3(...a).add(new THREE.Vector3(...b)).multiplyScalar(.5);const d=new THREE.Vector3(...b).sub(new THREE.Vector3(...a));const m=ell(null,name,mid.toArray(),[r1,d.length()*.62,r2],mat);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());return m;}
  // torso core, neck and head
  ell(null,null,[0,2.35,0],[.66,.91,.34],"base");
