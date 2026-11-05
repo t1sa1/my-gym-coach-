@@ -7,7 +7,8 @@ const plans=[
 ];
 const $=id=>document.getElementById(id);
 let state=JSON.parse(localStorage.getItem("mgc-data")||'{"logs":[],"profile":{"bodyWeight":90,"height":186,"age":20,"goal":"Гипертрофия","experience":"Начинающий","frequency":"3","priority":"Верх тела"},"cycle":0}');
-state.profile={bodyWeight:90,height:186,age:20,goal:"Гипертрофия",experience:"Начинающий",frequency:"3",priority:"Верх тела",...state.profile};
+state.profile={bodyWeight:90,height:186,age:20,sex:"male",goal:"Набор массы",activity:"1.55",experience:"Начинающий",frequency:"3",priority:"Верх тела",...state.profile};
+if(!Array.isArray(state.foodLog))state.foodLog=[];
 let current=0,selected=0,completed=new Set(),activeWorkout=[];
 function save(){localStorage.setItem("mgc-data",JSON.stringify(state));renderStats()}
 function currentPlan(){return plans[current]}
@@ -195,12 +196,50 @@ function muscleFigure(side,totals){
 function renderProgress(){renderStats();renderMuscleMap();let names=[...new Set(state.logs.map(x=>x.exercise))];$("progressExercise").innerHTML=names.map(n=>`<option>${n}</option>`).join("");$("progressExercise").onchange=drawChart;drawChart();$("historyList").innerHTML=state.logs.slice().reverse().slice(0,30).map(x=>`<div class="history-item"><b>${x.exercise}</b><p>${new Date(x.date).toLocaleString("ru-RU")} · ${x.day}</p><strong>${x.weight} кг × ${x.reps}</strong></div>`).join("")||'<p class="muted">Пока нет сохранённых тренировок.</p>'}
 function drawChart(){let name=$("progressExercise").value;let arr=state.logs.filter(x=>x.exercise===name);if(!arr.length){$("progressChart").className="chart-empty";$("progressChart").textContent="Добавь результаты тренировок, чтобы увидеть график.";return}let best=arr.map(x=>+x.weight);let max=Math.max(...best,1),min=Math.min(...best);let w=320,h=150,pad=25;let pts=best.map((v,i)=>`${pad+i*(w-2*pad)/Math.max(best.length-1,1)},${h-pad-(v/max)*(h-2*pad)}`).join(" ");$("progressChart").className="";$("progressChart").innerHTML=`<svg class="chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="График веса"><polyline points="${pts}" fill="none" stroke="#1c8b56" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>${best.map((v,i)=>`<circle cx="${pad+i*(w-2*pad)/Math.max(best.length-1,1)}" cy="${h-pad-(v/max)*(h-2*pad)}" r="4" fill="#1c8b56"/>`).join("")}</svg><div class="muted">Последний вес: ${best[best.length-1]} кг · Лучший: ${max} кг · Записей: ${best.length}</div>`}
 function renderPlan(){$("fullPlan").innerHTML=plans.map(p=>`<div class="plan-day"><h3>${p.name}<span class="tag">ДЕНЬ ${p.id}</span></h3><ul>${p.ex.map(e=>`<li>${e[0]} — ${e[1]} × ${e[2]}</li>`).join("")}</ul></div>`).join("")}
-document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".view").forEach(x=>x.classList.toggle("active",x.id==="view-"+b.dataset.tab));if(b.dataset.tab==="progress")renderProgress();if(b.dataset.scroll){setTimeout(()=>$(b.dataset.scroll)?.scrollIntoView({behavior:"smooth",block:"start"}),60)}});document.querySelectorAll("[data-open-tab]").forEach(b=>b.onclick=()=>document.querySelector('.tab[data-tab="'+b.dataset.openTab+'"]')?.click());if($("startWorkout"))$("startWorkout").onclick=()=>$("workoutArea").scrollIntoView({behavior:"smooth",block:"start"});if($("goWorkout"))$("goWorkout").onclick=()=>$("workoutArea").scrollIntoView({behavior:"smooth",block:"start"});
-$("saveProfile").onclick=()=>{state.profile={bodyWeight:+$("bodyWeight").value,height:+$("height").value,age:+$("age").value,goal:$("goal").value,experience:$("experience").value,frequency:$("frequency").value,priority:$("priority").value};save();alert("Профиль сохранён. ИИ-тренер будет учитывать новые настройки.")};
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".view").forEach(x=>x.classList.toggle("active",x.id==="view-"+b.dataset.tab));if(b.dataset.tab==="progress")renderProgress();if(b.dataset.tab==="nutrition")renderNutrition();if(b.dataset.scroll){setTimeout(()=>$(b.dataset.scroll)?.scrollIntoView({behavior:"smooth",block:"start"}),60)}});document.querySelectorAll("[data-open-tab]").forEach(b=>b.onclick=()=>document.querySelector('.tab[data-tab="'+b.dataset.openTab+'"]')?.click());if($("startWorkout"))$("startWorkout").onclick=()=>$("workoutArea").scrollIntoView({behavior:"smooth",block:"start"});if($("goWorkout"))$("goWorkout").onclick=()=>$("workoutArea").scrollIntoView({behavior:"smooth",block:"start"});
+$("saveProfile").onclick=()=>{state.profile={...state.profile,bodyWeight:+$("bodyWeight").value,height:+$("height").value,age:+$("age").value,sex:$("sex").value,goal:$("goal").value,activity:$("activity").value,experience:$("experience").value,frequency:$("frequency").value,priority:$("priority").value};save();renderNutrition();alert("Профиль сохранён. Нормы КБЖУ пересчитаны.")};
 $("exportData").onclick=()=>{let blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="my-gym-coach-backup.json";a.click();URL.revokeObjectURL(a.href)};
 $("importData").onchange=async e=>{try{let obj=JSON.parse(await e.target.files[0].text());if(!Array.isArray(obj.logs)||!obj.profile)throw Error();state=obj;save();renderWorkout();renderProgress();alert("Данные импортированы.")}catch{alert("Не удалось прочитать резервную копию.")}};
-$("bodyWeight").value=state.profile.bodyWeight;$("height").value=state.profile.height;$("age").value=state.profile.age;$("goal").value=state.profile.goal;$("experience").value=state.profile.experience;$("frequency").value=state.profile.frequency;$("priority").value=state.profile.priority;
-renderWorkout();renderStats();renderPlan();renderProgress();
+$("bodyWeight").value=state.profile.bodyWeight;$("height").value=state.profile.height;$("age").value=state.profile.age;$("sex").value=state.profile.sex;$("goal").value=state.profile.goal;$("activity").value=state.profile.activity;$("experience").value=state.profile.experience;$("frequency").value=state.profile.frequency;$("priority").value=state.profile.priority;
+
+function nutritionNumbers(){
+ const p=state.profile,w=+p.bodyWeight,h=+p.height,age=+p.age;
+ if(!(w>0&&h>0&&age>0))return null;
+ const bmr=10*w+6.25*h-5*age+(p.sex==="male"?5:-161);
+ const activity=({1.2:1.2,1.375:1.375,1.55:1.55,1.725:1.725,1.9:1.9})[p.activity]||1.55;
+ const tdee=bmr*activity;
+ const goal=p.goal||"Набор массы";
+ const target=Math.round(tdee*(goal==="Набор массы"||goal==="Гипертрофия"||goal==="Сила и масса"?1.1:goal==="Снижение жира"?0.85:1));
+ const protein=Math.round(w*(goal==="Снижение жира"?2:1.9));
+ const fat=Math.round(w*.85);
+ const carbs=Math.max(0,Math.round((target-protein*4-fat*9)/4));
+ return {bmr:Math.round(bmr),tdee:Math.round(tdee),target,protein,fat,carbs};
+}
+function localDay(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function escHtml(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function renderNutrition(){
+ const n=nutritionNumbers();if(!n)return;
+ $("nutritionBmr").textContent=n.bmr.toLocaleString("ru-RU")+" ккал";
+ $("nutritionTdee").textContent=n.tdee.toLocaleString("ru-RU")+" ккал";
+ $("nutritionTarget").textContent=n.target.toLocaleString("ru-RU");
+ const today=state.foodLog.filter(x=>x.date===localDay());
+ const eaten=today.reduce((s,x)=>({kcal:s.kcal+x.kcal,p:s.p+x.p,f:s.f+x.f,c:s.c+x.c}),{kcal:0,p:0,f:0,c:0});
+ $("nutritionEaten").textContent=Math.round(eaten.kcal);
+ $("nutritionRemaining").textContent=Math.round(n.target-eaten.kcal);
+ const vals=[["Белки",eaten.p,n.protein,"g"],["Жиры",eaten.f,n.fat,"g"],["Углеводы",eaten.c,n.carbs,"g"]];
+ $("nutritionMacros").innerHTML=vals.map(([label,v,target,unit])=>{const pct=Math.min(100,Math.round(v/Math.max(target,1)*100));return '<div class="macro-row"><div><b>'+label+'</b><span>'+Math.round(v)+' / '+target+' '+unit+'</span></div><div class="macro-track"><i style="width:'+pct+'%"></i></div></div>'}).join("");
+ $("foodList").innerHTML=today.slice().reverse().map(x=>'<div class="food-item"><div><b>'+escHtml(x.name)+'</b><small>'+x.kcal+' ккал · Б '+x.p+' · Ж '+x.f+' · У '+x.c+'</small></div><button type="button" class="food-delete" data-food-id="'+x.id+'" aria-label="Удалить">×</button></div>').join("")||'<p class="muted">Пока нет записей за сегодня.</p>';
+ $("foodList").querySelectorAll("[data-food-id]").forEach(b=>b.onclick=()=>{state.foodLog=state.foodLog.filter(x=>String(x.id)!==b.dataset.foodId);save();renderNutrition()});
+}
+$("addFood").onclick=()=>{
+ const name=$("foodName").value.trim(),kcal=+$("foodKcal").value,p=+$("foodProtein").value,f=+$("foodFat").value,c=+$("foodCarbs").value;
+ if(!name||![kcal,p,f,c].every(Number.isFinite)||kcal<0||p<0||f<0||c<0){alert("Заполни название и корректные значения КБЖУ.");return}
+ state.foodLog.push({id:Date.now(),date:localDay(),name,kcal,p,f,c});
+ $("foodName").value="";$("foodKcal").value="";$("foodProtein").value="";$("foodFat").value="";$("foodCarbs").value="";
+ save();renderNutrition();
+};
+
+renderWorkout();renderStats();renderPlan();renderProgress();renderNutrition();
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 
 // --- MY GYM COACH AI connection ---
