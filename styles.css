@@ -119,3 +119,14 @@ body.theme-light .settings-panel input[type=color]{background:#fff}
 .photo-load-fallback{min-height:150px;display:grid;place-items:center;padding:20px;text-align:center;border-radius:9px;background:linear-gradient(145deg,#202127,#121318);color:#aeb0ba;font-size:11px}
 .exercise-photo.equipment-photo{overflow:hidden}
 .exercise-photo.equipment-photo img{display:block;width:100%;max-height:230px;min-height:130px;object-fit:contain}
+
+/* Onboarding and selectable training programs */
+.profile-setup-notice{border-color:#7a2938;background:linear-gradient(120deg,#2b141b,#17171c);margin-bottom:14px}
+.profile-setup-notice h3{font-size:18px;margin:7px 0}
+.profile-setup-notice.hidden{display:none}
+.plan-catalog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr));gap:10px;margin:12px 0 20px}
+.plan-choice{padding:15px;border:1px solid var(--line);border-radius:16px;background:var(--panel);box-shadow:0 8px 24px #0003}
+.plan-choice.selected{border-color:var(--red);background:linear-gradient(145deg,#29151c,var(--panel))}
+.plan-choice h3{font-size:16px;margin:8px 0}
+.plan-choice .plan-meta{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.plan-choice .plan-meta span{font-size:9px;color:#c7c7ce;border:1px solid #383a43;border-radius:20px;padding:5px 8px}
