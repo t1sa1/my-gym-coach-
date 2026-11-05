@@ -46,36 +46,6 @@ const EXERCISE_GUIDES = [
  {re:/пресс/i,e:"core",equipment:"Коврик / тренажёр для пресса",primary:"Мышцы живота",secondary:"Сгибатели бедра (зависит от варианта)",steps:["Выбери вариант упражнения и зафиксируй корпус.","На выдохе подкрути таз или сблизь рёбра и таз — в зависимости от движения.","Не тяни голову руками и не делай рывков.","Вернись в исходное положение медленно."],tip:"Сосредоточься на контроле корпуса и дыхании, а не на количестве повторений."}
 ];
 function exerciseGuide(name){return EXERCISE_GUIDES.find(g=>g.re.test(name))||{e:"machine",equipment:"Тренажёр или свободный вес",primary:"Целевая группа зависит от варианта",secondary:"Стабилизаторы и мышцы-синергисты",steps:["Настрой оборудование под свой рост и амплитуду.","Займи устойчивое положение и напряги корпус.","Выполняй движение плавно, без рывков и боли.","Возвращай вес под контролем."],tip:"Начни с лёгкого веса и попроси тренера в зале проверить технику."}}
-function equipmentArt(type){
- const common='<defs><linearGradient id="metal" x2="1" y2="1"><stop stop-color="#aebbb3"/><stop offset="1" stop-color="#52645a"/></linearGradient><linearGradient id="pad" x2="0" y2="1"><stop stop-color="#315c46"/><stop offset="1" stop-color="#183629"/></linearGradient></defs>';
- const arts={
- bar:'<path d="M25 35H175M37 24V46M47 20V50M153 20V50M163 24V46" stroke="url(#metal)" stroke-width="6" stroke-linecap="round"/><path d="M65 66H135M75 66V83M125 66V83" stroke="#60756a" stroke-width="7" stroke-linecap="round"/><rect x="67" y="80" width="66" height="9" rx="4" fill="url(#pad)"/>',
- dumbbells:'<path d="M48 52H152" stroke="url(#metal)" stroke-width="8" stroke-linecap="round"/><rect x="30" y="34" width="18" height="36" rx="5" fill="#315c46"/><rect x="152" y="34" width="18" height="36" rx="5" fill="#315c46"/><rect x="22" y="40" width="8" height="24" rx="3" fill="#7c9185"/><rect x="170" y="40" width="8" height="24" rx="3" fill="#7c9185"/>',
- cable:'<path d="M50 18V100M150 18V100M50 22H150M100 22V64" stroke="url(#metal)" stroke-width="6" stroke-linecap="round"/><rect x="85" y="61" width="30" height="28" rx="5" fill="url(#pad)"/><path d="M100 64L83 82M100 64L117 82" stroke="#52645a" stroke-width="3"/>',
- machine:'<path d="M48 15V100M152 15V100M48 18H152M48 95H152" stroke="url(#metal)" stroke-width="7" stroke-linecap="round"/><rect x="58" y="48" width="104" height="18" rx="7" fill="url(#pad)"/><rect x="65" y="73" width="90" height="11" rx="5" fill="#7c9185"/><path d="M72 48V35H128V48" stroke="#60756a" stroke-width="5" fill="none"/>',
- pulldown:'<path d="M55 15V95M145 15V95M55 20H145M100 20V48" stroke="url(#metal)" stroke-width="6" stroke-linecap="round"/><path d="M70 48H130" stroke="#315c46" stroke-width="8" stroke-linecap="round"/><path d="M78 95V72H122V95" stroke="#60756a" stroke-width="8" fill="none"/><path d="M87 70L100 52L113 70" stroke="#315c46" stroke-width="6" fill="none"/>',
- row:'<path d="M38 22V95M38 90H162M38 22H145" stroke="url(#metal)" stroke-width="6" stroke-linecap="round"/><path d="M145 22L112 60L92 60" stroke="#60756a" stroke-width="3" fill="none"/><rect x="78" y="58" width="36" height="16" rx="5" fill="url(#pad)"/><path d="M72 91V78H120V91" stroke="#315c46" stroke-width="6"/>',
- dumbbellbench:'<path d="M35 86H165M55 83L75 50H130L150 83" stroke="#60756a" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M70 48H137" stroke="url(#pad)" stroke-width="12" stroke-linecap="round"/><path d="M55 35H78M142 35H165" stroke="#315c46" stroke-width="7" stroke-linecap="round"/>',
- machinepress:'<path d="M55 18V96M145 18V96M55 24H145" stroke="url(#metal)" stroke-width="7"/><rect x="72" y="49" width="76" height="17" rx="6" fill="url(#pad)"/><path d="M72 57L35 38M148 57L185 38" stroke="#60756a" stroke-width="6" stroke-linecap="round"/><path d="M65 93V73H155V93" stroke="#315c46" stroke-width="7" fill="none"/>',
- reversefly:'<path d="M48 18V95M152 18V95M48 24H152" stroke="url(#metal)" stroke-width="6"/><rect x="88" y="40" width="24" height="44" rx="7" fill="url(#pad)"/><path d="M88 50L48 35M112 50L152 35" stroke="#60756a" stroke-width="6" stroke-linecap="round"/>',
- squat:'<path d="M48 15V100M152 15V100M48 25H152" stroke="url(#metal)" stroke-width="7"/><path d="M65 35H135" stroke="#315c46" stroke-width="9" stroke-linecap="round"/><path d="M80 44V72M120 44V72" stroke="#60756a" stroke-width="7"/><rect x="68" y="72" width="84" height="13" rx="5" fill="url(#pad)"/>',
- rdl:'<path d="M25 35H175M38 24V46M47 20V50M153 20V50M163 24V46" stroke="url(#metal)" stroke-width="6" stroke-linecap="round"/><path d="M78 62L100 82L122 62" stroke="#315c46" stroke-width="8" fill="none" stroke-linecap="round"/>',
- legpress:'<path d="M35 95L70 25H165M35 95H170" stroke="url(#metal)" stroke-width="7" fill="none"/><path d="M85 70L145 30" stroke="#315c46" stroke-width="12" stroke-linecap="round"/><path d="M68 82L88 92" stroke="#60756a" stroke-width="8"/>',
- legcurl:'<path d="M48 18V95M48 90H160" stroke="url(#metal)" stroke-width="7"/><rect x="65" y="42" width="65" height="15" rx="6" fill="url(#pad)"/><circle cx="145" cy="77" r="13" fill="#315c46"/><path d="M145 77L115 60" stroke="#60756a" stroke-width="7"/>',
- calf:'<path d="M35 82H165M60 82V45M140 82V45" stroke="url(#metal)" stroke-width="7"/><rect x="55" y="35" width="110" height="13" rx="5" fill="url(#pad)"/><path d="M88 35V20H132V35" stroke="#60756a" stroke-width="6" fill="none"/>',
- hipthrust:'<path d="M25 80H175M45 80V94M155 80V94" stroke="url(#metal)" stroke-width="7"/><rect x="60" y="58" width="100" height="15" rx="7" fill="url(#pad)"/><path d="M75 58L92 38H145" stroke="#60756a" stroke-width="8" fill="none"/>',
- split:'<path d="M45 80H175M65 80V93M155 80V93" stroke="url(#metal)" stroke-width="7"/><rect x="70" y="52" width="90" height="12" rx="5" fill="url(#pad)"/><path d="M50 48H100" stroke="#60756a" stroke-width="8" stroke-linecap="round"/>',
- legext:'<path d="M48 18V95M48 90H160" stroke="url(#metal)" stroke-width="7"/><rect x="58" y="35" width="80" height="15" rx="6" fill="url(#pad)"/><circle cx="143" cy="73" r="12" fill="#315c46"/><path d="M143 73L112 56" stroke="#60756a" stroke-width="7"/>',
- core:'<path d="M35 85H165" stroke="url(#metal)" stroke-width="7" stroke-linecap="round"/><path d="M65 75Q80 35 115 55Q145 72 155 40" stroke="#315c46" stroke-width="10" fill="none" stroke-linecap="round"/><circle cx="153" cy="35" r="9" fill="#7c9185"/>',
- overhead:'<path d="M50 18V95M150 18V95M50 22H150M100 22V48" stroke="url(#metal)" stroke-width="6"/><path d="M87 48L100 65L113 48" stroke="#315c46" stroke-width="7" fill="none"/><path d="M100 65V88" stroke="#60756a" stroke-width="5"/>',
- ez:'<path d="M25 45H55L68 35L82 55L96 35L110 55L124 35L138 45H175" stroke="#60756a" stroke-width="7" fill="none" stroke-linecap="round"/><rect x="18" y="31" width="10" height="28" rx="3" fill="#315c46"/><rect x="172" y="31" width="10" height="28" rx="3" fill="#315c46"/>',
- preacher:'<path d="M40 90L75 40H145L165 90" stroke="#60756a" stroke-width="8" fill="none"/><path d="M70 42H145" stroke="#315c46" stroke-width="13" stroke-linecap="round"/><path d="M75 72H135" stroke="url(#metal)" stroke-width="6"/>',
- pushdown:'<path d="M100 18V52M68 52H132" stroke="url(#metal)" stroke-width="6" stroke-linecap="round"/><path d="M100 52V85M84 85H116" stroke="#315c46" stroke-width="7" stroke-linecap="round"/>'
- };
- const art=arts[type]||arts.machine;
- return '<svg viewBox="0 0 200 110" aria-hidden="true">'+common+art+'</svg>';
-}
-
 function exercisePhoto(name){
  const n=String(name||"").toLowerCase();
  const items=[
@@ -87,8 +57,18 @@ function exercisePhoto(name){
  return items.find(x=>x.re.test(n))||null;
 }
 function exerciseIcon(name){
- const g=exerciseGuide(name);
- return equipmentArt(g.e).replace(/#315c46/g,"#ed1832").replace(/#183629/g,"#50141f").replace(/#52645a/g,"#777d87").replace(/#60756a/g,"#aab0ba").replace(/#7c9185/g,"#d5d8de");
+ const n=String(name||"").toLowerCase();
+ const groups=[
+  [/жим|сведение|груд/i,"ГР"],
+  [/тяга|подтяг/i,"СП"],
+  [/плеч|дельт|подъём гантелей в стороны/i,"ПЛ"],
+  [/присед|ног|икры|болгар|румын|ягодич/i,"НО"],
+  [/бицепс|сгибание рук|молотков|скотта/i,"БИ"],
+  [/трицепс|разгибание рук/i,"ТР"],
+  [/пресс|кор|планк/i,"КОР"]
+ ];
+ const code=(groups.find(([re])=>re.test(n))||["","ЗАЛ"])[1];
+ return '<span class="exercise-icon-mark" aria-hidden="true">'+code+'</span>';
 }
 function exerciseMuscleMini(name){
  const selected=musclesForExercise(name);
@@ -101,7 +81,7 @@ function renderExerciseDetail(name){
  const g=exerciseGuide(name), steps=g.steps.map((x,i)=>'<li><span>'+(i+1)+'</span><p>'+x+'</p></li>').join('');
  const photo=exercisePhoto(name);
  const photoBlock=photo?'<figure class="exercise-photo equipment-photo"><img src="'+photo.url+'" alt="Фотография оборудования: '+photo.label+'" loading="lazy" onerror="this.closest(\'figure\').classList.add(\'photo-failed\');this.remove()"><figcaption>'+photo.label+' · '+photo.credit+' · <a href="'+photo.page+'" target="_blank" rel="noopener">источник и лицензия</a></figcaption></figure>':'<div class="photo-placeholder equipment-photo-placeholder"><span>ОБОРУДОВАНИЕ</span><small>'+g.equipment+' · фото будет добавлено в библиотеку оборудования</small></div>';
- $('exerciseDetail').innerHTML=photoBlock+'<div class="detail-visual"><div><span class="eyebrow">ОБОРУДОВАНИЕ</span><b>'+g.equipment+'</b></div>'+exerciseIcon(name)+'</div>'+exerciseMuscleMini(name)+'<div class="detail-muscles"><div><small>ОСНОВНАЯ НАГРУЗКА</small><b>'+g.primary+'</b></div><div><small>ДОПОЛНИТЕЛЬНО</small><b>'+g.secondary+'</b></div></div><div class="detail-steps"><h3>Как выполнять</h3><ol>'+steps+'</ol></div><div class="detail-tip"><span>✦</span><p>'+g.tip+'</p></div>';
+ $('exerciseDetail').innerHTML=photoBlock+'<div class="equipment-caption"><span class="eyebrow">ОБОРУДОВАНИЕ</span><b>'+g.equipment+'</b></div>'+exerciseMuscleMini(name)+'<div class="detail-muscles"><div><small>ОСНОВНАЯ НАГРУЗКА</small><b>'+g.primary+'</b></div><div><small>ДОПОЛНИТЕЛЬНО</small><b>'+g.secondary+'</b></div></div><div class="detail-steps"><h3>Как выполнять</h3><ol>'+steps+'</ol></div><div class="detail-tip"><span>✦</span><p>'+g.tip+'</p></div>';
 }
 
 function renderWorkout(){renderDays();let p=currentPlan();$("dayTag").textContent=`ДЕНЬ ${p.id}`;if($("homeWorkoutName"))$("homeWorkoutName").textContent=p.name;$("coachAdvice").textContent=recommendation(p.ex[selected][0]);$("exerciseCount").textContent=`${p.ex.length} УПРАЖНЕНИЙ`;$("exerciseList").innerHTML=p.ex.map((e,i)=>{const thumb='<div class="exercise-thumb exercise-icon">'+exerciseIcon(e[0])+'</div>';return '<div class="exercise '+(i===selected?'selected':'')+'" data-i="'+i+'">'+thumb+'<div class="exercise-copy"><b>'+e[0]+'</b><small>'+e[1]+' подхода · '+e[2]+' повторений</small></div><span class="check">'+(completed.has(i)?'✓':'›')+'</span></div>'}).join("");document.querySelectorAll(".exercise").forEach(el=>el.onclick=()=>{selected=+el.dataset.i;renderWorkout()});renderExerciseDetail(p.ex[selected][0]);$("selectedExercise").textContent=p.ex[selected][0];$("currentSets").innerHTML=activeWorkout.filter(x=>x.exercise===p.ex[selected][0]).map((x,i)=>'<div class="set-row"><span>Подход '+(i+1)+'</span><b>'+x.weight+' кг × '+x.reps+'</b></div>').join("");$("addSet").onclick=()=>{let w=+$("weight").value,r=+$("reps").value;if(!Number.isFinite(w)||w<0||!Number.isInteger(r)||r<1){alert("Введи корректный вес и количество повторений.");return}activeWorkout.push({exercise:p.ex[selected][0],weight:w,reps:r,notes:$("notes").value});renderMuscleMap();$("weight").value="";$("reps").value="";$("notes").value="";renderWorkout()};$("finishExercise").onclick=()=>{completed.add(selected);renderWorkout()};$("finishWorkout").onclick=()=>{if(!activeWorkout.length){alert("Сначала запиши хотя бы один подход.");return}let now=new Date().toISOString();state.logs.push(...activeWorkout.map(x=>({...x,day:p.name,date:now,cycle:state.cycle})));state.cycle++;save();activeWorkout=[];completed.clear();alert("Тренировка сохранена! Отличная работа.");renderWorkout();renderProgress()}}
