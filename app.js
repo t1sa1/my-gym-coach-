@@ -77,10 +77,10 @@ function exercisePhoto(name){
  const items=[
   {re:/жим штанги лёжа/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Bench_Press.jpg",credit:"Aditya Oberai · CC BY-SA 4.0",page:"https://commons.wikimedia.org/wiki/File:Bench_Press.jpg"},
   {re:/жим гантелей под наклоном|жим гантелей на наклонной/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Inclined_bench_press.jpg",credit:"SAgbley · CC BY 4.0",page:"https://commons.wikimedia.org/wiki/File:Inclined_bench_press.jpg"},
-  {re:/тяга верхнего блока|подтягивания/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Back_Pull_down.jpg",credit:"Aliva Sahoo · CC BY 4.0",page:"https://commons.wikimedia.org/wiki/File:Back_Pull_down.jpg"},
-  {re:/приседания|гакк-приседания/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Woman_doing_squat_workout_in_gym_with_barbell,_back_view.jpg",credit:"Nenad Stojkovic · CC BY 2.0",page:"https://commons.wikimedia.org/wiki/File:Woman_doing_squat_workout_in_gym_with_barbell,_back_view.jpg"}
+  {re:/тяга верхнего блока|подтягивания|горизонтальная тяга|тяга с упором грудью/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Back_Pull_down.jpg",credit:"Aliva Sahoo · CC BY 4.0",page:"https://commons.wikimedia.org/wiki/File:Back_Pull_down.jpg"},
+  {re:/приседания|гакк-приседания|жим ногами|болгарские выпады|румынская тяга|ягодичный мост|сгибание ног|разгибание ног|подъёмы на носки|икры/i,url:"https://commons.wikimedia.org/wiki/Special:FilePath/Woman_doing_squat_workout_in_gym_with_barbell,_back_view.jpg",credit:"Nenad Stojkovic · CC BY 2.0",page:"https://commons.wikimedia.org/wiki/File:Woman_doing_squat_workout_in_gym_with_barbell,_back_view.jpg"}
  ];
- return items.find(x=>x.re.test(n))||null;
+ return items.find(x=>x.re.test(n))||{url:"https://commons.wikimedia.org/wiki/Special:FilePath/Bench_Press.jpg",credit:"Aditya Oberai · CC BY-SA 4.0",page:"https://commons.wikimedia.org/wiki/File:Bench_Press.jpg"};
 }
 function exerciseMuscleMini(name){
  const selected=musclesForExercise(name);
@@ -119,7 +119,7 @@ function musclesForExercise(name){
   [/тяга верхнего блока|подтягивания|горизонтальная тяга|тяга с упором грудью/,"Спина",["Бицепс","Плечи"]],
   [/жим гантелей сидя/,"Плечи",["Трицепс","Грудь"]],
   [/подъём гантелей в стороны|обратная бабочка/,"Плечи",["Спина"]],
-  [/сгибание рук|молотковые|скамье скотта/,"Бицепс",["Предплечья"]],
+  [/сгибание рук|молотковые|скамье скотта/,"Бицепс",["Бицепс"]],
   [/разгибание рук/,"Трицепс",["Плечи"]],
   [/приседания|гакк-приседания|жим ногами|болгарские выпады|разгибание ног/,"Квадрицепс",["Ягодицы","Бицепс бедра"]],
   [/румынская тяга|сгибание ног/,"Бицепс бедра",["Ягодицы","Спина"]],
@@ -153,37 +153,32 @@ function muscleRow(m,v){
 }
 function muscleFigure(side,totals){
  const front=side==="front";
- const fill=m=>totals[m]>0?MUSCLE_COLORS[m]:"#87928d";
- const op=m=>totals[m]>0?".88":".16";
- const muscle=(m,d)=>`<path d="${d}" fill="${fill(m)}" opacity="${op(m)}" stroke="#f2f2f2" stroke-opacity=".42" stroke-width="1.15" stroke-linejoin="round"/>`;
- const base=`<g fill="#9ba5a0" fill-opacity=".20" stroke="#d4d9d6" stroke-opacity=".75" stroke-width="1.35" stroke-linejoin="round">
- <path d="M91 51 Q110 42 129 51 L145 74 140 151 Q137 176 132 193 L128 235 92 235 88 193 Q83 176 80 151 L75 74Z"/>
- <path d="M80 62 Q65 59 57 78 L37 144 Q33 157 41 161 Q49 164 55 150 L84 98Z"/>
- <path d="M140 62 Q155 59 163 78 L183 144 Q187 157 179 161 Q171 164 165 150 L136 98Z"/>
- <path d="M92 226 Q110 234 128 226 L132 257 125 305 119 367 103 367 96 305 88 257Z"/>
- <path d="M103 363 L119 363 123 414 Q112 420 101 414Z"/>
- <path d="M103 363 L119 363 119 414 Q108 420 97 414Z"/>
- <ellipse cx="110" cy="25" rx="18" ry="22"/>
- </g>`;
- let details="";
+ const fill=m=>totals[m]>0?MUSCLE_COLORS[m]:"#8b929a";
+ const op=m=>totals[m]>0?".88":".22";
+ const muscle=(m,d)=>'<path d="'+d+'" fill="'+fill(m)+'" fill-opacity="'+op(m)+'" stroke="#e6e8eb" stroke-opacity=".48" stroke-width="1.05" stroke-linejoin="round"/>';
+ const base='<g fill="#68717b" fill-opacity=".20" stroke="#d8dce1" stroke-opacity=".78" stroke-width="1.45" stroke-linejoin="round"><ellipse cx="110" cy="24" rx="17" ry="21"/><path d="M96 44L92 53 78 58Q65 59 58 75L39 143Q35 155 43 160Q51 164 57 150L82 100 86 145 82 190 89 224 92 242 86 303 94 365 89 410Q101 418 108 410L110 370 112 410Q122 418 132 410L126 365 134 303 128 242 131 224 138 190 134 145 138 100 163 150Q169 164 177 160Q185 155 181 143L162 75Q155 59 142 58L128 53 124 44Z"/></g>';
+ let d="";
  if(front){
- details+=muscle("Плечи","M80 66 Q66 61 60 79 Q63 91 78 96 L91 80Z M140 66 Q154 61 160 79 Q157 91 142 96 L129 80Z");
- details+=muscle("Грудь","M91 83 Q99 73 108 84 L107 119 Q94 117 82 104 Q80 91 91 83Z M129 83 Q121 73 112 84 L113 119 Q126 117 138 104 Q140 91 129 83Z");
- details+=muscle("Бицепс","M57 91 Q68 91 78 102 L67 143 Q55 146 50 135Z M163 91 Q152 91 142 102 L153 143 Q165 146 170 135Z");
- details+=muscle("Пресс","M100 123 Q110 119 120 123 L119 181 Q110 188 101 181Z");
- details+=muscle("Квадрицепс","M91 211 Q101 207 108 215 L105 298 Q95 306 89 288Z M129 211 Q119 207 112 215 L115 298 Q125 306 131 288Z");
- details+=muscle("Икры","M99 315 Q108 310 108 321 L105 404 L96 404Z M121 315 Q112 310 112 321 L115 404 L124 404Z");
+  d+=muscle("Плечи","M91 59Q77 54 65 69Q59 82 72 94Q82 99 91 85Z M129 59Q143 54 155 69Q161 82 148 94Q138 99 129 85Z");
+  d+=muscle("Грудь","M91 78Q101 72 108 82L108 112Q96 116 82 103Q78 89 91 78Z M129 78Q119 72 112 82L112 112Q124 116 138 103Q142 89 129 78Z");
+  d+=muscle("Бицепс","M62 91Q72 91 80 104L69 140Q58 144 52 132Z M158 91Q148 91 140 104L151 140Q162 144 168 132Z");
+  d+=muscle("Бицепс","M48 145Q58 139 67 148L58 183Q48 188 43 177Z M172 145Q162 139 153 148L162 183Q172 188 177 177Z");
+  d+=muscle("Пресс","M101 119Q110 116 109 135L108 151 99 151Z M111 119Q120 116 121 135L122 151 112 151Z M100 154L109 154 108 171 99 171Z M111 154L121 154 122 171 112 171Z M100 174L109 174 108 190 99 190Z M111 174L121 174 122 190 112 190Z");
+  d+=muscle("Пресс","M91 121Q97 119 99 128L96 181 88 174Z M129 121Q123 119 121 128L124 181 132 174Z");
+  d+=muscle("Квадрицепс","M91 207Q99 202 107 211L105 253 96 284 88 274Z M108 211L116 211 123 276 114 285 107 253Z M129 207Q121 202 113 211L115 253 124 284 132 274Z");
+  d+=muscle("Икры","M95 294Q104 290 107 305L103 352 94 357Z M125 294Q116 290 113 305L117 352 126 357Z");
  }else{
- details+=muscle("Плечи","M80 66 Q66 61 60 79 Q63 91 78 96 L91 80Z M140 66 Q154 61 160 79 Q157 91 142 96 L129 80Z");
- details+=muscle("Спина","M94 78 Q110 69 126 78 L137 133 Q128 151 110 155 Q92 151 83 133Z");
- details+=muscle("Трицепс","M57 94 Q68 91 78 102 L67 143 Q55 146 50 135Z M163 94 Q152 91 142 102 L153 143 Q165 146 170 135Z");
- details+=muscle("Ягодицы","M89 193 Q99 184 109 194 L108 231 Q96 237 87 222Z M131 193 Q121 184 111 194 L112 231 Q124 237 133 222Z");
- details+=muscle("Бицепс бедра","M91 237 Q101 231 108 240 L105 305 Q95 312 89 292Z M129 237 Q119 231 112 240 L115 305 Q125 312 131 292Z");
- details+=muscle("Икры","M99 315 Q108 310 108 321 L105 404 L96 404Z M121 315 Q112 310 112 321 L115 404 L124 404Z");
+  d+=muscle("Спина","M94 61Q110 54 126 61L132 92 110 112 88 92Z");
+  d+=muscle("Плечи","M91 61Q77 55 65 70Q59 83 73 95Q83 98 91 84Z M129 61Q143 55 155 70Q161 83 147 95Q137 98 129 84Z");
+  d+=muscle("Спина","M89 91Q99 91 108 105L105 156Q91 151 82 129Z M131 91Q121 91 112 105L115 156Q129 151 138 129Z");
+  d+=muscle("Трицепс","M62 94Q72 91 80 104L69 140Q58 144 52 132Z M158 94Q148 91 140 104L151 140Q162 144 168 132Z");
+  d+=muscle("Бицепс","M48 145Q58 139 67 148L58 183Q48 188 43 177Z M172 145Q162 139 153 148L162 183Q172 188 177 177Z");
+  d+=muscle("Ягодицы","M89 190Q99 183 108 193L108 230Q96 239 86 219Z M131 190Q121 183 112 193L112 230Q124 239 134 219Z");
+  d+=muscle("Бицепс бедра","M90 235Q99 230 108 239L105 292 96 316 87 290Z M108 239L116 239 125 290 116 316 107 292Z M130 235Q121 230 112 239L115 292 124 316 133 290Z");
+  d+=muscle("Икры","M95 313Q104 309 107 324L103 369 94 374Z M125 313Q116 309 113 324L117 369 126 374Z");
  }
- return `<svg class="body-figure" viewBox="0 0 220 430" role="img" aria-label="${front?"Передняя":"Задняя"} анатомическая схема мышц">${base}${details}<path d="M110 48 V408" stroke="#dbe2dd" stroke-width="1" opacity=".25"/></svg>`;
+ return '<svg class="body-figure" viewBox="0 0 220 430" role="img" aria-label="'+(front?"Передняя":"Задняя")+' анатомическая карта мышц">'+base+d+'<path d="M110 47V408" stroke="#f5f5f5" stroke-opacity=".13" stroke-width="1"/></svg>';
 }
-
 function renderProgress(){renderMuscleMap();let names=[...new Set(state.logs.map(x=>x.exercise))];$("progressExercise").innerHTML=names.map(n=>`<option>${n}</option>`).join("");$("progressExercise").onchange=drawChart;drawChart();$("historyList").innerHTML=state.logs.slice().reverse().slice(0,30).map(x=>`<div class="history-item"><b>${x.exercise}</b><p>${new Date(x.date).toLocaleString("ru-RU")} · ${x.day}</p><strong>${x.weight} кг × ${x.reps}</strong></div>`).join("")||'<p class="muted">Пока нет сохранённых тренировок.</p>'}
 function drawChart(){let name=$("progressExercise").value;let arr=state.logs.filter(x=>x.exercise===name);if(!arr.length){$("progressChart").className="chart-empty";$("progressChart").textContent="Добавь результаты тренировок, чтобы увидеть график.";return}let best=arr.map(x=>+x.weight);let max=Math.max(...best,1),min=Math.min(...best);let w=320,h=150,pad=25;let pts=best.map((v,i)=>`${pad+i*(w-2*pad)/Math.max(best.length-1,1)},${h-pad-(v/max)*(h-2*pad)}`).join(" ");$("progressChart").className="";$("progressChart").innerHTML=`<svg class="chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="График веса"><polyline points="${pts}" fill="none" stroke="#1c8b56" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>${best.map((v,i)=>`<circle cx="${pad+i*(w-2*pad)/Math.max(best.length-1,1)}" cy="${h-pad-(v/max)*(h-2*pad)}" r="4" fill="#1c8b56"/>`).join("")}</svg><div class="muted">Последний вес: ${best[best.length-1]} кг · Лучший: ${max} кг · Записей: ${best.length}</div>`}
 function renderPlan(){$("fullPlan").innerHTML=plans.map(p=>`<div class="plan-day"><h3>${p.name}<span class="tag">ДЕНЬ ${p.id}</span></h3><ul>${p.ex.map(e=>`<li>${e[0]} — ${e[1]} × ${e[2]}</li>`).join("")}</ul></div>`).join("")}
