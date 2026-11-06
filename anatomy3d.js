@@ -89,7 +89,7 @@ async function init(){
   const topY=bounds.max.y;
   const headGeometry=new THREE.SphereGeometry(.29,40,32),headMaterial=new THREE.MeshStandardMaterial({color:"#aeb5bf",roughness:.5,metalness:.25});
   const head=new THREE.Mesh(headGeometry,headMaterial);head.name="Faceless head";head.position.set(0,topY+.27,0);head.scale.set(1,1.22,.92);head.castShadow=true;bodyGroup.add(head);
-  ready=true;applyLoad();resize();new ResizeObserver(resize).observe(host);initExerciseViewer();
+  ready=true;applyLoad();resize();new ResizeObserver(resize).observe(host);initExerciseViewer();showExercise(exerciseGroups);
   renderer.setAnimationLoop(()=>{renderer.render(scene,camera);if(exerciseRenderer&&exerciseScene&&exerciseCamera)exerciseRenderer.render(exerciseScene,exerciseCamera);});
   setView(activeView);
  }catch(err){
@@ -98,7 +98,7 @@ async function init(){
  }
 }
 function initExerciseViewer(){
- const host=document.getElementById("exerciseAnatomy3d");if(!host||exerciseRenderer||!ready)return;
+ const host=document.getElementById("exerciseAnatomy3d");if(!host||!ready)return;if(exerciseRenderer&&exerciseRenderer.domElement.parentElement===host)return;if(exerciseRenderer){exerciseRenderer.dispose();exerciseRenderer=null;exerciseScene=null;exerciseBody=null;}
  exerciseScene=new THREE.Scene();exerciseScene.add(new THREE.HemisphereLight("#f0f2f7","#30343d",2));
  const key=new THREE.DirectionalLight("#ffffff",3);key.position.set(-3,5,7);exerciseScene.add(key);
  const rim=new THREE.DirectionalLight("#a9b6ca",2.2);rim.position.set(4,2,-5);exerciseScene.add(rim);
