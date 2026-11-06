@@ -11,6 +11,7 @@ const LABELS={
 };
 const GROUPS=["Грудь","Спина","Плечи","Бицепс","Трицепс","Квадрицепс","Бицепс бедра","Ягодицы","Икры","Пресс"];
 let THREE,scene,camera,renderer,bodyGroup,activeView="front",lastTotals={},drag=null,zoom=1,ready=false,pinchDistance=0,suppressClick=false;
+let exerciseScene=null,exerciseCamera=null,exerciseRenderer=null,exerciseBody=null,exerciseGroups=[],exerciseView="front",exerciseZoom=1,exercisePointers=new Map(),exerciseDrag=null,exercisePinch=0;
 const pointers=new Map();let raycaster=null,mouse=null;
 const hint=()=>document.querySelector(".anatomy3d-hint");
 function groupForName(name){
@@ -88,14 +89,34 @@ async function init(){
   const topY=bounds.max.y;
   const headGeometry=new THREE.SphereGeometry(.29,40,32),headMaterial=new THREE.MeshStandardMaterial({color:"#aeb5bf",roughness:.5,metalness:.25});
   const head=new THREE.Mesh(headGeometry,headMaterial);head.name="Faceless head";head.position.set(0,topY+.27,0);head.scale.set(1,1.22,.92);head.castShadow=true;bodyGroup.add(head);
-  ready=true;applyLoad();resize();new ResizeObserver(resize).observe(host);
-  renderer.setAnimationLoop(()=>renderer.render(scene,camera));
+  ready=true;applyLoad();resize();new ResizeObserver(resize).observe(host);initExerciseViewer();
+  renderer.setAnimationLoop(()=>{renderer.render(scene,camera);if(exerciseRenderer&&exerciseScene&&exerciseCamera)exerciseRenderer.render(exerciseScene,exerciseCamera);});
   setView(activeView);
  }catch(err){
   host.innerHTML='<div class="anatomy3d-error" role="alert">Не удалось загрузить 3D-анатомию. Проверь подключение к интернету и обнови страницу.</div>';
   console.error("Anatomy GLB load failed",err);
  }
 }
+function initExerciseViewer(){
+ const host=document.getElementById("exerciseAnatomy3d");if(!host||exerciseRenderer||!ready)return;
+ exerciseScene=new THREE.Scene();exerciseScene.add(new THREE.HemisphereLight("#f0f2f7","#30343d",2));
+ const key=new THREE.DirectionalLight("#ffffff",3);key.position.set(-3,5,7);exerciseScene.add(key);
+ const rim=new THREE.DirectionalLight("#a9b6ca",2.2);rim.position.set(4,2,-5);exerciseScene.add(rim);
+ exerciseBody=bodyGroup.clone(true);
+ exerciseBody.traverse(o=>{if(!o.isMesh)return;const base=o.userData.baseMaterial||o.material;o.material=base.clone();o.userData.baseMaterial=o.material;o.userData.activeMaterial=o.material.clone();o.userData.activeMaterial.color.set("#d6a4aa");o.userData.activeMaterial.emissive.set("#c20c2d");o.userData.activeMaterial.emissiveIntensity=.58;});
+ exerciseScene.add(exerciseBody);exerciseCamera=new THREE.PerspectiveCamera(34,1,.1,100);exerciseCamera.position.set(0,0,10.5);
+ exerciseRenderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:"high-performance"});exerciseRenderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));exerciseRenderer.outputColorSpace=THREE.SRGBColorSpace;exerciseRenderer.toneMapping=THREE.ACESFilmicToneMapping;exerciseRenderer.toneMappingExposure=1.12;
+ host.innerHTML="";host.appendChild(exerciseRenderer.domElement);exerciseRenderer.domElement.setAttribute("aria-label","3D model svalů zapojených při cviku");
+ const resize=()=>{const w=Math.max(1,host.clientWidth),h=Math.max(1,host.clientHeight);exerciseRenderer.setSize(w,h,false);exerciseCamera.aspect=w/h;exerciseCamera.updateProjectionMatrix();};new ResizeObserver(resize).observe(host);resize();
+ host.addEventListener("pointerdown",e=>{host.setPointerCapture?.(e.pointerId);exercisePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(exercisePointers.size===1)exerciseDrag={x:e.clientX,y:e.clientY};if(exercisePointers.size===2){const p=[...exercisePointers.values()];exercisePinch=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);exerciseDrag=null;}});
+ host.addEventListener("pointermove",e=>{if(!exercisePointers.has(e.pointerId))return;const prev=exercisePointers.get(e.pointerId);exercisePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(exercisePointers.size>=2){const p=[...exercisePointers.values()],d=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);if(exercisePinch){exerciseZoom=Math.max(.72,Math.min(1.65,exerciseZoom+(d-exercisePinch)*.004));exerciseCamera.position.z=10.5/exerciseZoom;}exercisePinch=d;return;}if(exerciseDrag){const dx=e.clientX-prev.x,dy=e.clientY-prev.y;exerciseDrag={x:e.clientX,y:e.clientY};exerciseBody.rotation.y+=dx*.008;exerciseBody.rotation.x=Math.max(-.4,Math.min(.4,exerciseBody.rotation.x+dy*.005));}});
+ const end=e=>{exercisePointers.delete(e.pointerId);exerciseDrag=exercisePointers.size===1?[...exercisePointers.values()][0]:null;if(exercisePointers.size<2)exercisePinch=0;};host.addEventListener("pointerup",end);host.addEventListener("pointercancel",end);
+ host.addEventListener("wheel",e=>{e.preventDefault();exerciseZoom=Math.max(.72,Math.min(1.65,exerciseZoom-e.deltaY*.001));exerciseCamera.position.z=10.5/exerciseZoom;},{passive:false});
+ host.querySelectorAll("[data-exercise-view]").forEach(b=>b.addEventListener("click",()=>setExerciseView(b.dataset.exerciseView)));
+}
+function setExerciseView(which){if(which!=="front"&&which!=="back")return;exerciseView=which;if(exerciseBody)exerciseBody.rotation.y=which==="front"?0:Math.PI;document.querySelectorAll("[data-exercise-view]").forEach(b=>b.classList.toggle("active",b.dataset.exerciseView===which));}
+function showExercise(groups=[]){exerciseGroups=Array.isArray(groups)?groups:[];initExerciseViewer();if(!exerciseBody)return;exerciseBody.traverse(o=>{if(!o.isMesh||!o.userData.muscleGroup)return;const active=exerciseGroups.includes(o.userData.muscleGroup);o.material=active?o.userData.activeMaterial:o.userData.baseMaterial;});setExerciseView(exerciseView);}
+
 function update(totals={}){lastTotals=totals||{};applyLoad();}
 function pointerDown(e){
  host.setPointerCapture?.(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY,moved:false});
@@ -121,6 +142,6 @@ host.addEventListener("click",e=>{
  const hit=hits.find(h=>h.object.userData.muscleGroup);if(hit){const g=hit.object.userData.muscleGroup;if(hint())hint().textContent=(g||hit.object.name)+" · нагрузка за 7 дней: "+Number(lastTotals[g]||0).toFixed(1);}
 });
 document.querySelectorAll("[data-anatomy-view]").forEach(b=>b.addEventListener("click",()=>setView(b.dataset.anatomyView)));
-window.MGC3D={update,view:setView};
+window.MGC3D={update,view:setView,showExercise};
 init();
 })();
