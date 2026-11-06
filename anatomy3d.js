@@ -102,8 +102,18 @@ function initExerciseViewer(){
  exerciseScene=new THREE.Scene();exerciseScene.add(new THREE.HemisphereLight("#f0f2f7","#30343d",2));
  const key=new THREE.DirectionalLight("#ffffff",3);key.position.set(-3,5,7);exerciseScene.add(key);
  const rim=new THREE.DirectionalLight("#a9b6ca",2.2);rim.position.set(4,2,-5);exerciseScene.add(rim);
+ // Object3D.clone serializes userData; pair source and cloned meshes to preserve real Three.js materials.
  exerciseBody=bodyGroup.clone(true);
- exerciseBody.traverse(o=>{if(!o.isMesh)return;const base=o.userData.baseMaterial||o.material;o.material=base.clone();o.userData.baseMaterial=o.material;o.userData.activeMaterial=o.material.clone();o.userData.activeMaterial.color.set("#d6a4aa");o.userData.activeMaterial.emissive.set("#c20c2d");o.userData.activeMaterial.emissiveIntensity=.58;});
+ const sourceMeshes=[],cloneMeshes=[];
+ bodyGroup.traverse(o=>{if(o.isMesh)sourceMeshes.push(o);});
+ exerciseBody.traverse(o=>{if(o.isMesh)cloneMeshes.push(o);});
+ cloneMeshes.forEach((o,i)=>{
+  const sourceMesh=sourceMeshes[i];if(!sourceMesh)return;
+  const base=(sourceMesh.userData.baseMaterial||sourceMesh.material).clone();
+  const active=base.clone();active.color.set("#d6a4aa");active.emissive.set("#c20c2d");active.emissiveIntensity=.58;
+  o.material=base;o.userData.muscleGroup=sourceMesh.userData.muscleGroup||null;
+  o.userData.baseMaterial=base;o.userData.activeMaterial=active;
+ });
  exerciseScene.add(exerciseBody);exerciseCamera=new THREE.PerspectiveCamera(34,1,.1,100);exerciseCamera.position.set(0,0,10.5);
  exerciseRenderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:"high-performance"});exerciseRenderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));exerciseRenderer.outputColorSpace=THREE.SRGBColorSpace;exerciseRenderer.toneMapping=THREE.ACESFilmicToneMapping;exerciseRenderer.toneMappingExposure=1.12;
  host.innerHTML="";host.appendChild(exerciseRenderer.domElement);exerciseRenderer.domElement.setAttribute("aria-label","3D model svalů zapojených při cviku");
